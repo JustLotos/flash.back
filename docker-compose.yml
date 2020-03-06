@@ -31,7 +31,6 @@ services:
       - COMPOSER_ALLOW_SUPERUSER=1
     links:
       - postgres
-  © 2020 GitHub, Inc.
   mailhog:
     image: mailhog/mailhog
     container_name: 'mailhog'
