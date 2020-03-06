@@ -1,0 +1,44 @@
+controllers:
+  resource: '../src/Controller/'
+  type:     annotation
+
+#AuthController
+login:
+  path: /api/v1/auth/login
+  methods:  [POST]
+
+register:
+  path: /api/v1/auth/register
+  controller: App\Controller\AuthController::register
+  methods: [POST]
+
+email_confirmation:
+  path: /api/v1/auth/confirm/{confirmationCode}
+  controller: App\Controller\AuthController::confirmEmail
+  methods: [POST]
+
+refresh_token:
+  path: /api/v1/auth/token/refresh
+  controller: App\Controller\AuthController::refresh
+  methods: [POST]
+
+#Documentation
+app.swagger_ui:
+  path: /api/v1/doc
+  methods: [GET]
+  controller: nelmio_api_doc.controller.swagger_ui
+
+
+# REST controllers
+decks:
+  type: rest
+  resource: App\Controller\Rest\DeckController
+
+card:
+  type: rest
+  resource: App\Controller\Rest\CardController
+
+user:
+  type: rest
+  resource: App\Controller\Rest\UserController
+
