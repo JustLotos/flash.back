@@ -8,7 +8,6 @@ use App\Entity\User;
 use App\Service\CodeGeneratorService;
 use App\Service\MailerService;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
 use Gesdinet\JWTRefreshTokenBundle\Service\RefreshToken;
 use JMS\Serializer\SerializerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
@@ -37,6 +36,47 @@ class AuthController extends BaseController implements ClassResourceInterface
     ) {
         parent::__construct($serializer, $validator);
         $this->serializationGroup = ["user_details", "user_embed"];
+    }
+
+
+    /**
+     * @SWG\Post(
+     *    operationId="login",
+     *    produces={"application/json"},
+     *    summary="Авторизация пользователя",
+     *    description="Авторизация пользователя",
+     *    tags={"AuthController"},
+     *    @SWG\Parameter(
+     *      name="credentials",
+     *      in="body",
+     *      description="JSON Payload",
+     *      required=true,
+     *      type="string",
+     *      format="application/json",
+     *      @SWG\Schema(ref=@Model(type=App\Model\UserDTO::class, groups="login")),
+     *    ),
+     *    @SWG\Response(
+     *      response="200",
+     *      description="Success",
+     *      @SWG\Schema(
+     *        type="object",
+     *        @SWG\Property(property="token", type="string"),
+     *        @SWG\Property(
+     *          property="roles",
+     *          type="array",
+     *          @SWG\Items(type="string", example="ROLE_USER")
+     *        ),
+     *        @SWG\Property(property="refresh_token", type="string"),
+     *      ),
+     *    ),
+     *    @SWG\Response(
+     *      response="401",
+     *      description="Invalid JWT token",
+     *    )
+     * )
+     */
+    public function login()
+    {
     }
 
     /**
@@ -88,8 +128,7 @@ class AuthController extends BaseController implements ClassResourceInterface
         MailerService $mailerService,
         CodeGeneratorService $codeGeneratorService,
         AuthenticationSuccessHandler $authenticationSuccessHandler
-    )
-    {
+    ) {
         $this->validateRequestData($request, UserDTO::class);
         /** @var UserDTO $userDTO */
         $userDTO = $this->data;
@@ -129,7 +168,7 @@ class AuthController extends BaseController implements ClassResourceInterface
      * )
      * @param User $user
      */
-    public function confirmEmail(User $user)
+    public function registerConfirm(User $user)
     {
         $user->setActive(true);
         $user->setConfirmationCode('');
@@ -168,4 +207,9 @@ class AuthController extends BaseController implements ClassResourceInterface
         $this->validateRequestData($request, TokenDTO::class);
         return $refreshService->refresh($request);
     }
+
+    public function passwordReset()
+    {
+    }
+
 }

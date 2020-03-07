@@ -10,25 +10,29 @@ class UserDTO
 {
     /**
      * @Serializer\Type(name="string")
-     * @Assert\Email(message = "The email '{{ value }}' is not a valid email.")
-     * @Assert\NotBlank(message="this field is required")
-     * @Serializer\Groups(groups={"user_details", "user_list", "user_embed"})
+     * @Assert\Email(message = "Поле email '{{ value }}' не является действительным email адресом")
+     * @Assert\Length(
+     *     max="255",
+     *     maxMessage="Emai адрес не может быть болшье {{ limit }} символов"
+     * )
+     * @Assert\NotBlank(message="Поле email обязательно для заполненния")
+     * @Serializer\Groups(groups={"user_details", "user_list", "user_embed", "login"})
      */
     private $email;
 
     /**
      * @Assert\Type(
      *      type="string",
-     *      message="The values {{ value }} is not valid type {{ type }}"
+     *      message="Пароль {{ value }} не является типом {{ type }}"
      * )
      * @Assert\Length(
      *     min="8",
      *     max="255",
-     *     minMessage="Password must be at least {{ limit }} characters long",
-     *     maxMessage="Password connot be longer than {{ limit }} characters"
+     *     minMessage="Пароль должег содержать как минимум {{ limit }} симвоолов",
+     *     maxMessage="Пароль не может быть болшье {{ limit }} символов"
      * )
      * @Assert\NotBlank(message="this field is required")
-     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
+     * @Serializer\Groups({"user_details", "user_list", "user_embed", "login"})
      * @Serializer\Type("string")
      */
     private $password;
@@ -44,10 +48,10 @@ class UserDTO
     /**
      * @Assert\Type(
      *      type="array",
-     *      message="The values {{ value }} is not valid type {{ type }}",
+     *      message="Список ролей {{ value }} не является допустимым типом {{ type }}",
      * )
      * @Assert\Unique(
-     *     message="This collection should contain only unique elements {{ value }}"
+     *     message="Список ролей должен содержить только уинкальные значения {{ value }}"
      * )
      * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @Serializer\Type("array<string>")
@@ -57,7 +61,7 @@ class UserDTO
     /**
      * @Assert\Type(
      *    type="string",
-     *    message="The values {{ value }} is not valid type {{ type }}"
+     *    message="Значение имени пользователья {{ value }} не является допустимым типом {{ type }}"
      * )
      * @Serializer\Groups({"user_details", "user_embed"})
      * @Serializer\Type("string")
@@ -67,33 +71,33 @@ class UserDTO
     /**
      * @Assert\Type(
      *    type="string",
-     *    message="The values {{ value }} is not valid type {{ type }}"
+     *    message="Значение фаимилии пользователья {{ value }} не является допустимым типом {{ type }}"
      * )
      * @Serializer\Groups({"user_details", "user_embed"})
      * @Serializer\Type("string")
      */
     private $lastName;
 
-    public function getFirstName()
+    public function getFirstName(): string
     {
-      return $this->firstName;
+        return $this->firstName;
     }
 
-    public function setFirstName($firstName)
+    public function setFirstName(string $firstName): self
     {
-      $this->firstName = $firstName;
-      return $this;
+        $this->firstName = $firstName;
+        return $this;
     }
 
-    public function getLastName()
+    public function getLastName(): string
     {
-      return $this->lastName;
+        return $this->lastName;
     }
 
-    public function setLastName($lastName)
+    public function setLastName(string $lastName): self
     {
-      $this->lastName = $lastName;
-      return $this;
+        $this->lastName = $lastName;
+        return $this;
     }
 
     public function getEmail(): string
@@ -101,19 +105,21 @@ class UserDTO
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(string $email): self
     {
         $this->email = $email;
+        return $this;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+        return $this;
     }
 
     public function getRoles(): array
@@ -121,18 +127,18 @@ class UserDTO
         return $this->roles;
     }
 
-    public function setRoles(array $roles): void
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+        return $this;
     }
 
-    public function fromDTO() {
-        $user = new User();
+    public function fromDTO(User $user = null): User
+    {
+        $user ?: $user = new User();
         $user->setEmail($this->getEmail());
         $user->setPassword($this->getPassword());
-        $user->setRoles($this->getRoles());
-        $user->setFirstName($this->getFirstName());
-        $user->setLastName($this->getLastName());
+        $this->getRoles() ? $user->setRoles($this->getRoles()):$user->setRoles([]);
         return $user;
     }
 }
