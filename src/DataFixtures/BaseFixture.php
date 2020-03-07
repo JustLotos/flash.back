@@ -1,5 +1,6 @@
 <?php
 namespace App\DataFixtures;
+
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -21,16 +22,13 @@ abstract class BaseFixture extends Fixture
     /** @var Generator */
     protected $faker;
     private $referencesIndex = [];
-    private $passwordEncoder;
 
     abstract protected function loadData(ObjectManager $manager);
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
         $this->faker = Factory::create();
-        $this->passwordEncoder = $this->container->get('security.password_encoder');
         $this->loadData($manager);
-
     }
     /**
      * Create many objects at once:
@@ -63,7 +61,8 @@ abstract class BaseFixture extends Fixture
         }
     }
 
-    protected function getRandomReference(string $groupName) {
+    protected function getRandomReference(string $groupName)
+    {
         if (!isset($this->referencesIndex[$groupName])) {
             $this->referencesIndex[$groupName] = [];
             foreach ($this->referenceRepository->getReferences() as $key => $ref) {
@@ -73,7 +72,9 @@ abstract class BaseFixture extends Fixture
             }
         }
         if (empty($this->referencesIndex[$groupName])) {
-            throw new \InvalidArgumentException(sprintf('Did not find any references saved with the group name "%s"', $groupName));
+            throw new \InvalidArgumentException(
+                sprintf('Did not find any references saved with the group name "%s"', $groupName)
+            );
         }
         $randomReferenceKey = $this->faker->randomElement($this->referencesIndex[$groupName]);
         return $this->getReference($randomReferenceKey);

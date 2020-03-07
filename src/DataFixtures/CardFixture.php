@@ -9,28 +9,25 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class CardFixture extends BaseFixture implements DependentFixtureInterface
 {
-  public function loadData(ObjectManager $manager)
-  {
-    $this->createMany(10, 'cards', function ($i) {
-      $card= new Card();
-      /** @var Deck $deck */
-      $deck = $this->getRandomReference('decks');
-      $card->setDeck($deck);
-      $card->setName($this->faker->name);
-      $card->setDateCreated($this->faker->dateTime('now'));
-      $card->setDateLastModified($this->faker->dateTime('now'));
-      $card->setDifficultyIndex(1);
-      $card->setDateNextRepeat($this->faker->dateTimeInInterval('1 month', '1 week'));
-      return $card;
-    });
+    public function loadData(ObjectManager $manager)
+    {
+        $this->createMany(1000, 'cards', function () {
+            /** @var Deck $deck */
+            $deck = $this->getRandomReference('decks');
 
-    $manager->flush();
-  }
+            return new Card(
+                $this->faker->name,
+                $deck
+            );
+        });
 
-  public function getDependencies()
-  {
-    return [
-      DeckFixture::class
-    ];
-  }
+        $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            DeckFixture::class
+        ];
+    }
 }

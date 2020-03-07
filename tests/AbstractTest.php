@@ -6,11 +6,9 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpClientKernel;
 
 abstract class AbstractTest extends WebTestCase
 {
@@ -202,7 +200,7 @@ abstract class AbstractTest extends WebTestCase
         $client = static::getClient();
         $client->request(
             'POST',
-            '/api/v1/auth',
+            '/api/v1/auth/login',
             [],
             [],
             array('CONTENT_TYPE' => 'application/json'),
@@ -219,7 +217,7 @@ abstract class AbstractTest extends WebTestCase
         return $client;
     }
 
-    protected function logut()
+    protected function logout()
     {
         $client = static::getClient();
         $client->setServerParameter('HTTP_Authorization', sprintf(''));

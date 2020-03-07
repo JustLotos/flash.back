@@ -12,9 +12,9 @@ register:
   controller: App\Controller\AuthController::register
   methods: [POST]
 register_confirm:
-  path: /api/v1/auth/register/confirm
+  path: /api/v1/auth/register/confirm/{confirmationCode}
   controller: App\Controller\AuthController::registerConfirm
-  methods: [POST]
+  methods: [GET]
 password_reset:
   path: /api/v1/auth/password/reset
   controller: App\Controller\AuthController::passwordReset

@@ -69,8 +69,8 @@ class DeckController extends BaseController implements ClassResourceInterface
     public function getAction(Deck $deck)
     {
         return $this->viewSerialized(
-          $deck,
-          array_merge($this->serializationGroup, ['deck_details','card_deck'])
+            $deck,
+            array_merge($this->serializationGroup, ['deck_details', 'card_deck'])
         );
     }
 

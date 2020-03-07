@@ -22,11 +22,6 @@ class Record
     private $Value = [];
 
     /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $hint = [];
-
-    /**
      * @ORM\Column(type="smallint")
      */
     private $side;
@@ -36,6 +31,9 @@ class Record
      * @ORM\JoinColumn(nullable=false)
      */
     private $card;
+
+    private const FRONTSIDE = 'forntside';
+    private const BACKSIDE = 'backside';
 
     public function getId(): ?int
     {
@@ -54,26 +52,28 @@ class Record
         return $this;
     }
 
-    public function getHint(): ?array
+    public function getSide(): ?string
     {
-        return $this->hint;
+        switch ($this->side) {
+            case 0:
+                return self::FRONTSIDE;
+            case 1:
+                return self::BACKSIDE;
+        }
+
+        return null;
     }
 
-    public function setHint(?array $hint): self
+    public function setSide(string $side): self
     {
-        $this->hint = $hint;
-
-        return $this;
-    }
-
-    public function getSide(): ?int
-    {
-        return $this->side;
-    }
-
-    public function setSide(int $side): self
-    {
-        $this->side = $side;
+        switch ($side) {
+            case self::FRONTSIDE:
+                $this->side = 0;
+                return $this;
+            case self::BACKSIDE:
+                $this->side = 1;
+                return $this;
+        }
 
         return $this;
     }

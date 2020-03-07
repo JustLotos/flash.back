@@ -2,15 +2,14 @@
 
 namespace App\Controller;
 
+use App\HTTP\Exception\ValidationException;
 use Doctrine\Common\Inflector\Inflector;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -28,8 +27,7 @@ abstract class BaseController extends AbstractFOSRestController
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator
-    )
-    {
+    ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->response = new JsonResponse();
@@ -45,9 +43,9 @@ abstract class BaseController extends AbstractFOSRestController
 
         $errors = $this->validator->validate($this->data);
         if ($errors->count() > 0) {
-            throw new HttpException(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                $this->handleValidationErrors($errors)
+            throw new ValidationException(
+                $this->handleValidationErrors($errors),
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
     }
@@ -56,9 +54,9 @@ abstract class BaseController extends AbstractFOSRestController
     {
         $errors = $this->validator->validate($entity);
         if ($errors->count() > 0) {
-            throw new HttpException(
-                Response::HTTP_UNPROCESSABLE_ENTITY,
-                $this->handleValidationErrors($errors)
+            throw new ValidationException(
+                $this->handleValidationErrors($errors),
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
     }
@@ -88,4 +86,5 @@ abstract class BaseController extends AbstractFOSRestController
 
         return json_encode(['errors' => $errors]);
     }
+
 }

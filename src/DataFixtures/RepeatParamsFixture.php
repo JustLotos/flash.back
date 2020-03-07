@@ -10,7 +10,7 @@ class RepeatParamsFixture extends BaseFixture
 {
     public function loadData(ObjectManager $manager)
     {
-        $this->createMany(1, 'repeatParams', function(){
+        $this->createMany(1, 'repeatParams', function () {
             $rp = new ParamsRepeat();
             $rp->setBase(1);
             $rp->setModifier(1);

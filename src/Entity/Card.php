@@ -44,12 +44,6 @@ class Card
     private $dateLastModified;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Serializer\Groups({"card_details", "card_deck"})
-     */
-    private $difficultyIndex;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Deck", inversedBy="Cards")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -61,17 +55,31 @@ class Card
      */
     private $records;
 
-    public function __construct()
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $countRepeat;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateFirstRepeat;
+
+    public function __construct(string $name, Deck $deck)
     {
         $this->records = new ArrayCollection();
+        $this->setDateCreated(new \DateTime('now'));
+        $this->setDateLastModified(new \DateTime('now'));
+        $this->setDeck($deck);
+        $this->setCountRepeat(0);
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -95,7 +103,7 @@ class Card
         return $this;
     }
 
-    public function getDateCreated(): ?\DateTimeInterface
+    public function getDateCreated(): \DateTimeInterface
     {
         return $this->dateCreated;
     }
@@ -107,7 +115,7 @@ class Card
         return $this;
     }
 
-    public function getDateLastModified(): ?\DateTimeInterface
+    public function getDateLastModified(): \DateTimeInterface
     {
         return $this->dateLastModified;
     }
@@ -119,24 +127,12 @@ class Card
         return $this;
     }
 
-    public function getDifficultyIndex(): ?int
-    {
-        return $this->difficultyIndex;
-    }
-
-    public function setDifficultyIndex(int $difficultyIndex): self
-    {
-        $this->difficultyIndex = $difficultyIndex;
-
-        return $this;
-    }
-
-    public function getDeck(): ?Deck
+    public function getDeck(): Deck
     {
         return $this->deck;
     }
 
-    public function setDeck(?Deck $deck): self
+    public function setDeck(Deck $deck): self
     {
         $this->deck = $deck;
 
@@ -172,5 +168,40 @@ class Card
         }
 
         return $this;
+    }
+
+    public function getCountRepeat(): int
+    {
+        return $this->countRepeat;
+    }
+
+    private function setCountRepeat(int $countRepeat): self
+    {
+        $this->countRepeat = $countRepeat;
+
+        return $this;
+    }
+
+    public function incrementCountRepeat(): self
+    {
+        $this->countRepeat = $this->countRepeat + 1;
+
+        return $this;
+    }
+
+    public function getDateFirstRepeat(): ?\DateTimeInterface
+    {
+        return $this->dateFirstRepeat;
+    }
+
+    public function setDateFirstRepeat(?\DateTimeInterface $dateFirstRepeat): self
+    {
+        $this->dateFirstRepeat = $dateFirstRepeat;
+
+        return $this;
+    }
+
+    public function getFrontSideRecord()
+    {
     }
 }
