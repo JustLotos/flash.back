@@ -5,8 +5,8 @@ controllers:
 #AuthController
 login:
   path: /api/v1/auth/login
+  controller: App\Controller\AuthController::login
   methods:  [POST]
-
 register:
   path: /api/v1/auth/register
   controller: App\Controller\AuthController::register

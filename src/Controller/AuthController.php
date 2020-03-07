@@ -53,7 +53,7 @@ class AuthController extends BaseController implements ClassResourceInterface
      *      required=true,
      *      type="string",
      *      format="application/json",
-     *      @SWG\Schema(ref=@Model(type=App\Model\UserDTO::class, groups="login")),
+     *      @SWG\Schema(ref=@Model(type=App\Model\UserDTO::class, groups={"login"})),
      *    ),
      *    @SWG\Response(
      *      response="200",
@@ -211,5 +211,4 @@ class AuthController extends BaseController implements ClassResourceInterface
     public function passwordReset()
     {
     }
-
 }
