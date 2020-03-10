@@ -135,7 +135,6 @@ class AuthController extends BaseController implements ClassResourceInterface
         /** @var User $user */
         $user = $userDTO->fromDTO();
         $user->setConfirmationCode($codeGeneratorService->getConfirmationCode($user->getSalt()));
-        $this->validateUniqueEntity($user);
         $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
         $this->fastSave($user);
         $mailerService->sendConfirmationMessage($user);

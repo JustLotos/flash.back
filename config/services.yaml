@@ -48,3 +48,9 @@ services:
         autowire: true
     App\Service\TwigService:
         autowire: true
+
+
+    validator.unique.uniqueuser:
+        class: App\Validator\UniqueEntityValidator
+        tags:
+            - { name: validator.constraint_validator, alias: UniqueEntity }

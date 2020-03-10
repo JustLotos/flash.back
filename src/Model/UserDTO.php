@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Entity\User;
+use App\Validator\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -17,6 +18,11 @@ class UserDTO
      * )
      * @Assert\NotBlank(message="Поле email обязательно для заполненния")
      * @Serializer\Groups(groups={"user_details", "user_list", "user_embed", "login"})
+     * @UniqueEntity(
+     *     message="Пользователь с таким email адресом уже существует",
+     *     class="App\Entity\User",
+     *     attribute="email"
+     * )
      */
     private $email;
 
