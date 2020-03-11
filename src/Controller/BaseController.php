@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\HTTP\Exception\ValidationException;
+
+use App\Exception\ValidationException;
 use Doctrine\Common\Inflector\Inflector;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -41,27 +42,23 @@ abstract class BaseController extends AbstractFOSRestController
             self::RESPONSE_FORMAT
         );
 
-        $errors = $this->validator->validate($this->data);
-        if ($errors->count() > 0) {
+        $violations = $this->validator->validate($this->data);
+
+        if ($violations->count() > 0) {
+            $errors = [];
+            /** @var ConstraintViolation $violation */
+            foreach ($violations as $violation) {
+                $errors[Inflector::tableize($violation->getPropertyPath())] = $violation->getMessage();
+            }
+
             throw new ValidationException(
-                $this->handleValidationErrors($errors),
+                $this->encodeError($errors),
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
     }
 
-    protected function validateUniqueEntity($entity)
-    {
-        $errors = $this->validator->validate($entity);
-        if ($errors->count() > 0) {
-            throw new ValidationException(
-                $this->handleValidationErrors($errors),
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-    }
-
-    protected function fastSave($data = null)
+    protected function persist($data = null)
     {
         $this->getDoctrine()->getManager()->persist($data);
         $this->getDoctrine()->getManager()->flush();
@@ -75,15 +72,8 @@ abstract class BaseController extends AbstractFOSRestController
         return $view->setContext($context);
     }
 
-    private function handleValidationErrors(ConstraintViolationListInterface $violations): string
+    private function encodeError(array $errors): string
     {
-        $errors = [];
-
-        /** @var ConstraintViolation $violation */
-        foreach ($violations as $violation) {
-            $errors[Inflector::tableize($violation->getPropertyPath())] = $violation->getMessage();
-        }
-
         return json_encode(['errors' => $errors]);
     }
 

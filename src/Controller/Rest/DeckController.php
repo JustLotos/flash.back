@@ -68,6 +68,8 @@ class DeckController extends BaseController implements ClassResourceInterface
      */
     public function getAction(Deck $deck)
     {
+        $this->denyAccessUnlessGranted('view', $deck);
+
         return $this->viewSerialized(
             $deck,
             array_merge($this->serializationGroup, ['deck_details', 'card_deck'])
@@ -86,7 +88,11 @@ class DeckController extends BaseController implements ClassResourceInterface
      */
     public function cgetAction()
     {
-        $decks = $this->getDoctrine()->getRepository(Deck::class)->findAll();
+        $decks = $this
+            ->getDoctrine()
+            ->getRepository(Deck::class)
+            ->findBy(['user'=>$this->getUser()]);
+
         return $this->viewSerialized($decks, $this->serializationGroup);
     }
 
@@ -139,12 +145,14 @@ class DeckController extends BaseController implements ClassResourceInterface
      * @param Deck $deck
      * @return View
      */
-    public function putAction(Request $request, Deck $deck) {
-      /** @var DeckDTO $deckDTO */
-      $deckDTO = $this->validateRequestData($request, DeckDTO::class);
-      $deck = $deckDTO->fromDTO($deck);
-      $this->getDoctrine()->getManager()->flush();
-      return $this->view(['success'=>true]);
+    public function putAction(Request $request, Deck $deck)
+    {
+        $this->denyAccessUnlessGranted('edit', $deck);
+        /** @var DeckDTO $deckDTO */
+        $deckDTO = $this->validateRequestData($request, DeckDTO::class);
+        $deck = $deckDTO->fromDTO($deck);
+        $this->getDoctrine()->getManager()->flush();
+        return $this->view(['success' => true]);
     }
 
   /**
@@ -172,12 +180,14 @@ class DeckController extends BaseController implements ClassResourceInterface
    * @param Deck $deck
    * @return View
    */
-    public function patchAction(Request $request, Deck $deck) {
-      /** @var DeckDTO $deckDTO */
-      $deckDTO = $this->validateRequestData($request, DeckDTO::class);
-      $deck = $deckDTO->fromDTO($deck);
-      $this->getDoctrine()->getManager()->flush();
-      return $this->view(['success'=>true]);
+    public function patchAction(Request $request, Deck $deck)
+    {
+        $this->denyAccessUnlessGranted('edit', $deck);
+        /** @var DeckDTO $deckDTO */
+        $deckDTO = $this->validateRequestData($request, DeckDTO::class);
+        $deck = $deckDTO->fromDTO($deck);
+        $this->getDoctrine()->getManager()->flush();
+        return $this->view(['success' => true]);
     }
 
     /**
@@ -198,10 +208,14 @@ class DeckController extends BaseController implements ClassResourceInterface
      * @param Deck $deck
      * @return View
      */
-    public function deleteAction(Deck $deck) {
+    public function deleteAction(Deck $deck)
+    {
+        $this->denyAccessUnlessGranted('edit', $deck);
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($deck);
         $em->flush();
-        return $this->view(['success'=>true]);
+
+        return $this->view(['success' => true]);
     }
 }

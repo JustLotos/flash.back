@@ -62,18 +62,31 @@ class Deck
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ParamsRepeat", inversedBy="decks")
-     * @ORM\JoinColumn(nullable=true)
-     * @Serializer\Groups({"deck_details", "deck_list"})
+     * @ORM\Column(type="smallint")
      */
-    private $paramsRepeat;
+    private $difficultyIndex;
 
-    public function __construct()
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $baseIndex;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $modyfierIndex;
+
+    public function __construct(string $name, string $description = null)
     {
         $this->cards = new ArrayCollection();
+        $this->setName($name);
+        $this->setDescription($description);
         $this->setLimitRepeat(1);
         $this->setLimitLearning(1);
         $this->setExtraLearning(1);
+        $this->setDifficultyIndex(1);
+        $this->setBaseIndex(1);
+        $this->setModyfierIndex(1);
     }
 
     public function getId(): ?int
@@ -184,14 +197,38 @@ class Deck
         return $this;
     }
 
-    public function getParamsRepeat(): ?paramsRepeat
+    public function getDifficultyIndex(): ?int
     {
-        return $this->paramsRepeat;
+        return $this->difficultyIndex;
     }
 
-    public function setParamsRepeat(?paramsRepeat $paramsRepeat): self
+    public function setDifficultyIndex(int $difficultyIndex): self
     {
-        $this->paramsRepeat = $paramsRepeat;
+        $this->difficultyIndex = $difficultyIndex;
+
+        return $this;
+    }
+
+    public function getBaseIndex(): ?int
+    {
+        return $this->baseIndex;
+    }
+
+    public function setBaseIndex(int $baseIndex): self
+    {
+        $this->baseIndex = $baseIndex;
+
+        return $this;
+    }
+
+    public function getModyfierIndex(): ?int
+    {
+        return $this->modyfierIndex;
+    }
+
+    public function setModyfierIndex(int $modyfierIndex): self
+    {
+        $this->modyfierIndex = $modyfierIndex;
 
         return $this;
     }

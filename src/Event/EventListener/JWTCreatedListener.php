@@ -1,6 +1,6 @@
 <?php
 
-namespace RememberMe\Event;
+namespace App\Event\EventListener;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;

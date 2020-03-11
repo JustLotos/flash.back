@@ -18,21 +18,21 @@ class CardDTO
 
     public function getName()
     {
-      return $this->name;
+        return $this->name;
     }
 
     public function setName($name): void
     {
-      $this->name = $name;
+        $this->name = $name;
     }
 
     public function fromDTO(?Card $card)
     {
         if (!$card) {
-          $card = new Card();
+            $card = new Card();
         }
 
         return $card
-          ->setName($this->getName());
+            ->setName($this->getName());
     }
 }

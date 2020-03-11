@@ -148,14 +148,14 @@ class User implements UserInterface
      */
     public function getActive()
     {
-      return $this->active;
+        return $this->active;
     }
 
     public function setActive($active): self
     {
-      $this->active = $active;
+        $this->active = $active;
 
-      return $this;
+        return $this;
     }
 
     /**
@@ -163,14 +163,14 @@ class User implements UserInterface
      */
     public function getConfirmationCode()
     {
-      return $this->confirmationCode;
+        return $this->confirmationCode;
     }
 
     public function setConfirmationCode($confirmationCode): self
     {
-      $this->confirmationCode = $confirmationCode;
+        $this->confirmationCode = $confirmationCode;
 
-      return $this;
+        return $this;
     }
 
     /**

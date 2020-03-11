@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator;
+namespace App\Validator\UniqueEntityConstraint;
 
 use Symfony\Component\Validator\Constraint;
 

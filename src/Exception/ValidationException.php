@@ -6,9 +6,7 @@
  * Time: 16:22
  */
 
-namespace App\HTTP\Exception;
-
-use App\Exception\ApplicationException;
+namespace App\Exception;
 
 class ValidationException extends ApplicationException
 {

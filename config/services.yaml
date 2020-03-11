@@ -29,11 +29,11 @@ services:
     # please note that last definitions always *replace* previous ones
     Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler:
         autowire: true
-    RememberMe\Event\JWTCreatedListener:
+    App\Event\EventListener\JWTCreatedListener:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
-    App\EventListener\AuthenticationSuccessListener:
+    App\Event\EventListener\AuthenticationSuccessListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
     sensio_framework_extra.view.listener:
@@ -51,6 +51,6 @@ services:
 
 
     validator.unique.uniqueuser:
-        class: App\Validator\UniqueEntityValidator
+        class: App\Validator\UniqueEntityConstraint\UniqueEntityValidator
         tags:
             - { name: validator.constraint_validator, alias: UniqueEntity }

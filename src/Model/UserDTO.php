@@ -3,7 +3,7 @@
 namespace App\Model;
 
 use App\Entity\User;
-use App\Validator\UniqueEntity;
+use App\Validator\UniqueEntityConstraint\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
 

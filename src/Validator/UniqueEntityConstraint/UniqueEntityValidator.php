@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator;
+namespace App\Validator\UniqueEntityConstraint;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
@@ -30,6 +30,7 @@ class UniqueEntityValidator extends ConstraintValidator
                 'Не установлено значение свойства attribute в аннотации UniqueEntity'
             );
         }
+        
 
         $existingEntity = $this->entityManager->getRepository($constraint->class)->findOneBy([
             $constraint->attribute => $value

@@ -17,10 +17,22 @@ class UserFixtures extends BaseFixture implements ContainerAwareInterface
         /** @var UserPasswordEncoderInterface $encoder */
         $this->passwordEncoder = $this->container->get('security.password_encoder');
 
-        $this->createMany(1, 'users', function ($i) {
+        $this->createMany(1, 'admin', function () {
 
             $user = new User();
             $user->setEmail("ignashov-roman@mail.ru");
+            $user->setPassword($this->passwordEncoder->encodePassword(
+                $user,
+                '123456'
+            ));
+            $user->setRoles(['ROLE_ADMIN']);
+            return $user;
+        });
+
+        $this->createMany(2, 'users', function ($i) {
+
+            $user = new User();
+            $user->setEmail("test$i@mail.com");
             $user->setPassword($this->passwordEncoder->encodePassword(
                 $user,
                 '123456'

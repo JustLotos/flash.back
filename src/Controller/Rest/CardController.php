@@ -40,8 +40,9 @@ class CardController extends BaseController implements ClassResourceInterface
     public function getAction(Card $card)
     {
         return $this->viewSerialized(
-          $card,
-          array_merge($this->serializationGroup, ['card_details']));
+            $card,
+            array_merge($this->serializationGroup, ['card_details'])
+        );
     }
 
     /**
@@ -52,13 +53,14 @@ class CardController extends BaseController implements ClassResourceInterface
      * @SWG\Tag(name="CardController")
      * @return mixed
      */
-    public function cgetAction() {
-      $cards = $this
-        ->getDoctrine()
-        ->getRepository(Card::class)
-        ->findAll();
+    public function cgetAction()
+    {
+        $cards = $this
+            ->getDoctrine()
+            ->getRepository(Card::class)
+            ->findAll();
 
-      return $this->viewSerialized($cards, $this->serializationGroup);
+        return $this->viewSerialized($cards, $this->serializationGroup);
     }
 
     /**
@@ -70,30 +72,13 @@ class CardController extends BaseController implements ClassResourceInterface
      * @param Request $request
      * @return View
      */
-    public function postAction(Request $request) {
-      /** @var CardDTO $cardDTO */
-      $cardDTO = $this->validateRequestData($request, CardDTO::class);
-      $card = $cardDTO->fromDTO(new Card());
-      $this->fastSave($card);
-      return $this->view(["status"=> "ok"], Response::HTTP_CREATED);
-    }
-
-    /**
-     * @SWG\Response(
-     *      response="200",
-     *      description="Success",
-     * )
-     * @SWG\Tag(name="CardController")
-     * @param Request $request
-     * @param Card $card
-     * @return View
-     */
-    public function putAction(Request $request, Card $card) {
-      /** @var CardDTO $cardDTO */
-      $cardDTO = $this->validateRequestData($request, CardDTO::class);
-      $card = $cardDTO->fromDTO($card);
-      $this->getDoctrine()->getManager()->flush();
-      return $this->view(["status"=> "success"]);
+    public function postAction(Request $request)
+    {
+        /** @var CardDTO $cardDTO */
+        $cardDTO = $this->validateRequestData($request, CardDTO::class);
+        $card = $cardDTO->fromDTO();
+        $this->fastSave($card);
+        return $this->view(["status" => "ok"], Response::HTTP_CREATED);
     }
 
     /**
@@ -106,12 +91,32 @@ class CardController extends BaseController implements ClassResourceInterface
      * @param Card $card
      * @return View
      */
-    public function patchAction(Request $request, Card $card) {
-      /** @var CardDTO $cardDTO */
-      $cardDTO = $this->validateRequestData($request, CardDTO::class);
-      $card = $cardDTO->fromDTO($card);
-      $this->getDoctrine()->getManager()->flush();
-      return $this->view(["status"=> "success"]);
+    public function putAction(Request $request, Card $card)
+    {
+        /** @var CardDTO $cardDTO */
+        $cardDTO = $this->validateRequestData($request, CardDTO::class);
+        $card = $cardDTO->fromDTO($card);
+        $this->getDoctrine()->getManager()->flush();
+        return $this->view(["status" => "success"]);
+    }
+
+    /**
+     * @SWG\Response(
+     *      response="200",
+     *      description="Success",
+     * )
+     * @SWG\Tag(name="CardController")
+     * @param Request $request
+     * @param Card $card
+     * @return View
+     */
+    public function patchAction(Request $request, Card $card)
+    {
+        /** @var CardDTO $cardDTO */
+        $cardDTO = $this->validateRequestData($request, CardDTO::class);
+        $card = $cardDTO->fromDTO($card);
+        $this->getDoctrine()->getManager()->flush();
+        return $this->view(["status" => "success"]);
     }
 
     /**
@@ -123,10 +128,11 @@ class CardController extends BaseController implements ClassResourceInterface
      * @param Card $card
      * @return View
      */
-    public function deleteAction(Card $card) {
-      $em = $this->getDoctrine()->getManager();
-      $em->remove($card);
-      $em->flush();
-      return $this->view(['success'=>true]);
+    public function deleteAction(Card $card)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($card);
+        $em->flush();
+        return $this->view(['success' => true]);
     }
 }

@@ -30,7 +30,10 @@ class MailerService
             'security/confirmation.html.twig',
             [
                 'user' => $user,
-                'link' => $this->router->generate('register_confirm', ['code' => $user->getConfirmationCode()])
+                'link' => $this->router->generate(
+                    'register_confirm',
+                    ['confirmationCode' => $user->getConfirmationCode()]
+                )
             ]
         );
 

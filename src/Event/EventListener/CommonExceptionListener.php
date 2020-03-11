@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: user
- * Date: 14.02.20
- * Time: 16:17
- */
 
-namespace App\EventListener;
+namespace App\Event\EventListener;
 
 use App\Exception\ApplicationException;
 use Exception;
