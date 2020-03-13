@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
@@ -9,6 +11,20 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
+use function count;
+use function is_int;
+use function is_object;
+use function json_decode;
+use function json_encode;
+use function mb_strlen;
+use function mb_substr;
+use function preg_replace;
+use function rtrim;
+use function sprintf;
+use function trim;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_UNICODE;
 
 abstract class AbstractTest extends WebTestCase
 {
@@ -18,22 +34,24 @@ abstract class AbstractTest extends WebTestCase
 
     protected static function getClient($reinitialize = false, array $options = [], array $server = [])
     {
-        if (!static::$client || $reinitialize) {
+        if (! static::$client || $reinitialize) {
             static::$client = static::createClient($options, $server);
         }
+
         // core is loaded (for tests without calling of getClient(true))
         static::$client->getKernel()->boot();
+
         return static::$client;
     }
 
-    protected function setUp(): void
+    protected function setUp() : void
     {
         static::getClient();
         $this->url = $_ENV['APP_HOST'];
         $this->loadFixtures($this->getFixtures());
     }
 
-    protected function tearDown(): void
+    protected function tearDown() : void
     {
         parent::tearDown();
         static::$client = null;
@@ -46,37 +64,42 @@ abstract class AbstractTest extends WebTestCase
     {
         return static::$container->get('doctrine')->getManager();
     }
+
     /**
      * List of fixtures for certain test
      */
-    protected function getFixtures(): array
+    protected function getFixtures() : array
     {
         return [];
     }
 
     /**
      * Load fixtures before test
+     *
      * @param array $fixtures
      */
-    protected function loadFixtures(array $fixtures = [])
+    protected function loadFixtures(array $fixtures = []) : void
     {
         $loader = new Loader();
         foreach ($fixtures as $fixture) {
-            if (!\is_object($fixture)) {
+            if (! is_object($fixture)) {
                 $fixture = new $fixture();
             }
+
             if ($fixture instanceof ContainerAwareInterface) {
                 $fixture->setContainer(static::$container);
             }
+
             $loader->addFixture($fixture);
         }
+
         $em = static::getEntityManager();
         $purger = new ORMPurger($em);
         $executor = new ORMExecutor($em, $purger);
         $executor->execute($loader->getFixtures());
     }
 
-    public function assertResponseOk(?Response $response = null, ?string $message = null, string $type = 'text/html')
+    public function assertResponseOk(?Response $response = null, ?string $message = null, string $type = 'text/html') : void
     {
         $this->failOnResponseStatusCheck($response, 'isOk', $message, $type);
     }
@@ -85,7 +108,7 @@ abstract class AbstractTest extends WebTestCase
         ?Response $response = null,
         ?string $message = null,
         string $type = 'text/html'
-    ) {
+    ) : void {
         $this->failOnResponseStatusCheck($response, 'isRedirect', $message, $type);
     }
 
@@ -93,7 +116,7 @@ abstract class AbstractTest extends WebTestCase
         ?Response $response = null,
         ?string $message = null,
         string $type = 'text/html'
-    ) {
+    ) : void {
         $this->failOnResponseStatusCheck($response, 'isNotFound', $message, $type);
     }
 
@@ -101,7 +124,7 @@ abstract class AbstractTest extends WebTestCase
         ?Response $response = null,
         ?string $message = null,
         string $type = 'text/html'
-    ) {
+    ) : void {
         $this->failOnResponseStatusCheck($response, 'isForbidden', $message, $type);
     }
 
@@ -110,81 +133,84 @@ abstract class AbstractTest extends WebTestCase
         ?Response $response = null,
         ?string $message = null,
         string $type = 'text/html'
-    ) {
+    ) : void {
         $this->failOnResponseStatusCheck($response, $expectedCode, $message, $type);
     }
 
-    /**
-     * @param Response $response
-     * @param string   $type
-     *
-     * @return string
-     */
-    public function guessErrorMessageFromResponse(Response $response, string $type = 'text/html')
+    public function guessErrorMessageFromResponse(Response $response, string $type = 'text/html') : string
     {
         try {
             $crawler = new Crawler();
             $crawler->addContent($response->getContent(), $type);
-            if (!\count($crawler->filter('title'))) {
+            if (! count($crawler->filter('title'))) {
                 $add = '';
                 $content = $response->getContent();
-                if ('application/json' === $response->headers->get('Content-Type')) {
+                if ($response->headers->get('Content-Type') === 'application/json') {
                     $data = json_decode($content);
                     if ($data) {
                         $content = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
                         $add = ' FORMATTED';
                     }
                 }
-                $title = '[' . $response->getStatusCode() . ']' . $add .' - ' . $content;
+
+                $title = '[' . $response->getStatusCode() . ']' . $add . ' - ' . $content;
             } else {
                 $title = $crawler->filter('title')->text();
             }
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $title = $e->getMessage();
         }
+
         return trim($title);
     }
 
     private function failOnResponseStatusCheck(
-        Response $response = null,
+        ?Response $response = null,
         $callback = null,
         ?string $message = null,
         string $type = 'text/html'
-    ) {
-        if (null === $callback) {
+    ) : void {
+        if ($callback === null) {
             $callback = 'isOk';
         }
-        if (null === $response && self::$client) {
+
+        if ($response === null && self::$client) {
             $response = self::$client->getResponse();
         }
+
         try {
-            if (\is_int($callback)) {
+            if (is_int($callback)) {
                 $this->assertEquals($callback, $response->getStatusCode());
             } else {
                 $this->assertTrue($response->{$callback}());
             }
+
             return;
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             // nothing to do
         }
+
         $err = $this->guessErrorMessageFromResponse($response, $type);
         if ($message) {
-            $message = rtrim($message, '.') . ". ";
+            $message = rtrim($message, '.') . '. ';
         }
+
         if (is_int($callback)) {
-            $template = "Failed asserting Response status code %s equals %s.";
+            $template = 'Failed asserting Response status code %s equals %s.';
         } else {
-            $template = "Failed asserting that Response[%s] %s.";
+            $template = 'Failed asserting that Response[%s] %s.';
             $callback = preg_replace('#([a-z])([A-Z])#', '$1 $2', $callback);
         }
+
         $message .= sprintf($template, $response->getStatusCode(), $callback, $err);
         $max_length = 100;
         if (mb_strlen($err, 'utf-8') < $max_length) {
-            $message .= " " . $this->makeErrorOneLine($err);
+            $message .= ' ' . $this->makeErrorOneLine($err);
         } else {
-            $message .= " " . $this->makeErrorOneLine(mb_substr($err, 0, $max_length, 'utf-8') . '...');
+            $message .= ' ' . $this->makeErrorOneLine(mb_substr($err, 0, $max_length, 'utf-8') . '...');
             $message .= "\n\n" . $err;
         }
+
         $this->fail($message);
     }
 
@@ -203,7 +229,7 @@ abstract class AbstractTest extends WebTestCase
             '/api/v1/auth/login',
             [],
             [],
-            array('CONTENT_TYPE' => 'application/json'),
+            ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email' => $username,
                 'password' => $password,
@@ -217,7 +243,7 @@ abstract class AbstractTest extends WebTestCase
         return $client;
     }
 
-    protected function logout()
+    protected function logout() : void
     {
         $client = static::getClient();
         $client->setServerParameter('HTTP_Authorization', sprintf(''));
@@ -226,6 +252,7 @@ abstract class AbstractTest extends WebTestCase
     protected function getRequestContent($client)
     {
         $response = $client->getResponse();
+
         return json_decode($response->getContent(), true);
     }
 }

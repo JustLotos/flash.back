@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Security;
 
 use App\Entity\Deck;
 use App\Entity\User;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
+use function assert;
+use function in_array;
 
 class DeckVoter extends Voter
 {
-
-    const VIEW = 'view';
-    const EDIT = 'edit';
+    public const VIEW = 'view';
+    public const EDIT = 'edit';
 
     private $security;
 
@@ -28,12 +31,12 @@ class DeckVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, [self::VIEW, self::EDIT])) {
+        if (! in_array($attribute, [self::VIEW, self::EDIT])) {
             return false;
         }
 
         // only vote on Post objects inside this voter
-        if (!$subject instanceof Deck) {
+        if (! $subject instanceof Deck) {
             return false;
         }
 
@@ -52,15 +55,13 @@ class DeckVoter extends Voter
 
         $user = $token->getUser();
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             // the user must be logged in; if not, deny access
             return false;
         }
 
-        // you know $subject is a Post object, thanks to supports
-        /** @var Deck $deck */
         $deck = $subject;
-
+        assert($deck instanceof Deck);
 
         switch ($attribute) {
             case self::VIEW:
@@ -69,7 +70,7 @@ class DeckVoter extends Voter
                 return $this->canEdit($deck, $user);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
     private function canView(Deck $deck, User $user)

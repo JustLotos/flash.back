@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use App\Entity\Deck;
-use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class DeckDTO
 {
@@ -13,45 +15,46 @@ class DeckDTO
    * @Serializer\Groups({"default"})
    * @Serializer\Type("string")
    */
-  private $name;
+    private $name;
 
   /**
    * @Serializer\Groups({"default"})
    * @Serializer\Type("string")
    */
-  private $description;
+    private $description;
 
-  public function getName()
-  {
-    return $this->name;
-  }
-
-  public function setName($name): self
-  {
-    $this->name = $name;
-
-    return $this;
-  }
-
-  public function getDescription()
-  {
-    return $this->description;
-  }
-
-  public function setDescription($description): self
-  {
-    $this->description = $description;
-
-    return $this;
-  }
-
-  public function fromDTO(Deck $deck = null): Deck {
-    if (!$deck) {
-      $deck = new Deck();
+    public function getName()
+    {
+        return $this->name;
     }
 
-    return $deck
-      ->setName($this->getName())
-      ->setDescription($this->getDescription());
-  }
+    public function setName($name) : self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description) : self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function fromDTO(?Deck $deck = null) : Deck
+    {
+        if (! $deck) {
+            $deck = new Deck();
+        }
+
+        return $deck
+        ->setName($this->getName())
+        ->setDescription($this->getDescription());
+    }
 }

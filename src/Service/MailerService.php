@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\User;
@@ -24,7 +26,7 @@ class MailerService
         $this->router = $router;
     }
 
-    public function sendConfirmationMessage(User $user)
+    public function sendConfirmationMessage(User $user) : void
     {
         $messageBody = $this->twig->render(
             'security/confirmation.html.twig',
@@ -33,7 +35,7 @@ class MailerService
                 'link' => $this->router->generate(
                     'register_confirm',
                     ['confirmationCode' => $user->getConfirmationCode()]
-                )
+                ),
             ]
         );
 

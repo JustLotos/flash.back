@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -16,14 +18,10 @@ class Record
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    /** @ORM\Column(type="json") */
     private $Value = [];
 
-    /**
-     * @ORM\Column(type="smallint")
-     */
+    /** @ORM\Column(type="smallint") */
     private $side;
 
     /**
@@ -35,24 +33,24 @@ class Record
     private const FRONTSIDE = 'forntside';
     private const BACKSIDE = 'backside';
 
-    public function getId(): ?int
+    public function getId() : ?int
     {
         return $this->id;
     }
 
-    public function getValue(): ?array
+    public function getValue() : ?array
     {
         return $this->Value;
     }
 
-    public function setValue(array $Value): self
+    public function setValue(array $Value) : self
     {
         $this->Value = $Value;
 
         return $this;
     }
 
-    public function getSide(): ?string
+    public function getSide() : ?string
     {
         switch ($this->side) {
             case 0:
@@ -64,26 +62,28 @@ class Record
         return null;
     }
 
-    public function setSide(string $side): self
+    public function setSide(string $side) : self
     {
         switch ($side) {
             case self::FRONTSIDE:
                 $this->side = 0;
+
                 return $this;
             case self::BACKSIDE:
                 $this->side = 1;
+
                 return $this;
         }
 
         return $this;
     }
 
-    public function getCard(): ?Card
+    public function getCard() : ?Card
     {
         return $this->card;
     }
 
-    public function setCard(?Card $card): self
+    public function setCard(?Card $card) : self
     {
         $this->card = $card;
 

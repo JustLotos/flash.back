@@ -27,8 +27,16 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    #BUNDLES
     Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler:
         autowire: true
+    Gesdinet\JWTRefreshTokenBundle\Service\RefreshToken:
+        alias: "gesdinet.jwtrefreshtoken"
+    sensio_framework_extra.view.listener:
+        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+
+    #EVENT LISTENERS
     App\Event\EventListener\JWTCreatedListener:
         arguments: [ '@request_stack' ]
         tags:
@@ -36,12 +44,15 @@ services:
     App\Event\EventListener\AuthenticationSuccessListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
-    sensio_framework_extra.view.listener:
-        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+    app.security.hash.password.listener:
+        class: App\Event\EventListener\HashPasswordListener
+        tags:
+            - { name: doctrine.event_subscriber }
+#    App\Event\EventListener\HTTPExceptionListener:
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.exception }
 
-    Gesdinet\JWTRefreshTokenBundle\Service\RefreshToken:
-        alias: "gesdinet.jwtrefreshtoken"
-
+    #CUSTOM SERVICE
     App\Service\CodeGeneratorService:
         autowire: true
     App\Service\MailerService:
@@ -49,7 +60,7 @@ services:
     App\Service\TwigService:
         autowire: true
 
-
+    #CUSTOM VALIDATORS
     validator.unique.uniqueuser:
         class: App\Validator\UniqueEntityConstraint\UniqueEntityValidator
         tags:

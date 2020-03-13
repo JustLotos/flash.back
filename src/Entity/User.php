@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
+use function array_unique;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="flash_user")
+ *
  * @UniqueEntity(
  *     fields={"email"},
  *     message="This value {{ value }} is already used"
@@ -31,50 +35,48 @@ class User implements UserInterface
     private $id;
 
     /**
-     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @ORM\Column(type="string", length=180, unique=true)
+     *
+     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      */
     private $email;
 
     /**
-     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @ORM\Column(type="json")
+     *
+     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      */
     private $roles = [];
 
     /**
-     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @ORM\Column(type="string")
+     *
+     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      */
     private $password;
 
     /**
-     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @ORM\Column(name="is_active", type="boolean")
+     *
+     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      */
     private $active;
 
     /**
-     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @ORM\OneToMany(targetEntity="App\Entity\Deck", mappedBy="user", orphanRemoval=true)
+     *
+     * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      */
     private $decks;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    /** @ORM\Column(type="string", nullable=true) */
     private $confirmationCode;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    /** @ORM\Column(type="string", length=255, nullable=true) */
     private $firstName;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    /** @ORM\Column(type="string", length=255, nullable=true) */
     private $lastName;
-
 
     public function __construct()
     {
@@ -82,17 +84,17 @@ class User implements UserInterface
         $this->decks = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId() : ?int
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail() : ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email) : self
     {
         $this->email = $email;
 
@@ -104,7 +106,7 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername() : string
     {
         return (string) $this->email;
     }
@@ -112,7 +114,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getRoles(): array
+    public function getRoles() : array
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
@@ -121,7 +123,7 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array $roles) : self
     {
         $this->roles = $roles;
 
@@ -131,12 +133,12 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getPassword(): string
+    public function getPassword() : string
     {
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password) : self
     {
         $this->password = $password;
 
@@ -151,7 +153,7 @@ class User implements UserInterface
         return $this->active;
     }
 
-    public function setActive($active): self
+    public function setActive($active) : self
     {
         $this->active = $active;
 
@@ -166,7 +168,7 @@ class User implements UserInterface
         return $this->confirmationCode;
     }
 
-    public function setConfirmationCode($confirmationCode): self
+    public function setConfirmationCode($confirmationCode) : self
     {
         $this->confirmationCode = $confirmationCode;
 
@@ -185,7 +187,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials() : void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -194,14 +196,14 @@ class User implements UserInterface
     /**
      * @return Collection|Deck[]
      */
-    public function getDecks(): Collection
+    public function getDecks() : Collection
     {
         return $this->decks;
     }
 
-    public function addDeck(Deck $deck): self
+    public function addDeck(Deck $deck) : self
     {
-        if (!$this->decks->contains($deck)) {
+        if (! $this->decks->contains($deck)) {
             $this->decks[] = $deck;
             $deck->setUser($this);
         }
@@ -209,7 +211,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function removeDeck(Deck $deck): self
+    public function removeDeck(Deck $deck) : self
     {
         if ($this->decks->contains($deck)) {
             $this->decks->removeElement($deck);
@@ -222,29 +224,27 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getFirstName(): ?string
+    public function getFirstName() : ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(?string $firstName): self
+    public function setFirstName(?string $firstName) : self
     {
         $this->firstName = $firstName;
 
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function getLastName() : ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(?string $lastName): self
+    public function setLastName(?string $lastName) : self
     {
         $this->lastName = $lastName;
 
         return $this;
     }
-
-
 }

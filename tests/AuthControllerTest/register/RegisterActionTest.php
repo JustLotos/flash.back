@@ -1,22 +1,23 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Tests\AuthControllerTest;
 
 use App\DataFixtures\UserFixtures;
 use App\Tests\AbstractTest;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use function json_encode;
+use function var_dump;
 
 class RegisterActionTest extends AbstractTest
 {
-    public function getFixtures(): array
+    public function getFixtures() : array
     {
-        return [
-            UserFixtures::class
-        ];
+        return [UserFixtures::class];
     }
 
-    public function setUp(): void
+    public function setUp() : void
     {
         parent::setUp();
         $this->url .= '/v1/register';
@@ -25,7 +26,7 @@ class RegisterActionTest extends AbstractTest
     /**
      * тестирование запроса
      */
-    public function testRegisterValid(): void
+    public function testRegisterValid() : void
     {
         $client = self::getClient();
         $client->request(
@@ -37,7 +38,7 @@ class RegisterActionTest extends AbstractTest
             json_encode([
                 'email'=>'test@mail.ru',
                 'password' => '12345678',
-                'roles' => []
+                'roles' => [],
             ])
         );
 
@@ -52,7 +53,7 @@ class RegisterActionTest extends AbstractTest
     /**
      * тестирование валидации данных
      */
-    public function testRegisterInvalid(): void
+    public function testRegisterInvalid() : void
     {
         // Тестирование значений
         $client = self::getClient();
@@ -65,7 +66,7 @@ class RegisterActionTest extends AbstractTest
             json_encode([
                 'email'=>'invalid_email',
                 'password' => '-',
-                'roles' => []
+                'roles' => [],
             ])
         );
         var_dump($this->url);
@@ -88,7 +89,7 @@ class RegisterActionTest extends AbstractTest
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'username'=>'',
-                'word' => ''
+                'word' => '',
             ])
         );
 
@@ -105,7 +106,7 @@ class RegisterActionTest extends AbstractTest
     /**
      * тестирование ункиальности email'a пользователя
      */
-    public function testRegisterUnique(): void
+    public function testRegisterUnique() : void
     {
         $client = self::getClient();
         $client->request(
@@ -139,7 +140,7 @@ class RegisterActionTest extends AbstractTest
     /**
      * Проверка регистрации при наличии активной авторизации
      */
-    public function testAuthRegister(): void
+    public function testAuthRegister() : void
     {
         $clientAuth = $this->createAuthenticatedClient();
         $clientAuth->request(

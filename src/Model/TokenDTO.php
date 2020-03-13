@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model;
-use Symfony\Component\Validator\Constraints as Assert;
+
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TokenDTO
 {
@@ -16,14 +18,15 @@ class TokenDTO
      */
     private $refresh_token;
 
-    public function getRefreshToken(): string
+    public function getRefreshToken() : string
     {
-      return $this->refresh_token;
+        return $this->refresh_token;
     }
 
-    public function setRefreshToken(string $refresh_token): self
+    public function setRefreshToken(string $refresh_token) : self
     {
-      $this->refresh_token = $refresh_token;
-      return $this;
+        $this->refresh_token = $refresh_token;
+
+        return $this;
     }
 }

@@ -1,4 +1,7 @@
 {
+    "dealerdirect/phpcodesniffer-composer-installer": {
+        "version": "v0.5.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -13,6 +16,9 @@
     },
     "doctrine/cache": {
         "version": "1.10.0"
+    },
+    "doctrine/coding-standard": {
+        "version": "7.0.2"
     },
     "doctrine/collections": {
         "version": "1.6.4"
@@ -243,6 +249,12 @@
     "phpdocumentor/type-resolver": {
         "version": "1.0.1"
     },
+    "phpstan/phpdoc-parser": {
+        "version": "0.4.3"
+    },
+    "phpstan/phpstan": {
+        "version": "0.12.14"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -263,6 +275,9 @@
         "files": [
             "./config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "slevomat/coding-standard": {
+        "version": "6.1.5"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
@@ -597,8 +612,36 @@
             "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
         }
     },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.6",
+            "ref": "69e1d805ad95964088bd510c05995e87dc391564"
+        },
+        "files": [
+            "assets/css/app.css",
+            "assets/js/app.js",
+            "config/packages/assets.yaml",
+            "config/packages/prod/webpack_encore.yaml",
+            "config/packages/test/webpack_encore.yaml",
+            "config/packages/webpack_encore.yaml",
+            "package.json",
+            "webpack.config.js"
+        ]
+    },
     "symfony/yaml": {
         "version": "v4.4.3"
+    },
+    "thecodingmachine/phpstan-safe-rule": {
+        "version": "v1.0.0"
+    },
+    "thecodingmachine/phpstan-strict-rules": {
+        "version": "v0.12.0"
+    },
+    "thecodingmachine/safe": {
+        "version": "v1.0.3"
     },
     "twig/extra-bundle": {
         "version": "v3.0.3"

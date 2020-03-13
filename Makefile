@@ -15,6 +15,10 @@ clear:
 crud:
 	@${CONSOLE} make:crud
 
+# LINT CODE
+lint_full:
+	@${COMPOSER} csfix && composer cscheck && composer phpstanx
+
 
 #DATABASE
 	#DEV
@@ -51,18 +55,9 @@ routes:
 	@${CONSOLE} debug:router
 encore_dev:
 	@${COMPOSE} run node yarn encore dev --watch
-
 encore_prod:
 	@${COMPOSE} run node yarn encore production
 
+
 phpunit:
 	@${PHP} bin/phpunit
-
-dump_user:
-	@${CONSOLE} doctrine:query:sql "select * from billing_user"
-
-dump_course:
-	@${CONSOLE} doctrine:query:sql "select * from course"
-
-dump_transaction:
-	@${CONSOLE} doctrine:query:sql "select * from transaction"

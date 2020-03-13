@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use App\Entity\User;
 use App\Validator\UniqueEntityConstraint\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UserDTO
 {
@@ -84,67 +86,73 @@ class UserDTO
      */
     private $lastName;
 
-    public function getFirstName(): string
+    public function getFirstName() : string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setFirstName(string $firstName) : self
     {
         $this->firstName = $firstName;
+
         return $this;
     }
 
-    public function getLastName(): string
+    public function getLastName() : string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): self
+    public function setLastName(string $lastName) : self
     {
         $this->lastName = $lastName;
+
         return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail() : string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email) : self
     {
         $this->email = $email;
+
         return $this;
     }
 
-    public function getPassword(): string
+    public function getPassword() : string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password) : self
     {
         $this->password = $password;
+
         return $this;
     }
 
-    public function getRoles(): array
+    public function getRoles() : array
     {
         return $this->roles;
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array $roles) : self
     {
         $this->roles = $roles;
+
         return $this;
     }
 
-    public function fromDTO(User $user = null): User
+    public function fromDTO(?User $user = null) : User
     {
         $user ?: $user = new User();
         $user->setEmail($this->getEmail());
         $user->setPassword($this->getPassword());
         $this->getRoles() ? $user->setRoles($this->getRoles()):$user->setRoles([]);
+
         return $user;
     }
 }

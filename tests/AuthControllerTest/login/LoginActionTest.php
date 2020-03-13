@@ -1,29 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\AuthControllerTest;
 
 use App\DataFixtures\UserFixtures;
 use App\Tests\AbstractTest;
+use function json_encode;
 
 class LoginActionTest extends AbstractTest
 {
     private $clientAuth;
 
-    public function getFixtures(): array
+    public function getFixtures() : array
     {
-        return [
-            UserFixtures::class
-        ];
+        return [UserFixtures::class];
     }
 
-    public function setUp(): void
+    public function setUp() : void
     {
         parent::setUp();
         $this->clientAuth = $this->createAuthenticatedClient();
         $this->url .= '/v1/auth/login';
     }
 
-    public function testLoginValid(): void
+    public function testLoginValid() : void
     {
         $client = self::getClient();
         $client->request(
@@ -34,7 +35,7 @@ class LoginActionTest extends AbstractTest
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
                 'email'=>'ignashov-roman@mail.ru',
-                'password' => '123456'
+                'password' => '123456',
             ])
         );
 

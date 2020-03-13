@@ -1,18 +1,22 @@
 <?php
 
-namespace App\Controller\Rest;
+declare(strict_types=1);
 
-use App\Controller\BaseController;
+namespace App\Controller\API\Rest;
+
+use App\Controller\API\BaseController;
 use App\Entity\Deck;
 use App\Model\DeckDTO;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use function array_merge;
+use function assert;
 
 /**
  * @Rest\Prefix(value="api/v1")
@@ -25,7 +29,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  *    response=401,
  * ),
  */
-#TODO привязать(проверка) операции колод к пользователю
+// TODO привязать(проверка) операции колод к пользователю
 class DeckController extends BaseController implements ClassResourceInterface
 {
     public function __construct(
@@ -40,6 +44,8 @@ class DeckController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @return mixed
+     *
      * @SWG\Get(
      *    operationId="getDeckAction",
      *    produces={"application/json"},
@@ -63,8 +69,6 @@ class DeckController extends BaseController implements ClassResourceInterface
      *    @SWG\Property(property="refresh_token", type="string"),
      *  )
      * )
-     * @param Deck $deck
-     * @return mixed
      */
     public function getAction(Deck $deck)
     {
@@ -77,6 +81,8 @@ class DeckController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @return mixed
+     *
      * @SWG\Get(
      *    operationId="cgetDeckAction",
      *    produces={"application/json"},
@@ -84,19 +90,20 @@ class DeckController extends BaseController implements ClassResourceInterface
      *    description="Получние всех колод пользователя",
      *    tags={"DeckController"}
      * )
-     * @return mixed
      */
     public function cgetAction()
     {
         $decks = $this
             ->getDoctrine()
             ->getRepository(Deck::class)
-            ->findBy(['user'=>$this->getUser()]);
+            ->findBy(['user' => $this->getUser()]);
 
         return $this->viewSerialized($decks, $this->serializationGroup);
     }
 
   /**
+   * @return mixed
+   *
    * @SWG\Post(
    *    operationId="postDeckAction",
    *    produces={"application/json"},
@@ -110,14 +117,13 @@ class DeckController extends BaseController implements ClassResourceInterface
    *      @SWG\Schema(ref=@Model(type=App\Model\DeckDTO::class))
    *    )
    * )
-   * @param Request $request
-   * @return mixed
    */
     public function postAction(Request $request)
     {
         $deck = $this->validateRequestData($request, DeckDTO::class);
         $this->persist($deck);
-        return $this->view(['success'=>true]);
+
+        return $this->view(['success' => true]);
     }
 
     /**
@@ -141,17 +147,15 @@ class DeckController extends BaseController implements ClassResourceInterface
      *      @SWG\Schema(ref=@Model(type=App\Model\DeckDTO::class))
      *    )
      * )
-     * @param Request $request
-     * @param Deck $deck
-     * @return View
      */
-    public function putAction(Request $request, Deck $deck)
+    public function putAction(Request $request, Deck $deck) : View
     {
         $this->denyAccessUnlessGranted('edit', $deck);
-        /** @var DeckDTO $deckDTO */
         $deckDTO = $this->validateRequestData($request, DeckDTO::class);
+        assert($deckDTO instanceof DeckDTO);
         $deck = $deckDTO->fromDTO($deck);
         $this->getDoctrine()->getManager()->flush();
+
         return $this->view(['success' => true]);
     }
 
@@ -176,17 +180,15 @@ class DeckController extends BaseController implements ClassResourceInterface
    *      @SWG\Schema(ref=@Model(type=App\Model\DeckDTO::class))
    *    )
    * )
-   * @param Request $request
-   * @param Deck $deck
-   * @return View
    */
-    public function patchAction(Request $request, Deck $deck)
+    public function patchAction(Request $request, Deck $deck) : View
     {
         $this->denyAccessUnlessGranted('edit', $deck);
-        /** @var DeckDTO $deckDTO */
         $deckDTO = $this->validateRequestData($request, DeckDTO::class);
+        assert($deckDTO instanceof DeckDTO);
         $deck = $deckDTO->fromDTO($deck);
         $this->getDoctrine()->getManager()->flush();
+
         return $this->view(['success' => true]);
     }
 
@@ -205,10 +207,8 @@ class DeckController extends BaseController implements ClassResourceInterface
      *      in="path"
      *    ),
      * )
-     * @param Deck $deck
-     * @return View
      */
-    public function deleteAction(Deck $deck)
+    public function deleteAction(Deck $deck) : View
     {
         $this->denyAccessUnlessGranted('edit', $deck);
 

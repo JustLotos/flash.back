@@ -1,24 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Event\EventListener;
 
+use DateTime;
+use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use function json_decode;
 
 class JWTCreatedListener implements EventSubscriberInterface
 {
-    const REMEMBER_ME_EXPIRATION_DAYS = 30;
+    public const REMEMBER_ME_EXPIRATION_DAYS = 30;
 
-    /**
-     * @var RequestStack
-     */
+    /** @var RequestStack */
     private $requestStack;
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
@@ -27,34 +27,33 @@ class JWTCreatedListener implements EventSubscriberInterface
     /**
      * @return array
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents() : array
     {
-        return [
-            Events::JWT_CREATED => 'onJWTCreated',
-        ];
+        return [Events::JWT_CREATED => 'onJWTCreated'];
     }
 
     /**
-     * @param JWTCreatedEvent $event
-     * @throws \Exception
+     * @throws Exception
      */
-    public function onJWTCreated(JWTCreatedEvent $event)
+    public function onJWTCreated(JWTCreatedEvent $event) : void
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        if ($request->getContentType() === 'json') {
-            $data = json_decode($request->getContent(), true);
-
-            if (!empty($data['remember_me'])) {
-                $expiration = new \DateTime('+' . self::REMEMBER_ME_EXPIRATION_DAYS . ' days');
-
-                $payload        = $event->getData();
-                $payload['exp'] = $expiration->getTimestamp();
-
-                $event->setData($payload);
-            }
+        if ($request->getContentType() !== 'json') {
+            return;
         }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data['remember_me'])) {
+            return;
+        }
+
+        $expiration = new DateTime('+' . self::REMEMBER_ME_EXPIRATION_DAYS . ' days');
+
+        $payload        = $event->getData();
+        $payload['exp'] = $expiration->getTimestamp();
+
+        $event->setData($payload);
     }
-
 }
-

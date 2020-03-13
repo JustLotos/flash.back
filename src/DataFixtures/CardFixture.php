@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
-use App\Entity\Card;
-use App\Entity\Deck;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class CardFixture extends BaseFixture implements DependentFixtureInterface
 {
-    public function loadData(ObjectManager $manager)
+    public function loadData(ObjectManager $manager) : void
     {
 //        $this->createMany(1000, 'cards', function () {
 //            /** @var Deck $deck */
@@ -26,8 +26,6 @@ class CardFixture extends BaseFixture implements DependentFixtureInterface
 
     public function getDependencies()
     {
-        return [
-            DeckFixture::class
-        ];
+        return [DeckFixture::class];
     }
 }

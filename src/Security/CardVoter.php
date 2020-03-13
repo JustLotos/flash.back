@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Security;
 
 use App\Entity\Card;
 use App\Entity\User;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
+use function assert;
+use function in_array;
 
 class CardVoter extends Voter
 {
-    const VIEW = 'view';
-    const EDIT = 'edit';
+    public const VIEW = 'view';
+    public const EDIT = 'edit';
 
     private $security;
 
@@ -26,11 +30,11 @@ class CardVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        if (!in_array($attribute, [self::VIEW, self::EDIT])) {
+        if (! in_array($attribute, [self::VIEW, self::EDIT])) {
             return false;
         }
 
-        if (!$subject instanceof Card) {
+        if (! $subject instanceof Card) {
             return false;
         }
 
@@ -47,16 +51,15 @@ class CardVoter extends Voter
         //            return true;
         //        }
 
-        /** @var User $user */
         $user = $token->getUser();
+        assert($user instanceof User);
 
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return false;
         }
 
-        /** @var Card $card */
         $card = $subject;
-
+        assert($card instanceof Card);
 
         switch ($attribute) {
             case self::VIEW:
@@ -65,7 +68,7 @@ class CardVoter extends Voter
                 return $this->canEdit($card, $user);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new LogicException('This code should not be reached!');
     }
 
     private function canView(Card $card, User $user)
@@ -79,7 +82,7 @@ class CardVoter extends Voter
 
     private function canEdit(Card $card, User $user)
     {
-        #TODO протестировать доступ пользователя к карте
+        // TODO протестировать доступ пользователя к карте
         return $user === $card->getDeck()->getUser();
     }
 }

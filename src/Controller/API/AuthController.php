@@ -1,23 +1,26 @@
 <?php
 
-namespace App\Controller;
+declare(strict_types=1);
 
+namespace App\Controller\API;
+
+use App\Entity\User;
 use App\Model\TokenDTO;
 use App\Model\UserDTO;
-use App\Entity\User;
 use App\Service\CodeGeneratorService;
 use App\Service\MailerService;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Gesdinet\JWTRefreshTokenBundle\Service\RefreshToken;
 use JMS\Serializer\SerializerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use function assert;
 
 /**
  * @Rest\RouteResource(
@@ -26,7 +29,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * )
  * @Rest\Prefix(value="auth")
  * Class UserController
- * @package App\Controller
  */
 class AuthController extends BaseController implements ClassResourceInterface
 {
@@ -35,9 +37,8 @@ class AuthController extends BaseController implements ClassResourceInterface
         ValidatorInterface $validator
     ) {
         parent::__construct($serializer, $validator);
-        $this->serializationGroup = ["user_details", "user_embed"];
+        $this->serializationGroup = ['user_details', 'user_embed'];
     }
-
 
     /**
      * @SWG\Post(
@@ -75,7 +76,7 @@ class AuthController extends BaseController implements ClassResourceInterface
      *    )
      * )
      */
-    public function login()
+    public function login() : void
     {
     }
 
@@ -114,13 +115,6 @@ class AuthController extends BaseController implements ClassResourceInterface
      *      description="Invalid JWT token",
      *    )
      * )
-     *
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $encoder
-     * @param MailerService $mailerService
-     * @param CodeGeneratorService $codeGeneratorService
-     * @param AuthenticationSuccessHandler $authenticationSuccessHandler
-     * @return JWTAuthenticationSuccessResponse
      */
     public function register(
         Request $request,
@@ -128,12 +122,12 @@ class AuthController extends BaseController implements ClassResourceInterface
         MailerService $mailerService,
         CodeGeneratorService $codeGeneratorService,
         AuthenticationSuccessHandler $authenticationSuccessHandler
-    ) {
+    ) : JWTAuthenticationSuccessResponse {
         $this->validateRequestData($request, UserDTO::class);
-        /** @var UserDTO $userDTO */
         $userDTO = $this->data;
-        /** @var User $user */
+        assert($userDTO instanceof UserDTO);
         $user = $userDTO->fromDTO();
+        assert($user instanceof User);
         $user->setConfirmationCode($codeGeneratorService->getConfirmationCode($user->getSalt()));
         $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
         $this->persist($user);
@@ -166,9 +160,8 @@ class AuthController extends BaseController implements ClassResourceInterface
      *      description="Invalid JWT token"
      *    )
      * )
-     * @param User $user
      */
-    public function registerConfirm(User $user)
+    public function registerConfirm(User $user) : void
     {
         $user->setActive(true);
         $user->setConfirmationCode('');
@@ -177,6 +170,8 @@ class AuthController extends BaseController implements ClassResourceInterface
     }
 
     /**
+     * @return mixed
+     *
      * @SWG\Post(
      *    operationId="refreshToken",
      *    produces={"application/json"},
@@ -197,18 +192,18 @@ class AuthController extends BaseController implements ClassResourceInterface
      *      description="Success",
      *    )
      * )
-     *
-     * @param Request $request
-     * @param RefreshToken $refreshService
-     * @return mixed
      */
     public function refresh(Request $request, RefreshToken $refreshService)
     {
         $this->validateRequestData($request, TokenDTO::class);
+
         return $refreshService->refresh($request);
     }
 
-    public function passwordReset()
+    /**
+     * #TODO найти готовый пример
+     */
+    public function passwordReset() : void
     {
     }
 }

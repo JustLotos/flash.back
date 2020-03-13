@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Controller\Rest;
+declare(strict_types=1);
 
-use App\Controller\BaseController;
+namespace App\Controller\API\Rest;
+
+use App\Controller\API\BaseController;
 use App\Entity\User;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\SerializerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -19,17 +21,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * )
  * @Rest\Prefix(value="user")
  * Class UserController
- * @package App\Controller
  */
 class UserController extends BaseController implements ClassResourceInterface
 {
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator
-    )
-    {
+    ) {
         parent::__construct($serializer, $validator);
-        $this->serializationGroup = ["user_details", "user_embed"];
+        $this->serializationGroup = ['user_details', 'user_embed'];
     }
 
     /**
@@ -56,11 +56,8 @@ class UserController extends BaseController implements ClassResourceInterface
      *      )
      *    )
      * )
-     *
-     * @param User $user
-     * @return View
      */
-    public function getAction(User $user)
+    public function getAction(User $user) : View
     {
         return $this->viewSerialized($user, $this->serializationGroup);
     }

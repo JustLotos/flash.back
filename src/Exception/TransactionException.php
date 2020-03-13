@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: user
- * Date: 03.03.20
- * Time: 16:50
- */
+
+declare(strict_types=1);
 
 namespace App\Exception;
 
