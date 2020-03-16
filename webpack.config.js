@@ -1,5 +1,5 @@
-var Encore = require('@symfony/webpack-encore');
-
+const Encore = require('@symfony/webpack-encore');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (! Encore.isRuntimeEnvironmentConfigured()) {
@@ -23,7 +23,7 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    .addEntry('app', './assets/vue/index.js')
+    .addEntry('app', './assets/js/app.js')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 
@@ -59,7 +59,7 @@ Encore
     .enableVueLoader()
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
@@ -69,22 +69,21 @@ Encore
     .enableIntegrityHashes(Encore.isProduction())
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
-
+    .addPlugin(new VuetifyLoaderPlugin())
     // uncomment if you use API Platform Admin (composer req api-admin)
     //.enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
-
-    .addLoader({
-        enforce: 'pre',
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/,
-        options: {
-            fix: true,
-            emitError: true,
-            emitWarning: true,
-        },
-    })
+    // .addLoader({
+    //     enforce: 'pre',
+    //     test: /\.(js|vue)$/,
+    //     loader: 'eslint-loader',
+    //     exclude: /node_modules/,
+    //     options: {
+    //         fix: true,
+    //         emitError: true,
+    //         emitWarning: true,
+    //     },
+    // })
 ;
 
 module.exports = Encore.getWebpackConfig();

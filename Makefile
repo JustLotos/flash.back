@@ -53,9 +53,9 @@ fixtload_test:
 
 routes:
 	@${CONSOLE} debug:router
-encore_dev:
+v-dev:
 	@${COMPOSE} run node yarn encore dev --watch
-encore_prod:
+v-prod:
 	@${COMPOSE} run node yarn encore production
 
 
