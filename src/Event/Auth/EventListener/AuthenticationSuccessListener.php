@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Event\EventListener;
+namespace App\Event\Auth\EventListener;
 
-use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -20,9 +19,6 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
         return [Events::AUTHENTICATION_SUCCESS => 'onAuthenticationSuccessResponse'];
     }
 
-    /**
-     * @throws Exception
-     */
     public function onAuthenticationSuccessResponse(AuthenticationSuccessEvent $event) : void
     {
         $data = $event->getData();

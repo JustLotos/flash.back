@@ -9,8 +9,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Throwable;
-use function json_encode;
-use function str_replace;
 
 class HTTPExceptionListener
 {

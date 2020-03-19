@@ -54,7 +54,7 @@ fixtload_test:
 routes:
 	@${CONSOLE} debug:router
 v-dev:
-	@${COMPOSE} run node yarn encore dev --watch
+	@${COMPOSE} run node yarn encore dev --watch --hot
 v-prod:
 	@${COMPOSE} run node yarn encore production
 

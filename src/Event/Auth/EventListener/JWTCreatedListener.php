@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Event\EventListener;
+namespace App\Event\Auth\EventListener;
 
 use DateTime;
 use Exception;
@@ -10,7 +10,6 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use function json_decode;
 
 class JWTCreatedListener implements EventSubscriberInterface
 {
@@ -33,6 +32,7 @@ class JWTCreatedListener implements EventSubscriberInterface
     }
 
     /**
+     * @param JWTCreatedEvent $event
      * @throws Exception
      */
     public function onJWTCreated(JWTCreatedEvent $event) : void

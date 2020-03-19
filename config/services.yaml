@@ -37,20 +37,35 @@ services:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
 
     #EVENT LISTENERS
-    App\Event\EventListener\JWTCreatedListener:
+        #AUTH EVENT LISTENERS
+    App\Event\Auth\EventListener\AuthenticationSuccessListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
+    App\Event\Auth\EventListener\AuthenticationFailureListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailureResponse }
+    App\Event\Auth\EventListener\JWTCreatedListener:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
-    App\Event\EventListener\AuthenticationSuccessListener:
+    App\Event\Auth\EventListener\JWTExpiredListener:
         tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJWTExpired }
+    App\Event\Auth\EventListener\JWTInvalidListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
+    App\Event\Auth\EventListener\JWTNotFoundListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
+
+        #COMMON LISTENERS
     app.security.hash.password.listener:
         class: App\Event\EventListener\HashPasswordListener
         tags:
             - { name: doctrine.event_subscriber }
-#    App\Event\EventListener\HTTPExceptionListener:
-#        tags:
-#            - { name: kernel.event_listener, event: kernel.exception }
+    App\Event\EventListener\HTTPExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
 
     #CUSTOM SERVICE
     App\Service\CodeGeneratorService:
