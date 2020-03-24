@@ -46,8 +46,8 @@ class UserDTO
     private $password;
 
     /**
-     * @Assert\NotBlank(message="this field is required")
-     * @Assert\IdenticalTo(propertyPath="password")
+     * @Assert\NotBlank(message="Это поле обязательно для заполнения")
+     * @Assert\IdenticalTo(propertyPath="password", message="Пароли не совпадают")
      * @Serializer\Groups({"user_details", "user_list", "user_embed"})
      * @Serializer\Type("string")
      */

@@ -22,7 +22,7 @@ class AuthenticationFailureListener implements EventSubscriberInterface
     public function onAuthenticationFailureResponse(AuthenticationFailureEvent $event) : void
     {
         $data = [
-            'errors' => ['message' => 'Пользователь с таким email-адресом и паролем не найден'],
+            'errors' => ['entity' => 'Учетная запись не найдена'],
         ];
 
         $response = new Response(json_encode($data), Response::HTTP_UNAUTHORIZED);
