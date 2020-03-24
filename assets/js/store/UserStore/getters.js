@@ -3,20 +3,26 @@ const getters = {
         return state.isLoading;
     },
     isAuthenticated(state) {
-        return state.isAuthenticated;
+        return !!state.token;
     },
     hasRole(state) {
-        return role => {
-            return true;
-            // return state.user.roles.indexOf(role) !== -1;
-        }
+        return state.roles.indexOf(role) !== -1;
     },
-    hasError(state) {
-        return state.errors !== null;
+    hasErrorLogin(state) {
+        return state.errorsLogin !== null;
     },
-    error(state) {
-        return state.errors;
+    hasErrorRegister(state) {
+        return state.errorsRegister !== null;
     },
+    errorsLogin(state) {
+        return state.errorsLogin;
+    },
+    errorsRegister(state) {
+        return state.errorsRegister;
+    },
+    token(state){
+        return state.token;
+    }
 };
 
 export default getters;

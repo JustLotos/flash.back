@@ -5,9 +5,12 @@ import actions from "./actions";
 export default {
     state: {
         isLoading: false,
-        errors: null,
+        errorsLogin: null,
+        errorsRegister: null,
         isAuthenticated: false,
-        user: null
+        token: localStorage.getItem('user-token') || null,
+        refresh_token: null,
+        roles: []
     },
     getters: getters,
     mutations: mutations,

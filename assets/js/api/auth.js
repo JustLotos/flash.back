@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from "./common";
 import {API_URL} from "./common";
-
+// #TODO вынести валидацию в отдельный файл
 export default {
     login(loginPayloads) {
         return axios.post(API_URL+"/auth/login", {
@@ -12,7 +12,8 @@ export default {
     register(registerPayloads) {
         return axios.post(API_URL+"/auth/register", {
             email: registerPayloads.email,
-            password: registerPayloads.password
+            password: registerPayloads.password,
+            plain_password: registerPayloads.plain_password
         });
     }
 };

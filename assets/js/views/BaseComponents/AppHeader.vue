@@ -3,7 +3,7 @@
         <v-navigation-drawer absolute clipped temporary v-model="drawer" app>
             <v-toolbar>
                 <v-list class="pa-0">
-                    <v-list-item avatar>
+                    <v-list-item>
                         <v-list-item-avatar>
                             <img
                                     src="https://randomuser.me/api/portraits/men/85.jpg"
@@ -71,12 +71,11 @@
         data: function() {
           return {
               drawer: false,
-              HomePage:  { title: this.$props.appName, icon: 'mdi-home', url: '/home',  },
+              HomePage:  { title: this.$props.appName, icon: 'mdi-home', url: '/',  },
           }
         },
         methods: {
             toggleDrawer: function (drawer) {
-                console.log(123);
                 this.drawer = !drawer;
             }
         }

@@ -1,11 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import UserModule from './UserStore/index';
+import UserStore from './UserStore/index';
+import DeckStore from './DeckStore/index';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
-        user: UserModule
+        UserStore: UserStore,
+        DeckStore: DeckStore
     }
 });

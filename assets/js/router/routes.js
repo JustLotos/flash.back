@@ -1,38 +1,55 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from "../store/store";
 
-import Home from '../components/Home';
-import DeckList from "../components/Deck/DeckList";
-import Login from "../components/Auth/Login/Login";
-import Register from "../components/Auth/Register/Register";
+import Login from "../views/Auth/Login";
+import Logout from "../views/Auth/Logout";
+import Register from "../views/Auth/Register";
+
+import Home from "../views/pages/Home";
+import Dashboard from "../views/pages/Dashboard";
+import Profile from "../views/pages/Profile";
+import Decks from "../views/pages/Decks";
+import Deck from "../views/pages/Deck";
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
     mode: 'history',
     routes:[
-        { path:'/',             name:'home',        component:Home },
-        { path:'/login',        name:'login',       component:Login },
-        { path:'/register',     name:'register',    component:Register },
-        { path:'/deck/list',    name:'deckList',    component:DeckList, meta: { requiresAuth: true } },
+        // #TODO здесь должны быть только views
+        { path:'/login',        name:'Login',       component:Login },
+        { path:'/logout',       name:'Logout',      component:Logout },
+        { path:'/register',     name:'Register',    component:Register },
+        { path:'/',             name:'Home',        component:Home },
+        { path:'/dashboard',    name:'Dashboard',   component:Dashboard,    meta: { requiresAuth: true } },
+        { path:'/profile',      name:'Profile',     component:Profile,      meta: { requiresAuth: true } },
+        {
+            path:'/decks',
+            name:'Decks',
+            component:Decks,
+            meta: { requiresAuth: true },
+            children: [
+                { path: '/:id', name:'Deck', component: Deck }
+            ]
+        },
     ]
 });
 
-// router.beforeEach((to, from, next) => {
-//     if (to.matched.some(record => record.meta.requiresAuth)) {
-//         // this route requires auth, check if logged in
-//         // if not, redirect to login page.
-//         if (store.getters["security/isAuthenticated"]) {
-//             next();
-//         } else {
-//             next({
-//                 path: "/login",
-//                 query: { redirect: to.fullPath }
-//             });
-//         }
-//     } else {
-//         next(); // make sure to always call next()!
-//     }
-// });
+// Guard for auth
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (store.getters["UserStore/isAuthenticated"]) {
+            next();
+        } else {
+            next({
+                name: "Login",
+                query: { redirect: to.fullPath }
+            });
+        }
+    } else {
+        next();
+    }
+});
 
 export default router;

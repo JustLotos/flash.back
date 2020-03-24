@@ -1,6 +1,5 @@
 <template>
     <v-content>
-        <!-- If using vue-router -->
         <router-view></router-view>
     </v-content>
 </template>

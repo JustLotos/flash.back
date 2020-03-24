@@ -2,7 +2,7 @@ import Vue from 'vue';
 import routes from './router/routes.js';
 import vuetify from './plugins/vuetify';
 import store from "./store/store.js";
-import App from "./components/AppCommon/App";
+import App from "./views/BaseComponents/App";
 
 const app = new Vue({
     el: '#app',
