@@ -19,7 +19,7 @@
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn class="primary">Перейти</v-btn>
+                        <v-btn class="primary">Перейти <v-icon>{{ 'mdi-chevron-right' }}</v-icon></v-btn>
                     </v-card-actions>
                 </v-flex>
             </v-layout>

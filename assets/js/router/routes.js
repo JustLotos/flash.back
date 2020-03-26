@@ -17,20 +17,58 @@ Vue.use(VueRouter);
 const router = new VueRouter({
     mode: 'history',
     routes:[
-        // #TODO здесь должны быть только views
-        { path:'/login',        name:'Login',       component:Login },
-        { path:'/logout',       name:'Logout',      component:Logout },
-        { path:'/register',     name:'Register',    component:Register },
-        { path:'/',             name:'Home',        component:Home },
-        { path:'/dashboard',    name:'Dashboard',   component:Dashboard,    meta: { requiresAuth: true } },
-        { path:'/profile',      name:'Profile',     component:Profile,      meta: { requiresAuth: true } },
+        {
+            path:'/login',
+            name:'Login',
+            label: 'Войти',
+            icon: 'mdi-login',
+            component:Login,
+        },
+        {
+            path:'/register',
+            name:'Register',
+            label: 'Регистрация',
+            icon: 'mdi-account-multiple-plus',
+            component:Register,
+        },
+        {
+            path:'/dashboard',
+            name:'Dashboard',
+            label: 'FlashBack',
+            icon: 'mdi-flash',
+            component:Dashboard,
+            meta: { requiresAuth: true }
+        },
+        {
+            path:'/',
+            name:'Home',
+            label: 'FlashBack',
+            icon: 'mdi-flash',
+            component:Home,
+        },
         {
             path:'/decks',
             name:'Decks',
+            label: 'Учить',
+            icon: 'mdi-teach',
             component:Decks,
             meta: { requiresAuth: true },
+        },
+        {
+            path:'/profile',
+            name:'Profile',
+            label: 'Мой профиль',
+            icon: 'mdi-account-circle',
+            component:Profile,
+            meta: { requiresAuth: true },
             children: [
-                { path: '/:id', name:'Deck', component: Deck }
+                {
+                    path:'/logout',
+                    name:'Logout',
+                    label: 'Выйти',
+                    icon: 'mdi-logout',
+                    component: Logout,
+                }
             ]
         },
     ]

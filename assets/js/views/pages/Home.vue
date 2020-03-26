@@ -2,7 +2,7 @@
     <v-container>
         <v-layout row>
             <v-flex xs12>
-                <h1>Home</h1>
+                <h1 class="text-center">Добро пожаловать в приложение FLashBack</h1>
             </v-flex>
         </v-layout>
     </v-container>
@@ -13,11 +13,6 @@
         data: function () {
             return {}
         },
-        created() {
-            if (this.$store.getters["user/isAuthenticated"]) {
-                this.$router.push({name: 'Dashboard'});
-            }
-        }
     }
 </script>
 

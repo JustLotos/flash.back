@@ -124,10 +124,10 @@ class AuthController extends BaseController implements ClassResourceInterface
         AuthenticationSuccessHandler $authenticationSuccessHandler
     ) : JWTAuthenticationSuccessResponse {
         $this->validateRequestData($request, UserDTO::class);
+        /** @var UserDTO $userDTO */
         $userDTO = $this->data;
-        assert($userDTO instanceof UserDTO);
+        /** @var User $user */
         $user = $userDTO->fromDTO();
-        assert($user instanceof User);
         $user->setConfirmationCode($codeGeneratorService->getConfirmationCode($user->getSalt()));
         $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
         $this->persist($user);
@@ -201,7 +201,7 @@ class AuthController extends BaseController implements ClassResourceInterface
     }
 
     /**
-     * #TODO найти готовый пример
+     * #TODO endpoint восстановление пароля
      */
     public function passwordReset() : void
     {

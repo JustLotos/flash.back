@@ -3,12 +3,16 @@
 </template>
 
 <script>
+    import store from "../../store/store";
     export default {
         name: "Logout",
-        created() {
-            this.$store.dispatch("UserStore/logout");
-            this.$router.push({name: 'Home'});
-        }
+        beforeRouteEnter (to, from, next) {
+            store.dispatch("UserStore/logout");
+            next({
+                name: "Home",
+                query: { redirect: to.fullPath }
+            })
+        },
     }
 </script>
 

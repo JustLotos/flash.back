@@ -7,28 +7,37 @@
                         v-model="valid"
                 >
                     <v-card>
-                        <v-card-title>Добавление новой колоды</v-card-title>
-                        <v-card-text>
-                            <v-text-field
-                                    v-model="name.value"
-                                    :rules="name.rules"
-                                    label="Название"
-                                    required
-                            ></v-text-field>
-                        </v-card-text>
+                        <v-flex xs10 offset-xs1>
+                            <v-card-title primary-title class="justify-center">Добавление новой колоды</v-card-title>
+                            <v-card-text>
+                                <v-text-field
+                                        autofocus
+                                        v-model="name.value"
+                                        :rules="name.rules"
+                                        label="Название"
+                                        required
+                                        validate-on-blur
+                                        class="centered-input"
+                                ></v-text-field>
+                            </v-card-text>
 
-                        <v-card-text>
-                            <v-text-field
-                                    v-model="description.value"
-                                    label="Описание"
-                                    required
-                            ></v-text-field>
-                        </v-card-text>
+                            <v-card-text>
+                                <v-textarea
+                                        v-model="description.value"
+                                        label="Описание"
+                                        hint="Это поле не обязательно для заполнения"
+                                        class="centered-input"
+                                        auto-grow
+                                        :rows="1"
+                                        :row-height="24"
+                                ></v-textarea>
+                            </v-card-text>
 
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn text color="primary" @click="submitForm">Добавить</v-btn>
-                        </v-card-actions>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn text color="primary" @click="submitForm">Добавить</v-btn>
+                            </v-card-actions>
+                        </v-flex>
                     </v-card>
                 </v-form>
             </v-flex>
@@ -63,5 +72,7 @@
 </script>
 
 <style scoped>
-
+    .centered-input >>> input {
+        text-align: center
+    }
 </style>
