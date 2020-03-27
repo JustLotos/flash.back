@@ -21,15 +21,42 @@
                         <v-spacer></v-spacer>
                         <v-btn class="primary">Перейти <v-icon>{{ 'mdi-chevron-right' }}</v-icon></v-btn>
                     </v-card-actions>
+
+                    <v-layout class="position-relative">
+                        <v-btn
+                                top
+                                right
+                                absolute
+                                @click="editDeckModal = !editDeckModal"
+                        >
+                            <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                    </v-layout>
                 </v-flex>
+
+
+                <v-dialog v-model="editDeckModal" max-width="750px">
+                    <v-container>
+                        <v-layout justify-center align-center class="position-relative">
+<!--                            <deck-update/>-->
+                            <v-btn absolute top right icon dark @click="dialog = false">
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </v-layout>
+                </v-dialog>
             </v-layout>
         </v-container>
     </v-card>
 </template>
 
 <script>
+    import DeckUpdate from "./DeckUpdate";
+
     export default {
         name: 'DeckListItem',
+        components: {
+            DeckUpdate
+        },
         props: {
             deck: {
                 type: Object,
@@ -38,7 +65,9 @@
 
         },
         data: function () {
-            return {};
+            return {
+                editDeckModal: false
+            };
         },
     }
 </script>

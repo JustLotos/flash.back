@@ -52,9 +52,11 @@
             <v-toolbar-items class="hidden-sm-and-down">
                 <template  v-for="link of formatLinks">
                     <v-btn
+                            :key="link.name"
                             v-if="!link.children"
                             :to="{ name: link.name }"
                             text
+                            exact
                     >
                         <v-icon left>{{ link.icon }}</v-icon>{{ link.label }}
                     </v-btn>
@@ -79,6 +81,7 @@
                                 <v-btn
                                         :to="{ name: item.name }"
                                         text
+                                        exact
                                 >
                                     <v-icon left>{{ item.icon }}</v-icon>{{ item.label }}
                                 </v-btn>
@@ -109,7 +112,6 @@
                 });
             },
             formatLinks: function () {
-                console.log(this.$router.options.routes);
                 return this.$router.options.routes.filter((route) => {
                     if (route.name === 'Home' || route.name === 'Dashboard') {
                        return false;

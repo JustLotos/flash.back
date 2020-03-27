@@ -35,6 +35,33 @@
                     </v-card>
                 </v-flex>
             </template>
+
+            <v-card-text class="placement">
+                <v-fab-transition >
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                            <v-btn  v-on="on"  @click="dialog = !dialog" color="primary" dark absolute top right fab>
+                                <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                        </template>
+                        <span>Добавить новую колоду</span>
+                    </v-tooltip>
+                </v-fab-transition>
+
+            </v-card-text>
+
+            <v-dialog v-model="dialog" max-width="700px">
+                <v-container>
+                    <v-layout justify-center align-center class="position-relative">
+                        <deck-add />
+                        <v-btn absolute top right icon dark @click="dialog = false">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                    </v-layout>
+                </v-container>
+
+            </v-dialog>
+
         </v-layout>
     </v-container>
 </template>
@@ -42,13 +69,15 @@
 <script>
     import {mapGetters} from 'vuex';
     import DeckListItem from "./DeckListItem";
+    import DeckAdd from "./DeckAdd";
 
     export default {
         name: 'DeckList',
-        components: {DeckListItem},
+        components: {DeckAdd, DeckListItem},
         data: function() {
             return {
-                searchTerm: null
+                searchTerm: null,
+                dialog: false
             }
         },
         computed: {
@@ -65,17 +94,21 @@
                 return deckList;
             }
         },
-        created() {
-//          this.methods.getDecks();
-        },
         methods: {
-            // async getDecks(){
-            //     await this.$store.dispatch("DeckStore/findAll");
-            // }
+            dialogToggle(value = false) {
+                this.dialog = value;
+            }
         }
     }
 </script>
 
 <style scoped>
-
+    .placement{
+        position: fixed;
+        right: 7%;
+        bottom: 7%;
+    }
+    .position-relative{
+        position: relative;
+    }
 </style>

@@ -10,7 +10,9 @@ import Home from "../views/pages/Home";
 import Dashboard from "../views/pages/Dashboard";
 import Profile from "../views/pages/Profile";
 import Decks from "../views/pages/Decks";
-import Deck from "../views/pages/Deck";
+import DeckAdd from "../components/Deck/DeckAdd";
+import DeckList from "../components/Deck/DeckList";
+import DeckUpdate from "../components/Deck/DeckUpdate";
 
 Vue.use(VueRouter);
 
@@ -47,12 +49,36 @@ const router = new VueRouter({
             component:Home,
         },
         {
-            path:'/decks',
+            path:'/decks/',
             name:'Decks',
             label: 'Учить',
             icon: 'mdi-teach',
             component:Decks,
             meta: { requiresAuth: true },
+            children: [
+                {
+                    path:'',
+                    name:'deck-cget',
+                    label: 'Колоды',
+                    icon: 'mdi-code-array',
+                    component: DeckList,
+                },
+                {
+                    path:'add',
+                    name:'deck-add',
+                    label: 'Добавить',
+                    icon: 'mdi-plus',
+                    component: DeckAdd,
+                },
+                {
+                    path:':id/update',
+                    name:'deck-update',
+                    label: 'Изменить',
+                    icon: 'mdi-plus',
+                    component: DeckUpdate,
+                    props: true
+                }
+            ]
         },
         {
             path:'/profile',
