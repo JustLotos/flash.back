@@ -1,0 +1,66 @@
+<template>
+    <v-card>
+        <card-form :card="card" :event-name="'add'" @add="create" :errors="createErrors">
+            <template v-slot:title>Добавление новой карточки</template>
+            <template v-slot:submit>Добавить</template>
+        </card-form>
+    </v-card>
+</template>
+
+<script>
+    import CardForm from "./CardForm";
+    import {cardDefault} from "../../../plugins/helpers";
+    import {mapGetters} from "vuex";
+    export default {
+        name: "CardCreate",
+        components: {CardForm},
+        props: {
+            deck: {
+                required: true
+            }
+        },
+        data: function () {
+            return {
+                card: {
+                    name: '',
+                    deck: this.setDeck(),
+                    frontRecords: [{content:''}],
+                    backRecords: [{content:''}]
+                }
+            }
+        },
+        computed: {
+            createErrors: function () {
+                if (this.errors) {
+                    return this.errors;
+                }
+                return cardDefault();
+            },
+            ...mapGetters('CardStore', {errors:'errorsCreate'})
+        },
+        methods: {
+            async create(card) {
+                card.deck = this.deck.id;
+                console.log(card);
+                await this.$store.dispatch("CardStore/create", card).then(()=>{
+                    this.card = cardDefault();
+                    this.$emit('card-created', 'Карточка успешно создана!');
+                }).catch((errors)=>{
+                    console.log(errors);
+                });
+            },
+            setDeck: function () {
+                if(this.deck) {
+                    return this.deck;
+                }
+                return null
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .d-block{
+        display: block;
+    }
+</style>

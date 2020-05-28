@@ -1,0 +1,20 @@
+<template>
+    <v-container fluid class="fill-height">
+        <base-layout>
+            <router-view></router-view>
+        </base-layout>
+    </v-container>
+</template>
+
+<script>
+    import DeckList from "./DeckList";
+    import BaseLayout from "../../components/layout/BaseLayout";
+    export default {
+        name: "Decks",
+        components: {BaseLayout, DeckList},
+    }
+</script>
+
+<style scoped>
+
+</style>

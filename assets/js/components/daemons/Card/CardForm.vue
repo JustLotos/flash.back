@@ -1,0 +1,94 @@
+<template>
+    <v-form ref="cardForm" class="ma-0">
+        <v-row justify="center" class="ma-0 pa-0">
+            <v-col v-if="commonError" cols="12" sm="8">
+                <v-alert
+                        class="mt-5"
+                        type="error"
+                        transition="fade-transition"
+                >{{commonError}}</v-alert>
+            </v-col>
+            <v-col cols="12" sm="10" class="ma-0 pa-0">
+                <v-card-title class="justify-center align-center pa-0">
+                    <span class="pr-3">
+                        <slot name="title"></slot>
+                    </span>
+                    <app-form-name v-model="card.name" :error-message="errors.name" class="width"></app-form-name>
+                </v-card-title>
+            </v-col>
+        </v-row>
+        <v-flex>
+            <v-row justify="center" class="ma-0 pa-0">
+                <v-col cols="12" sm="11" class="ma-0 pa-0 mb-2">
+                    <app-form-editor v-model="card.frontRecords[0].content"></app-form-editor>
+                </v-col>
+                <v-col cols="12" sm="11" class="ma-0 pa-0">
+                    <app-form-editor v-model="card.backRecords[0].content"></app-form-editor>
+                </v-col>
+            </v-row>
+        </v-flex>
+        <v-row justify="center" class="ma-0 pa-0">
+            <v-col sm="auto" class="ma-3 pa-0">
+                <v-btn color="primary" @click="onSubmitForm" :loading="isLoading">
+                    <slot name="submit"></slot>
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-form>
+</template>
+
+<script>
+    import AppFormName from "../../common/FormElements/AppFormName";
+    import AppFormEditor from "../../common/FormElements/AppFormEditor";
+    import {deckDefault} from "../../../plugins/helpers";
+    import {mapGetters} from "vuex";
+
+    export default {
+        name: "CardForm",
+        components: {AppFormEditor, AppFormName},
+        props: {
+            eventName: {
+                type: String,
+                required: true
+            },
+            card: {
+                name: {
+                    type: String,
+                    required: true
+                },
+                frontRecords: [{content: ''}],
+                backRecords: [{content: ''}],
+            },
+            errors: {
+                type: Object,
+                default: deckDefault()
+            },
+            commonError: {
+                default: false
+            }
+        },
+        computed: {
+            ...mapGetters('CardStore', {
+                isLoading: 'isLoading',
+            })
+        },
+        data: function () {
+            return {
+                valid: false,
+            }
+        },
+        methods: {
+            onSubmitForm() {
+                if (this.$refs.cardForm.validate()) {
+                    this.$emit(this.eventName, this.card);
+                }
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .width{
+        max-width: 300px;
+    }
+</style>

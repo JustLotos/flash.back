@@ -1,0 +1,51 @@
+<template>
+   <vue-editor @focus="handleFocus" @blur="handleBlur" v-model="value"></vue-editor>
+</template>
+
+<script>
+    import { VueEditor } from 'vue2-editor';
+    const EVENT_NAME = 'editorChange'.toLowerCase();
+    export default {
+        name: "AppFormEditor",
+        components: {
+          VueEditor: VueEditor
+        },
+        props: [
+            'editor',
+            'errorMessage'
+        ],
+        model: {
+            prop: 'editor',
+            event: EVENT_NAME
+        },
+        computed: {
+            value: {
+                get: function() {
+                    return this.editor;
+                },
+                set: function(value) {
+                    this.$emit(EVENT_NAME, value)
+                }
+            }
+        },
+       mounted() {
+          this.$el.querySelector('#quill-container').classList.add('border-fixed-top');
+       },
+       methods: {
+            handleFocus: function () {
+               this.$el.querySelector('.ql-toolbar').classList.add('d-block');
+               this.$el.querySelector('.ql-toolbar').classList.remove('d-none');
+            },
+            handleBlur: function () {
+               console.log('blur');
+               this.$el.querySelector('.ql-toolbar').classList.add('d-none');
+               this.$el.querySelector('.ql-toolbar').classList.remove('d-block');
+            }
+       }
+    }
+</script>
+
+<style scoped>
+   .d-none { display: none }
+   .border-fixed-top { border-top: 1px solid #ccc !important; }
+</style>

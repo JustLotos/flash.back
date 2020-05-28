@@ -1,0 +1,79 @@
+<template>
+    <v-container>
+        <v-card v-if="user">
+            <v-layout justify-center>
+                <v-flex>
+                    <v-row>
+                        <v-col cols="4">
+                            <v-card-actions class="justify-center pa-2">
+                                <v-avatar class="profile" color="grey" size="164" tile>
+                                    <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+                                </v-avatar>
+                            </v-card-actions>
+                        </v-col>
+                        <v-col cols="8" style="width: 400px">
+                            <v-flex>
+                                <v-row class="no-gutters">
+                                    <v-col cols="24" lg12>
+                                        <v-card-text class="pa-2">Электронная почта</v-card-text>
+                                    </v-col>
+                                    <v-col cols="24" lg12>
+                                        <v-card-text class="pa-2">{{user.email}}</v-card-text>
+                                    </v-col>
+                                </v-row>
+                                <v-divider></v-divider>
+                                <v-row class="no-gutters">
+                                    <v-col cols="24">
+                                        <v-card-text class="pa-2" >Имя пользователя</v-card-text >
+                                    </v-col>
+                                    <v-col cols="24">
+                                        <v-card-text class="pa-2" v-if="user.nickname">{{userProfile.nickname}}</v-card-text >
+                                        <v-card-text class="pa-2" v-else>Не указано</v-card-text>
+                                    </v-col>
+                                </v-row>
+                            </v-flex>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-card-title>Настройки</v-card-title>
+                        </v-col>
+                        <v-col>
+
+                        </v-col>
+                    </v-row>
+                </v-flex>
+            </v-layout>
+        </v-card>
+    </v-container>
+</template>
+
+<script>
+    import BaseLayout from "../components/layout/BaseLayout";
+    import {mapGetters} from 'vuex';
+    import store from "../store/store";
+
+    export default {
+        name: "Profile",
+        components: {BaseLayout},
+        computed: {
+            ...mapGetters([
+                'user'
+            ]),
+        },
+        data: function() {
+            return {
+                editName: false
+            }
+        },
+        beforeRouteEnter: async function (to , from , next) {
+            await store.dispatch('getUserProfile')
+                .then(()=>{next()})
+                .catch((error)=>{ console.log("Ошибка извлечения пользователя" + JSON.parse(error))});
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

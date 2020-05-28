@@ -1,0 +1,170 @@
+<template>
+    <v-container class="fill-height d-block" fluid>
+        <v-navigation-drawer app v-model="sidebar" clipped fixed height="100%" :width="325">
+            <v-row class="pa-0 ma-0">
+                <v-col cols="12">
+                    <v-row justify="center">
+                        <v-btn @click="toggleMode" class="mt-3">{{modeLabel}}</v-btn>
+                    </v-row>
+                </v-col>
+                <v-col cols="12" class="text-center">
+                    <v-divider dark>Коллекция</v-divider>
+                </v-col>
+                <v-col cols="12" class="pa-1 ma-1">
+                    <list-objects :items="decks" :items-id="decksId">
+                        <template v-slot:item="deck">
+                            <v-expansion-panels v-if="mode">
+                                <v-expansion-panel @click="setDeck(deck.item)">
+                                    <v-expansion-panel-header>{{deck.item.name}}</v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <list-objects
+                                            :items="getCardsById(deck.item.cards)"
+                                            :items-id="deck.item.cards"
+                                        >
+                                            <template v-slot:item="card">
+                                                <v-btn
+                                                    block
+                                                    elevation="0"
+                                                    color="light"
+                                                    depressed
+                                                    class="pa-0 ma-0"
+                                                    @click="setCard(card.item)"
+                                                >{{card.item.name}}</v-btn>
+                                            </template>
+                                        </list-objects>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                            <v-btn v-else block elevation="0" color="light" depressed class="pa-0 ma-0"
+                                @click="setDeck(deck.item)"
+                            >{{deck.item.name}}</v-btn>
+                        </template>
+                    </list-objects>
+                </v-col>
+            </v-row>
+        </v-navigation-drawer>
+        <v-card class="fill-height">
+            <v-row justify="center">
+                <v-col cols="11">
+                    <v-toolbar>
+                        <v-app-bar-nav-icon @click="toggleSidebar()"/>
+                        <v-spacer/>
+                    </v-toolbar>
+                </v-col>
+            </v-row>
+            <v-row justify="center" class="fill-height">
+                <v-col v-if="mode" cols="12" xs="10" sm="8" lg="6" class="align-center justify-center">
+                    <card-update v-if="card.id" :card="card" @card-updated="handleSuccess"/>
+                    <v-row v-else align="center" justify="center" class="fill-height">
+                        Для редактирования выберите карту
+                    </v-row>
+                </v-col>
+                <v-col v-else cols="12" xs="10" sm="8" lg="6" class="justify-center align-center">
+                    <card-create v-if="deck.id" :deck="deck" @card-created="handleSuccess"/>
+                    <v-row v-else align="center" justify="center" class="fill-height">
+                        Для создания карточки выберите колоду
+                    </v-row>
+                </v-col>
+            </v-row>
+        </v-card>
+
+        <modal v-model="deleteModal" type="short">
+            <card-delete id="card.id"/>
+        </modal>
+        <modal v-model="successModal" type="short">
+            <v-alert type="success" class="mb-0">{{successMessage}}</v-alert>
+        </modal>
+    </v-container>
+</template>
+
+<script>
+    import store from "../store/store";
+    import {mapGetters} from 'vuex';
+    import ListObjects from "../components/common/ListObjects";
+    import AppFormName from "../components/common/FormElements/AppFormName";
+    import CardCreate from "../components/daemons/Card/CardCreate";
+    import CardUpdate from "../components/daemons/Card/CardUpdate";
+    import Search from "../components/common/Search";
+    import Modal from "../components/common/Modals/Modal";
+    import CardDelete from "../components/daemons/Card/CardDelete";
+
+    export default {
+        name: "Review",
+        components: {CardDelete, Modal, Search, CardUpdate, CardCreate, AppFormName, ListObjects},
+        data: function () {
+            return {
+                deleteModal: false,
+                createModal: false,
+                successModal: false,
+                successMessage: '',
+                mode: false,
+                card: {
+                    id: false
+                },
+                deck: {
+                    id: false
+                },
+                panel: false,
+                sidebar: true,
+                tabs: {
+                    current: 'Карты',
+                    items: ['Карты', 'Колоды']
+                }
+            }
+        },
+        computed: {
+            ...mapGetters('DeckStore', [
+                'decks',
+                'decksId',
+                'isLoading'
+            ]),
+            ...mapGetters('CardStore', [
+                'cards',
+                'cardsId',
+                'getCardsById'
+            ]),
+            overflowItems: function() {
+                return this.decksId.map((id) => {
+                    return this.decks[id];
+                });
+            },
+            modeLabel: function () {
+                return this.mode ?
+                     'Редактирование карточки': 'Добавление карточки';
+            },
+        },
+        methods: {
+            setDeck: async function(deck) {
+                await this.$store.dispatch('DeckStore/getOne', {id: deck.id});
+                this.deck = store.getters['DeckStore/decks'][deck.id];
+            },
+            setCard: function (card) {
+               this.card = card;
+            },
+            toggleSidebar: function () {
+                return this.sidebar= !this.sidebar;
+            },
+            toggleMode: function () {
+                this.mode = !this.mode;
+            },
+            deleteModalToggle: function () {
+                this.deleteModal = !this.deleteModal;
+            },
+            handleSuccess: function(value) {
+                this.successMessage = value;
+                this.successModal = !this.successModal;
+            },
+            handleSuccessDelete: function(value) {
+                this.deleteModal = !this.deleteModal;
+                this.successMessage = value;
+                this.successModal = !this.successModal;
+            },
+        },
+        beforeRouteEnter: async function (to , from , next) {
+            await store.dispatch('DeckStore/getAll')
+                .then(()=>{next();})
+                .catch((error)=>{console.log(error);});
+        }
+    }
+</script>
+<style scoped></style>
