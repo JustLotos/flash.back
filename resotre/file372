@@ -1,0 +1,43 @@
+<template>
+    <v-navigation-drawer v-model="sidebar" class="deep-purple accent-4" app absolute clipped temporary>
+        <v-list nav dense>
+            <v-list-item v-for="item in menu" :key="item.name" link>
+                <v-list-item-icon>
+                    <v-icon>{{ item.meta.icon }}</v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                    <v-list-item-title>{{ item.meta.label }}</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
+
+        <template v-slot:append>
+            <div class="pa-2">
+                <v-btn block>Logout</v-btn>
+            </div>
+        </template>
+    </v-navigation-drawer>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import {routes} from "../../../../Router";
+import {AppModule} from "../../../../Store/App";
+
+@Component
+export default class Sidebar extends Vue {
+    menu = routes;
+    get sidebar(){
+        return AppModule.sidebar.opened;
+    }
+
+    set sidebar(value)
+    {
+        if(!value == AppModule.sidebar.opened) {
+            AppModule.SetSideBar(value, false);
+        }
+    }
+
+}
+</script>

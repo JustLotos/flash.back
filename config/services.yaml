@@ -10,9 +10,9 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-#
-#    serializer:
-#        name_converter: 'serializer.name_converter.camel_case_to_snake_case'
+    #
+    #    serializer:
+    #        name_converter: 'serializer.name_converter.camel_case_to_snake_case'
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -35,27 +35,18 @@ services:
         alias: "gesdinet.jwtrefreshtoken"
 
     #EVENT
-    App\Event\Auth\AuthenticationSuccessListener:
+    App\Domain\User\Events\AuthenticationSuccessListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
-    App\Event\Auth\AuthenticationFailureListener:
+    App\Domain\User\Events\AuthenticationFailureListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailureResponse }
-    App\Event\Auth\JWTCreatedListener:
+    App\Domain\User\Events\JWTCreatedListener:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
-    App\Event\Auth\JWTExpiredListener:
-        tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_expired, method: onJWTExpired }
-    App\Event\Auth\JWTInvalidListener:
-        tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_invalid, method: onJWTInvalid }
-    App\Event\Auth\JWTNotFoundListener:
-        tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_not_found, method: onJWTNotFound }
     app.security.hash.password.listener:
-        class: App\Model\User\Events\HashPasswordListener
+        class: App\Domain\User\Events\HashPasswordListener
         tags:
             - { name: doctrine.event_subscriber }
     App\Event\HTTPExceptionListener:
@@ -65,11 +56,10 @@ services:
     #CUSTOM SERVICE
     App\Service\TwigService: ~
     App\Service\MailSenderService: ~
-    App\Service\MapperService: ~
     App\Service\SerializeService: ~
     App\Service\ValidateService: ~
-    App\Model\User\UserRepository: ~
-    App\Model\User\Service\TokenService: ~
+    App\Domain\User\UserRepository: ~
+    App\Domain\User\Service\TokenService: ~
 
     #VALIDATORS
     validator.unique.uniqueuser:

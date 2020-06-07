@@ -1,0 +1,41 @@
+<template>
+    <v-container fluid fill-height>
+        <v-layout align-center justify-center>
+            <v-flex xs11 sm7 md5>
+                <login-form @login="handle"></login-form>
+                    <v-row justify="center" class="flex-wrap mt-5">
+                        <v-card flat>
+                            <span>Нет учетной записи?</span>
+                            <v-btn text link :to="{name: 'Register'}" color="primary">Создать аккаунт</v-btn>
+                        </v-card>
+                    </v-row>
+            </v-flex>
+        </v-layout>
+    </v-container>
+</template>
+
+<script lang="ts">
+import LoginForm from "./LoginForm";
+import {Component, Vue} from 'vue-property-decorator';
+import {AuthModule} from "../../../../Store/AuthModule";
+import Router from "../../../../Router/index";
+
+@Component({
+    components: {
+        LoginForm
+    }
+})
+export default class LoginPage extends Vue{
+    constructor() {
+        super();
+        console.log(this);
+        if (AuthModule.accessToken) {
+            this.handle();
+        }
+    }
+    private handle()
+    {
+        Router.push({name: 'Home'});
+    }
+}
+</script>

@@ -1,0 +1,27 @@
+<template>
+    <v-app id="inspire">
+        <flash-header/>
+        <transition name="fade" duration="2000">
+            <v-content>
+                <router-view/>
+            </v-content>
+        </transition>
+        <flash-footer/>
+    </v-app>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import FlashContent from './FlashContent.vue';
+import FlashFooter from './FlashFooter.vue';
+import FlashHeader from "./FlashHeader.vue";
+
+@Component({
+    components: {
+        FlashHeader,
+        FlashContent,
+        FlashFooter
+    }
+})
+export default class FlashLayout extends Vue {}
+</script>

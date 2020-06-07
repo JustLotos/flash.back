@@ -1,0 +1,22 @@
+<template>
+    <v-app id="inspire">
+        <flash-header/>
+        <sidebar/>
+        <transition name="fade" duration="2000">
+            <v-content>
+                <slot/>
+            </v-content>
+        </transition>
+        <flash-footer/>
+    </v-app>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Sidebar from "./Components/BaseLayout/Sidebar.vue";
+import FlashFooter from "./Components/BaseLayout/FlashFooter.vue";
+import FlashHeader from "./Components/BaseLayout/FlashHeader.vue";
+
+@Component({components: {FlashHeader, FlashFooter, Sidebar}})
+export default class Layout extends Vue {}
+</script>

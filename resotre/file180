@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+abstract class FrontEndController extends AbstractController
+{
+    /**
+     * @Route("/1{vueRouting}", requirements={"vueRouting"="^(?!api|_(profiler|wdt)).*"}, name="index2", methods={"GET"})
+     */
+    public function indexAction(): Response
+    {
+        return $this->render('base.html.twig', []);
+    }
+
+}

@@ -1,0 +1,12 @@
+import {RouteConfig} from "vue-router";
+import BaseLayout from "../../Common/Layouts/BaseLayout.vue";
+import ProfilePage from '../Pages/ProfilePage.vue';
+
+export const LearnerRoutes: Array<RouteConfig> = [
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: ProfilePage,
+        meta: {label: 'Мой профиль', icon: 'mdi-account-circle', menu: true, auth: true, layout: BaseLayout},
+    },
+]

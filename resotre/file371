@@ -1,0 +1,13 @@
+import BaseLayout from "../../Common/Layouts/BaseLayout.vue";
+import {RouteConfig} from "vue-router";
+import DecksPage from "../Pages/Deck/DecksPage.vue";
+
+export const DeckRoutes: Array<RouteConfig> = [
+    {
+        path:'/decks',
+        name: 'Decks',
+        component: DecksPage,
+        meta: { label: 'Колоды', icon: 'mdi-folder', auth: true, menu: true, layout: BaseLayout },
+        // {path:':id/',       name:'deck-get',    label: 'Колода',    icon: '', component: DeckDetail,  props: true},
+    }
+]

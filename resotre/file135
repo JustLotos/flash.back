@@ -1,0 +1,34 @@
+<template>
+    <v-flex v-if="itemsId && itemsId.length">
+        <v-list class="pa0 m-0">
+            <v-list-item v-for="id in itemsId" :key="id" class="pa-0">
+                <slot name="item" v-bind:item="items[id]"></slot>
+            </v-list-item>
+        </v-list>
+    </v-flex>
+    <v-flex v-else>
+        <v-row justify="center">
+            <v-col cols="12">
+                <slot name="empty">Элементов нет</slot>
+            </v-col>
+        </v-row>
+    </v-flex>
+</template>
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+
+@Component
+export default class ListObjects extends Vue{
+
+    @Prop({required: true})
+    items;
+
+    @Prop({required: true, type: Array})
+    itemsId;
+
+    get log(){
+        console.log(this.items);
+        console.log(this.itemsId);
+    }
+}
+</script>

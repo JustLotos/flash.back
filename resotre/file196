@@ -1,0 +1,63 @@
+import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import Store from "../Store";
+import Service from "../Modules/Common/Service/AuthService";
+import {AuthResponse, LoginRequest, RefreshTokenRequest, RegisterRequest} from "../Modules/Common/Service/types";
+export const ACCESS_TOKEN = 'access-token', REFRESH_TOKEN = 'refresh-token', ROLE = "ROLE";
+export interface IAuthState {
+    accessToken: string | null;
+    refreshToken: string | null;
+    role: string | null;
+}
+
+@Module({
+    dynamic: true,
+    store: Store,
+    name: 'User'
+})
+class Auth extends VuexModule implements IAuthState {
+    public accessToken = localStorage.getItem(ACCESS_TOKEN);
+    public refreshToken = localStorage.getItem(REFRESH_TOKEN);
+    public role = localStorage.getItem(ROLE);
+    public isLoading: false;
+
+    @Mutation
+    private AUTHENTICATING_SUCCESS (data: AuthResponse) {
+        this.isLoading = false;
+        this.accessToken = data.token;
+        this.refreshToken = data.refreshToken;
+        this.role = data.role;
+        localStorage.setItem(ACCESS_TOKEN, this.accessToken);
+        localStorage.setItem(REFRESH_TOKEN, this.refreshToken);
+        localStorage.setItem(ROLE, this.role);
+    }
+
+    @Action({ rawError: true })
+    public async login(payload: LoginRequest): Promise<AuthResponse> {
+        const response  = await Service.login(payload);
+        this.context.commit('AUTHENTICATING_SUCCESS', response.data);
+        return Promise.resolve(response.data);
+    }
+
+    @Action({ rawError: true })
+    public async register(payload: RegisterRequest): Promise<AuthResponse> {
+        const response  = await Service.register(payload);
+        this.AUTHENTICATING_SUCCESS(response.data);
+        return Promise.resolve(response.data);
+    }
+
+    @Action({ rawError: true })
+    public async refresh(): Promise<AuthResponse> {
+        if(this.refreshToken) {
+            const response  = await Service.refreshToken({refreshToken: this.refreshToken});
+            this.AUTHENTICATING_SUCCESS(response.data);
+            return Promise.resolve(response.data);
+        }
+    }
+
+    @Action
+    public logout(state) {
+
+    }
+}
+
+export const AuthModule = getModule(Auth);

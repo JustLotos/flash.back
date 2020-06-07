@@ -1,0 +1,24 @@
+import Vue from 'vue';
+import ElementUI from 'element-ui';
+import Vuetify from "./Plugins/Vuetify";
+import i18n from "./Plugins/I18n";
+import {AppModule} from "./Store/App";
+import Store from "./Store";
+import Router from "./Router/index.ts";
+import App from './App.vue';
+
+Vue.config.productionTip = false;
+Vue.use(ElementUI, {
+    size: AppModule.size,
+    i18n: (key: string, value: string) => i18n.t(key, value)
+})
+
+
+export default new Vue({
+    el: '#app',
+    i18n,
+    router: Router,
+    vuetify: Vuetify,
+    store: Store,
+    render: h => h(App),
+});

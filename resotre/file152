@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Controller\API\Auth;
+
+use App\Controller\API\BaseController;
+use App\Controller\ControllerHelper;
+use App\Model\User\UseCase\ResetPassword\Confirm\Command as ConfirmCommand;
+use App\Model\User\UseCase\ResetPassword\Confirm\Handler as ConfirmHandler;
+use App\Model\User\UseCase\ResetPassword\Request\Command as ResetCommand;
+use App\Model\User\UseCase\ResetPassword\Request\Handler as ResetHandler;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+
+/** @Route(value="api/v1/auth/reset/password") */
+class ResetPasswordController extends AbstractController
+{
+    use ControllerHelper;
+
+    /** @Route("/", name="resetPassword", methods={"POST"}) */
+    public function reset(Request $request, ResetHandler $handler): Response
+    {
+        /** @var ResetCommand $command */
+        $command = $this->serializer->serialize($request, Command::class);
+        $handler->handle($command);
+        return $this->response($this->getSimpleSuccessResponse());
+    }
+
+    /** @Route("/confirm", name="resetPasswordConfirm", methods={"POST"}) */
+    public function confirm(Request $request, ConfirmHandler $handler): RedirectResponse
+    {
+        if (!$token = $request->get('confirmToken')) {
+            throw new NotFoundHttpException('Confirm token is required');
+        }
+        $handler->handle(new ConfirmCommand($token));
+        return $this->redirectToRoute('index', [
+            'vueRouting' => '',
+            'resetPassword' => 'confirm'
+        ]);
+    }
+}

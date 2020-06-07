@@ -1,0 +1,73 @@
+import Vue from "vue";
+import Router, { RouteConfig } from 'vue-router'
+
+import LoginPage from "../Modules/Common/Pages/Login/index.vue";
+import RegisterPage from "../Modules/Common/Pages/Register/index.vue";
+import HomePage from "../Modules/Flash/Pages/Home.vue";
+import Dashboard from "../Modules/Flash/Pages/Dashboard.vue";
+import LogoutPage from "../Modules/Common/Pages/Logout.vue";
+import {LearnerRoutes} from "../Modules/Flash/Routes/LearnerRoutes";
+
+Vue.use(Router);
+// import DeckRouter from "./modules/deck";
+// import StudyRouter from "./modules/study";
+// import CardRouter from "./modules/card";
+
+export const routes: Array<RouteConfig> = [
+    {
+        path: '/login', name: 'Login', component: LoginPage,
+        meta: { label: 'Войти', icon: 'mdi-login', menu: true, auth: false}
+    },
+    {
+        path: '/register', name: 'Register', component: RegisterPage,
+        meta: { label: 'Регистрация', icon: 'mdi-account-multiple-plus', menu: true, auth: false}
+    },
+    {
+        path: '/logout', name: 'Logout', component: LogoutPage,
+        meta: { label: 'Выйти', icon: 'mdi-logout', menu: true, auth: true},
+    },
+    {
+        path: '/dashboard', name: 'Dashboard', component: Dashboard,
+        meta: { label: 'FlashBack', icon: 'mdi-flash', menu: false, auth: false}
+    },
+    {
+        path: '/', name: 'Home', component: HomePage,
+        meta: { label: 'FlashBack', icon: 'mdi-flash', menu: false, auth: false},
+    },
+    {
+        path: '*', redirect: '/',
+        meta: {menu: false, auth: false}
+    },
+    ...LearnerRoutes
+];
+
+export default new Router({
+    mode: 'history',
+    base: process.env.APP_HOST,
+    routes: routes
+})
+
+
+// let router;
+// router = new VueRouter({
+//     mode: 'history',
+//     routes: [
+
+//     // Маршруты требующиее авторизацию
+
+//     {
+//         path: '/review',
+//         name: 'Review',
+//         label: 'Обзор',
+//         icon: 'mdi-cards-outline',
+//         component: Review,
+//         meta: {requiresAuth: true},
+//         menu: true
+//     },
+//     ...StudyRouter,
+//     ...CardRouter,
+//     ...DeckRouter,
+//     ]
+// });
+
+

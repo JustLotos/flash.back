@@ -1,0 +1,63 @@
+import {AxiosPromise} from "axios";
+import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import Store from "../index";
+import Service from "../../Modules/Common/Service/AuthService";
+import {AuthResponse, LoginRequest, RegisterRequest} from "../../Modules/Common/Service/types";
+
+@Module({
+    dynamic: true,
+    store: Store,
+    name: 'User' ,
+})
+class Auth extends VuexModule implements IAuthState {
+    accessToken = localStorage.getItem(ACCESS_TOKEN);
+    refreshToken = localStorage.getItem(REFRESH_TOKEN);
+    role = localStorage.getItem(ROLE);
+    isLoading: false;
+
+    public function
+
+    @Mutation
+    private AUTHENTICATING_SUCCESS (data: AuthResponse) {
+        this.isLoading = false;
+        this.accessToken = data.token;
+        this.refreshToken = data.refreshToken;
+        this.role = data.role;
+        localStorage.setItem(ACCESS_TOKEN, this.accessToken);
+        localStorage.setItem(REFRESH_TOKEN, this.refreshToken);
+        localStorage.setItem(ROLE, this.role);
+    }
+
+    @Action
+    public async login(payload: LoginRequest): Promise<AxiosPromise<AuthResponse>> {
+        const response  = await Service.login(payload);
+        this.AUTHENTICATING_SUCCESS(response.data);
+        return Promise.resolve(response);
+    }
+    @Action
+    public async register(payload: RegisterRequest): Promise<AxiosPromise<AuthResponse>> {
+        const response  = await Service.register(payload);
+        this.AUTHENTICATING_SUCCESS(response.data);
+        return Promise.resolve(response);
+    }
+    @Action
+    public logout(state) {
+
+    }
+    @Action
+    public async refresh() {
+        if(this.refreshToken) {
+            const response  = await Service.refreshToken({refreshToken: this.refreshToken});
+            this.AUTHENTICATING_SUCCESS(response.data);
+            return Promise.resolve(response);
+        }
+    }
+}
+
+export const AuthModule = getModule(Auth);
+export const ACCESS_TOKEN = 'access-token', REFRESH_TOKEN = 'refresh-token', ROLE = "ROLE";
+export interface IAuthState {
+    accessToken: string | null;
+    refreshToken: string | null;
+    role: string | null;
+}

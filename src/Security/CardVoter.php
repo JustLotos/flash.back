@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use App\Model\Core\Entity\Card\Card;
-use App\Model\User\Entity\User;
+use App\Domain\Flash\Entity\Card\Card;
+use App\Domain\User\Entity\User;
 use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -15,6 +15,7 @@ class CardVoter extends Voter
 {
     public const VIEW = 'view';
     public const EDIT = 'edit';
+    public const NOT_FOUND_MESSAGE = 'Card not found';
 
     private $security;
 

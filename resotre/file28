@@ -1,0 +1,105 @@
+import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import Store from "../Store";
+import Service from "../Modules/Common/Service/AuthService";
+import {AuthResponse, LoginRequest, RegisterRequest} from "../Modules/Common/Service/types";
+import {AxiosResponse} from "axios";
+import {OperationForbidden} from "../Exception";
+
+export const ACCESS_TOKEN = 'access-token', REFRESH_TOKEN = 'refresh-token', ROLE = "ROLE";
+export interface IAuthState {
+    accessToken: string | null;
+    refreshToken: string | null;
+    role: string | null;
+    isLoading: boolean;
+}
+
+@Module({
+    dynamic: true,
+    store: Store,
+    name: 'AuthModule'
+})
+class Auth extends VuexModule implements IAuthState {
+    public accessToken = localStorage.getItem(ACCESS_TOKEN);
+    public refreshToken = localStorage.getItem(REFRESH_TOKEN);
+    public role = localStorage.getItem(ROLE);
+    public isLoading = false;
+
+    get isAuthenticated(): boolean {
+        return !!this.accessToken;
+    }
+
+    @Mutation
+    private TOKEN_REFRESH_SUCCESS (data: AuthResponse) {
+        this.isLoading = false;
+        this.accessToken = data.token;
+        this.refreshToken = data.refreshToken;
+        localStorage.setItem(ACCESS_TOKEN, this.accessToken);
+        localStorage.setItem(REFRESH_TOKEN, this.refreshToken);
+    }
+
+    @Mutation
+    private AUTHENTICATING_SUCCESS (data: AuthResponse) {
+        this.isLoading = false;
+        this.accessToken = data.token;
+        this.refreshToken = data.refreshToken;
+        this.role = data.role;
+        localStorage.setItem(ACCESS_TOKEN, this.accessToken);
+        localStorage.setItem(REFRESH_TOKEN, this.refreshToken);
+        localStorage.setItem(ROLE, this.role);
+    }
+
+    @Mutation
+    private LOGOUT() {
+        this.isLoading = false;
+        this.accessToken = null;
+        this.refreshToken = null;
+        this.role = null;
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
+        localStorage.removeItem(ROLE);
+    }
+
+    @Action({ rawError: true })
+    public async login(payload: LoginRequest): Promise<AuthResponse> {
+        this.loadingCheck();
+        this.isLoading = true;
+        const response  = await Service.login(payload);
+        this.context.commit('AUTHENTICATING_SUCCESS', response.data);
+        return Promise.resolve(response.data);
+    }
+
+    @Action({ rawError: true })
+    public async register(payload: RegisterRequest): Promise<AuthResponse> {
+        this.loadingCheck();
+        this.isLoading = true;
+        const response  = await Service.register(payload);
+        this.AUTHENTICATING_SUCCESS(response.data);
+        return Promise.resolve(response.data);
+    }
+
+    @Action({ rawError: true })
+    public async refresh(): Promise<AxiosResponse<AuthResponse>> {
+        this.loadingCheck();
+        this.isLoading = true;
+        if(this.refreshToken) {
+            const response  = await Service.refreshToken({refreshToken: this.refreshToken});
+            this.AUTHENTICATING_SUCCESS(response.data);
+            return Promise.resolve(response);
+        }
+    }
+
+    @Action({ rawError: true })
+    public logout() {
+        this.LOGOUT();
+        Service.logout();
+    }
+
+    private loadingCheck()
+    {
+        if(this.isLoading) {
+            throw new OperationForbidden();
+        }
+    }
+}
+
+export const AuthModule = getModule(Auth);

@@ -1,0 +1,23 @@
+import axios from "../../../Plugins/Axios";
+import {AxiosPromise} from "axios";
+import {AuthResponse, LoginRequest, RefreshTokenRequest, RegisterRequest} from "./types";
+
+export default {
+    async login(payloads: LoginRequest): AxiosPromise<AuthResponse> {
+        return axios.post("/auth/login", payloads);
+    },
+    async register(payloads: RegisterRequest): AxiosPromise<AuthResponse> {
+        return axios.post("/auth/register", payloads);
+    },
+    async refreshToken(payloads: RefreshTokenRequest): Promise<AuthResponse> {
+        let response: AuthResponse = await axios.post('/auth/token/refresh', payloads);
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.token;
+        return Promise.resolve(response);
+    },
+
+    logout()
+    {
+        delete axios.defaults.headers.common['Authorization'];
+    }
+};
+

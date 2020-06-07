@@ -1,0 +1,13 @@
+<template>
+    <v-content>
+        <transition name="fade" duration="2000">
+            <router-view></router-view>
+        </transition>
+    </v-content>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+@Component
+export default class FlashContent extends Vue {}
+</script>

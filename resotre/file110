@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Model\User\UseCase\Register\Request;
+
+use App\Validator\ExistEntityConstraint\ExistEntity;
+use App\Validator\UniqueEntityConstraint\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
+
+class UserDTO
+{
+    /**
+     * @Assert\Length(max="255")
+     * @Assert\NotBlank(groups={UserDTO::REGISTER, UserDTO::PASSWORD_RESET})
+     * @Assert\Email(groups={UserDTO::REGISTER})
+     * @UniqueEntity(
+     *     message="Пользователь с таким email-адресом уже существует",
+     *     class="App\Model\User\Entity\User",
+     *     attribute="email",
+     *     groups={UserDTO::REGISTERConfirmTokenDTO.php},
+     * )
+     * @ExistEntity(
+     *     message="Пользователь с таким email-адресом не существует",
+     *     class="App\Model\User\Entity\User",
+     *     attribute="email",
+     *     groups={UserDTO::REGISTER_CONFIRM, UserDTO::PASSWORD_RESET, UserDTO::PASSWORD_RESET_CONFIRM}
+     * )
+     * @Serializer\Type(name="string")
+     */
+    private $email;
+
+    /**
+     * @Assert\Length(
+     *      min="8",
+     *      max="255",
+     *      minMessage="Пароль должег содержать как минимум {{ limit }} симвоолов",
+     *      maxMessage="Пароль не может быть болшье {{ limit }} символов",
+     *      groups={UserDTO::REGISTER, UserDTO::PASSWORD_RESET}
+     * )
+     * @Assert\NotBlank(groups={UserDTO::DEFAULT, UserDTO::PASSWORD_RESET})
+     * @Serializer\Type(name="string")
+     */
+    private $password;
+
+    /**
+     * @Assert\NotBlank(groups={UserDTO::REGISTER, UserDTO::PASSWORD_RESET})
+     * @Assert\IdenticalTo(propertyPath="password", groups={UserDTO::DEFAULT, UserDTO::PASSWORD_RESET_CONFIRM})
+     * @Serializer\Type(name="string")
+     */
+    private $plainPassword;
+
+    /**
+     * @Assert\NotBlank(groups={UserDTO::REGISTER})
+     * @Serializer\Type(name="string")
+     */
+    private $roles;
+
+    /* CONSTANTS */
+    public const REGISTER = 'REGISTER';
+    public const PASSWORD_RESET = 'PASSWORD_RESET';
+
+    public function getEmail() : string
+    {
+        return $this->email;
+    }
+
+    public function getPassword() : string
+    {
+        return $this->password;
+    }
+}

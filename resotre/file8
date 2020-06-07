@@ -1,0 +1,10 @@
+<?php
+
+
+namespace App\Domain\Flash\UseCase\Card\Create;
+
+
+class Content
+{
+
+}

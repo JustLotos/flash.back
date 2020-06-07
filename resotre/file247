@@ -1,0 +1,24 @@
+import axios from "./../Plugins/Axios";
+
+export default {
+    login(loginPayloads) {
+        return axios.post("/auth/login", {
+            email: loginPayloads.email,
+            password: loginPayloads.password,
+            remember_me: loginPayloads.rememberMe
+        });
+    },
+
+    register(registerPayloads) {
+        return axios.post("/auth/register", {
+            email: registerPayloads.email,
+            password: registerPayloads.password,
+            plain_password: registerPayloads.plain_password
+        });
+    },
+
+    refreshToken(refreshToken) {
+        return axios.post(API_URL + '/auth/token/refresh', {refresh_token: refreshToken});
+    }
+
+};

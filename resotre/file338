@@ -1,0 +1,10 @@
+export interface Link {
+    icon: string,
+    link: string,
+    label: string,
+}
+
+export interface SocialNetwork {
+    name: string,
+
+}

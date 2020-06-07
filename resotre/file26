@@ -1,0 +1,135 @@
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
+import LoginPage from "../Modules/Common/Pages/Login/index.vue";
+import Home from "../Modules/Flash/Pages/Home.vue";
+
+// import DeckRouter from "./modules/deck";
+// import StudyRouter from "./modules/study";
+// import CardRouter from "./modules/card";
+
+// import Dashboard from "../pages/Dashboard";
+//  import Home from "../pages/Home.vue";
+// import Profile from "../pages/Profile";
+// import Logout from "../pages/Logout";
+// import Register from "../pages/Register/index";
+// import Login from "../pages/Login";
+// import NotFound from "../pages/NotFound";
+// import Review from "../pages/Review";
+
+Vue.use(VueRouter);
+export const routes: Array<RouteConfig> = [
+    {
+        path: '/',
+        name: 'Home',
+        component: Home,
+        meta: { label: 'FlashBack', icon: 'mdi-flash', menu: false},
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: LoginPage,
+        meta: { label: 'Войти', icon: 'mdi-login', menu: true}
+    }
+
+    // {
+    //     path: '/register',
+    //     name: 'Register',
+    //     component: Register,
+    //     meta: {
+    //         menu: true,
+    //         transitionName: 'slide',
+    //         label: 'Регистрация',
+    //         icon: 'mdi-account-multiple-plus',
+    //     }
+    // }
+];
+
+export default new VueRouter({
+    mode: "history",
+    base: process.env.APP_HOST,
+    routes
+});
+
+
+
+
+// let router;
+// router = new VueRouter({
+//     mode: 'history',
+//     routes: [{
+//         path: '/register',
+//         name: 'Register',
+//         label: 'Регистрация',
+//         icon: 'mdi-account-multiple-plus',
+//         component: Register,
+//         menu: true,
+//         meta: { transitionName: 'slide' }
+//     }, , {
+//         path: '/',
+//         name: 'Home',
+//         label: 'FlashBack',
+//         icon: 'mdi-flash',
+//         component: Home,
+//     },
+
+//     // Маршруты требующиее авторизацию
+
+//     {
+//         path: '/review',
+//         name: 'Review',
+//         label: 'Обзор',
+//         icon: 'mdi-cards-outline',
+//         component: Review,
+//         meta: {requiresAuth: true},
+//         menu: true
+//     },
+//     ...StudyRouter,
+//     ...CardRouter,
+//     ...DeckRouter, {
+//         path: '/dashboard',
+//         name: 'Dashboard',
+//         label: 'FlashBack',
+//         icon: 'mdi-flash',
+//         component: Dashboard,
+//         meta: {requiresAuth: true}
+//     },  {
+//         path: '/profile',
+//         name: 'Profile',
+//         label: 'Мой профиль',
+//         icon: 'mdi-account-circle',
+//         component: Profile,
+//         meta: {requiresAuth: true},
+//         menu: true,
+//         children: [{
+//             path: '/logout',
+//             name: 'Logout',
+//             label: 'Выйти',
+//             icon: 'mdi-logout',
+//             menu: true,
+//             component: Logout,
+//         }]
+//     }, {
+//         path: '/404',
+//         name: '404',
+//         component: NotFound,
+//     }, {
+//         path: '*',
+//         redirect: '/404'
+//     }
+//     ]
+// });
+
+// router.beforeEach((to, from, next) => {
+//     if (to.matched.some(record => record.meta.requiresAuth)) {
+//         if (store.getters["isAuthenticated"]) {
+//             next();
+//         } else {
+//             next({
+//                 name: "Login",
+//                 query: { redirect: to.fullPath }
+//             });
+//         }
+//     } else {
+//         next();
+//     }
+// });

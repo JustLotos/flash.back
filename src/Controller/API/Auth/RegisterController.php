@@ -4,49 +4,41 @@ declare(strict_types=1);
 
 namespace App\Controller\API\Auth;
 
-use App\Exception\ValidationException;
-use App\Model\User\Entity\Types\ConfirmTokenDTO;
-use App\Model\User\Entity\User;
-use App\Model\User\Entity\UserDTO;
-use App\Model\User\UseCase\Register\ConfirmHandler;
-use App\Model\User\UseCase\Register\RequestHandler;
-use App\Service\SerializeService;
-use FOS\RestBundle\Routing\ClassResourceInterface;
+use App\Controller\ControllerHelper;
+use App\Domain\User\Entity\User;
+use App\Domain\User\Entity\UserDTO;
+use App\Domain\User\UseCase\Register\Confirm\Command as ConfirmCommand;
+use App\Domain\User\UseCase\Register\Confirm\Handler as ConfirmHandler;
+use App\Domain\User\UseCase\Register\Request\Command as RegisterPayloads;
+use App\Domain\User\UseCase\Register\Request\Handler as RegisterHandler;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /** @Route(value="api/v1/auth/register") */
-class RegisterController extends AbstractController implements ClassResourceInterface
+class RegisterController extends AbstractController
 {
+    use ControllerHelper;
     /** @Route("", name="register", methods={"POST"}) */
     public function register(
         Request $request,
-        SerializeService $serializer,
-        RequestHandler $handler,
+        RegisterHandler $handler,
         AuthenticationSuccessHandler $ash
     ): JWTAuthenticationSuccessResponse {
-        /** @var UserDTO $userDTO */
-        $userDTO = $serializer->deserialize($request, UserDTO::class);
+        /** @var RegisterPayloads $command */
+        $command = $this->serializer->deserialize($request, RegisterPayloads::class);
         /** @var User $user */
-        $user = $handler->handle($userDTO);
+        $user = $handler->handle($command);
         return $ash->handleAuthenticationSuccess($user);
     }
 
-    /** @Route("/confirm", name="registerConfirm", methods={"GET"}) */
-    public function confirm(Request $request, ConfirmHandler $handler): RedirectResponse
+    /** @Route("/confirm/{token}", name="registerConfirm", methods={"GET"}) */
+    public function confirm(ConfirmHandler $handler, string $token): RedirectResponse
     {
-        if (!$token = $request->get('confirmToken')) {
-            throw new ValidationException(
-                json_encode(['confirmToken'=>"this field is required"]),
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
-        }
-        $handler->handle(new ConfirmTokenDTO($token));
+        $handler->handle(new ConfirmCommand($token));
 
         return $this->redirectToRoute('index', [
             'vueRouting' => '',

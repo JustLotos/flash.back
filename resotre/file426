@@ -1,0 +1,31 @@
+<template>
+    <v-app-bar app clipped-left dark color="primary">
+        <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="toggleSideBar"/>
+        <div class="text-center">
+            <v-btn large  color="primary" :to="logo.link">
+                <v-icon left>{{ logo.icon }}</v-icon> {{ logo.label }}
+            </v-btn>
+        </div>
+        <v-spacer/>
+        <navbar/>
+    </v-app-bar>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import {Link} from "../../../../Router/types";
+import {AppModule} from "../../../../Store/App";
+import Navbar from './Navbar';
+
+@Component({components: {Navbar}})
+export default class FlashHeader extends Vue {
+    logo: Link;
+    constructor() {
+        super();
+        this.logo = { path: '/', label: 'FlashBack', icon: 'mdi-home'};
+    }
+    private toggleSideBar() {
+        AppModule.ToggleSideBar(false)
+    }
+}
+</script>

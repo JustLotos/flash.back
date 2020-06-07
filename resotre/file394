@@ -1,0 +1,6 @@
+import {RouteConfig} from "vue-router";
+
+export const UserRoutes: Array<RouteConfig> = [
+
+]
+

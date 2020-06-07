@@ -1,0 +1,52 @@
+<template>
+    <v-card>
+        <v-card-title class="justify-center">Добавление колоды</v-card-title>
+        <deck-form :deck="deck" :event-name="'create'"  @create="create" :errors="createErrors">
+            <template v-slot:submit>Добавить</template>
+        </deck-form>
+    </v-card>
+</template>
+
+<script>
+    import DeckForm from "../Components/Deck/DeckForm";
+    import {mapGetters} from "vuex";
+    import {deckDefault} from "../../../../plugins/helpers";
+    export default {
+        name: "DeckCreate",
+        components: {DeckForm},
+        data: function () {
+            return {
+                deck: deckDefault(20, 20, 1,1,1)
+            }
+        },
+        computed: {
+            createErrors: function () {
+                if (this.errors) {
+                    return this.errors;
+                }
+                return deckDefault();
+            },
+            ...mapGetters('DeckStore',{
+                errors: 'errorsCreate',
+            })
+        },
+        methods: {
+            async create(createDeckPayload) {
+                await this.$store.dispatch("DeckStore/create", createDeckPayload).then(()=>{
+                    this.deck = deckDefault(20, 20, 1,1,1);
+                    this.$emit('deck-created', 'Колода успешно создаана!');
+                }).catch((errors)=>{
+                    console.log(errors);
+                    // console.log("Ошибка создание колоды: " + JSON.parse(errors));
+                })
+
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .d-block{
+        display: block;
+    }
+</style>
