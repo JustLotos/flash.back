@@ -1,6 +1,0 @@
-import API from "../../api/user";
-import {GETTING_USER_PROFILE, GETTING_USER_PROFILE_FAILURE, GETTING_USER_PROFILE_SUCCESS} from "./constants";
-
-export default {
-
-};

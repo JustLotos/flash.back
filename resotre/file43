@@ -1,9 +1,0 @@
-import axios from "../../../Plugins/Axios";
-import {AxiosPromise} from "axios";
-import {ILearnerResponse} from "../Store/LearnerModule";
-
-export default {
-    async profile(): AxiosPromise<ILearnerResponse> {
-        return axios.get("/user/profile");
-    },
-}
