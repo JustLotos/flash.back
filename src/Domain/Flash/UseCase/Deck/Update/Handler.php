@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Flash\UseCase\Deck\Update;
 
 use App\Domain\Flash\Entity\Deck\Deck;
-use App\Domain\Flash\Entity\Deck\DeckDTO;
 use App\Domain\Flash\Entity\Deck\Types\Settings;
 use App\Domain\Flusher;
 use App\Service\FlushService;
@@ -25,18 +24,19 @@ class Handler
         $this->validator = $validator;
     }
 
-    public function handle(Command $deckDTO, Deck $deck)
+    public function handle(Command $command, Deck $deck)
     {
-        $this->validator->validate($deckDTO, [DeckDTO::PUT]);
+        $this->validator->validate($command);
 
         $settings = new Settings(
-            $deckDTO->baseInterval,
-            $deckDTO->limitRepeat,
-            $deckDTO->limitLearning,
-            $deckDTO->difficultyIndex
+            $command->baseInterval,
+            $command->minTime,
+            $command->limitRepeat,
+            $command->limitLearning,
+            $command->difficultyIndex
         );
 
-        $deck->updateFull($deckDTO->name, $settings, $deckDTO->description);
+        $deck->updateFull($command->name, $settings, $command->description);
         $deck->setUpdatedAt(new DateTimeImmutable());
         $this->flusher->flush();
         return $deck;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Flash\UseCase\Deck\Create;
 
 use App\Domain\Flash\Entity\Deck\Deck;
-use App\Domain\Flash\Entity\Deck\DeckDTO;
 use App\Domain\Flash\Entity\Deck\Types\Settings;
 use App\Domain\Flash\Entity\Learner\Learner;
 use App\Domain\Flash\Repository\DeckRepository;
@@ -30,23 +29,24 @@ class Handler
         $this->repository = $repository;
     }
 
-    public function handle(Command $deckDTO, Learner $learner): Deck
+    public function handle(Command $command, Learner $learner): Deck
     {
-        $this->validator->validate($deckDTO, [DeckDTO::POST]);
+        $this->validator->validate($command);
 
         $settings = new Settings(
-            $deckDTO->baseInterval,
-            $deckDTO->limitRepeat,
-            $deckDTO->limitLearning,
-            $deckDTO->difficultyIndex
+            $command->baseInterval,
+            $command->minTime,
+            $command->limitRepeat,
+            $command->limitLearning,
+            $command->difficultyIndex
         );
 
         $deck = new Deck(
             $learner,
-            $deckDTO->name,
+            $command->name,
             $settings,
             new DateTimeImmutable(),
-            $deckDTO->description
+            $command->description
         );
 
         $this->repository->add($deck);
