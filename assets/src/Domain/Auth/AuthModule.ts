@@ -9,6 +9,7 @@ class Auth extends VuexModule implements IAuthState {
     refreshToken = localStorage.getItem(REFRESH_TOKEN);
     status = localStorage.getItem(STATUS);
     role = localStorage.getItem(ROLE);
+    email = localStorage.getItem(EMAIL);
     load = false;
 
     get isAuthenticated(): boolean {
@@ -43,8 +44,20 @@ class Auth extends VuexModule implements IAuthState {
     get getToken(): string {
         return <string>this.token
     }
+    get getEmail(): string {
+        return <string>this.email;
+    }
 
-    @MutationAction
+
+    @Mutation
+    public init() {
+        this.token = localStorage.getItem(TOKEN);
+        this.refreshToken = localStorage.getItem(REFRESH_TOKEN);
+        this.status = localStorage.getItem(STATUS);
+        this.role = localStorage.getItem(ROLE);
+        this.email = localStorage.getItem(EMAIL);
+    }
+    @Mutation
     public loading(value = true) {
         this.load = value;
     }
@@ -62,10 +75,12 @@ class Auth extends VuexModule implements IAuthState {
         this.refreshToken = data.refreshToken;
         this.status = data.status;
         this.role = data.role;
+        this.email = data.email;
         localStorage.setItem(REFRESH_TOKEN, <string>this.refreshToken);
         localStorage.setItem(TOKEN, <string>this.token);
         localStorage.setItem(STATUS, <string>this.status);
         localStorage.setItem(ROLE, <string>this.role);
+        localStorage.setItem(EMAIL, <string>this.email);
         this.load = false;
     }
     @Mutation
@@ -74,10 +89,12 @@ class Auth extends VuexModule implements IAuthState {
         this.token = null;
         this.status = null;
         this.role = null;
+        this.email = null;
         localStorage.removeItem(TOKEN);
         localStorage.removeItem(REFRESH_TOKEN);
         localStorage.removeItem(STATUS);
         localStorage.removeItem(ROLE);
+        localStorage.removeItem(EMAIL);
         this.load = false;
     }
 
@@ -122,22 +139,9 @@ class Auth extends VuexModule implements IAuthState {
         this.LOGOUT();
         AuthService.logout();
     }
-
-    @Mutation
-    private INIT() {
-        this.token = localStorage.getItem(TOKEN);
-        this.refreshToken = localStorage.getItem(REFRESH_TOKEN);
-        this.status = localStorage.getItem(STATUS);
-        this.role = localStorage.getItem(ROLE);
-    }
-    @Action
-    public init() {
-        this.INIT();
-    }
-
 }
 
-const TOKEN = 'TOKEN', ROLE = 'ROLE', REFRESH_TOKEN = 'REFRESH_TOKEN', STATUS = 'STATUS';
+const TOKEN = 'TOKEN', ROLE = 'ROLE', REFRESH_TOKEN = 'REFRESH_TOKEN', STATUS = 'STATUS', EMAIL = 'EMAIL';
 const ROLES = { ADMIN: 'ROLE_ADMIN', USER:'ROLE_USER'};
 const LIST_STATUS = { ACTIVE: 'ACTIVE', WAIT:'WAIT', BLOCK: 'BLOCK'};
 
@@ -146,6 +150,7 @@ export interface IAuthState {
     refreshToken: string | null;
     status: string | null;
     role: string | null;
+    email: string | null;
     load: boolean;
 }
 

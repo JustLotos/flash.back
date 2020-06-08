@@ -77,7 +77,7 @@ export default class LoginForm extends Vue {
                     if(error.response?.data.errors && error.response?.data.errors.auth) {
                         this.error = error.response?.data.errors.auth;
                     }
-                    console.log(error)
+                    console.log(error.response);
                 });
         }
     }

@@ -19,6 +19,7 @@ export interface AuthResponse {
     refreshToken: string | null;
     role: string | null;
     status: string | null;
+    email: string | null;
 }
 
 export interface RefreshResponse {

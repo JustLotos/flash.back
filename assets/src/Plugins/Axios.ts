@@ -3,8 +3,6 @@ import {AuthModule} from "../Domain/Auth/AuthModule";
 import Router from "../Router";
 import {AuthResponse} from "../Domain/Auth/types";
 
-let API_URL = process.env.APP_HOST + '/api/v1';
-
 let Axios = axios.create({
     baseURL: process.env.API_URL || 'http://flash.local/api/v1',
     headers: {
