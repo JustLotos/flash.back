@@ -1,7 +1,7 @@
 <template>
     <v-container fluid fill-height>
         <v-layout align-center justify-center>
-            <v-flex xs11 sm7 md5>
+            <v-flex xs8 sm7 md6 lg4>
                 <register-form @register="handle"></register-form>
                 <v-card-actions class="mt-5">
                     <v-row justify="center" class="flex-wrap">

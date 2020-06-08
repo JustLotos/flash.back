@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosRequestConfig} from "axios";
 import {AuthModule} from "../Domain/Auth/AuthModule";
 import Router from "../Router";
 import {AuthResponse} from "../Domain/Auth/types";
@@ -15,7 +15,7 @@ let Axios = axios.create({
 Axios.interceptors.response.use(
     (response) => { return response },
     function (error) {
-        const originalRequest = error.config;
+        const originalRequest: AxiosRequestConfig = error.config;
 
         if (error.response?.status === 401 && originalRequest.url === API_URL + '/auth/token/refresh') {
             AuthModule.logout();
@@ -31,9 +31,12 @@ Axios.interceptors.response.use(
             originalRequest._retry = true;
             return AuthModule.refresh()
                 .then((response: AuthResponse) => {
-                    // return Axios(originalRequest);
+                    return Axios(originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.token);
                 })
-                .catch(()=>{AuthModule.logout();Router.push({name: 'Login'});});
+                .catch(()=>{
+                    AuthModule.logout();
+                    Router.push({name: 'Login'});
+                });
         }
         return Promise.reject(error);
     }

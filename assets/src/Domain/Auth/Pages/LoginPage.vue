@@ -1,12 +1,12 @@
 <template>
     <v-container fluid fill-height>
         <v-layout align-center justify-center>
-            <v-flex xs11 sm7 md5>
+            <v-flex xs8 sm7 md6 lg4>
                 <login-form @login="handle"></login-form>
                 <v-card-actions class="mt-5">
                     <v-row justify="center" class="flex-wrap">
                         <v-card flat>
-                            <span>Уже зарегестрированы?</span>
+                            <span>Еще не зарегестрированы?</span>
                             <v-btn text link :to="{name: 'Register'}" color="primary">Присоедениться!</v-btn>
                         </v-card>
                     </v-row>

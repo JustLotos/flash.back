@@ -9,7 +9,7 @@ class Auth extends VuexModule implements IAuthState {
     refreshToken = localStorage.getItem(REFRESH_TOKEN);
     status = localStorage.getItem(STATUS);
     role = localStorage.getItem(ROLE);
-    load = false;
+    public load = false;
 
     get isAuthenticated(): boolean {
         return !!(this.token || localStorage.getItem(TOKEN));

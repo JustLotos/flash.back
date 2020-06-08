@@ -10,6 +10,6 @@ export const AppRoutes: Array<RouteConfig> = [
     },
     {
         path: '/dashboard', name: 'Dashboard', component: Dashboard,
-        meta: { label: 'FlashBack', icon: 'mdi-flash', menu: false, auth: false, layout: BaseLayout}
+        meta: { label: 'FlashBack', icon: 'mdi-flash', menu: false, auth: true, layout: BaseLayout}
     },
 ];
