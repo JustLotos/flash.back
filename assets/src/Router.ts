@@ -8,7 +8,7 @@ Vue.use(Router);
 
 export const routes: Array<RouteConfig> = [
     ...AppRoutes,
-    //...FlashRoutes,
+    ...FlashRoutes,
     ...AuthRoutes,
     {
         path: '*', redirect: '/',

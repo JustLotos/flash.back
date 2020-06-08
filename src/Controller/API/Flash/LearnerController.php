@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/** @Route(value="api/v1/user") */
+/** @Route(value="api/v1/learner") */
 class LearnerController extends AbstractController
 {
     use ControllerHelper;

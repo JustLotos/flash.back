@@ -21,5 +21,4 @@ const app =  new Vue({
     store: Store,
     render: h => h(App),
 });
-
 export default app;

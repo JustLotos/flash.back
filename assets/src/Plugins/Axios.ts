@@ -1,7 +1,8 @@
 import axios, {AxiosRequestConfig} from "axios";
 import {AuthModule} from "../Domain/Auth/AuthModule";
-import Router from "../Router";
+import Router from "../Domain/Auth/Guard";
 import {AuthResponse} from "../Domain/Auth/types";
+import {LearnerModule} from "../Domain/Flash/Modules/LearnerModule";
 
 let Axios = axios.create({
     baseURL: process.env.API_URL || 'http://flash.local/api/v1',
@@ -16,6 +17,7 @@ Axios.interceptors.response.use(
         const originalRequest: AxiosRequestConfig = error.config;
 
         AuthModule.loading(false);
+        LearnerModule.loading(false);
         if (error.response?.status === 401 && originalRequest.url === originalRequest.baseURL + '/auth/token/refresh') {
             AuthModule.logout();
             Router.push({name: 'Login'});
@@ -30,7 +32,7 @@ Axios.interceptors.response.use(
             originalRequest._retry = true;
             return AuthModule.refresh()
                 .then((response: AuthResponse) => {
-                    return Axios(originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.token);
+                    return Axios(originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken);
                 })
                 .catch(()=>{
                     AuthModule.logout();
@@ -44,7 +46,7 @@ Axios.interceptors.response.use(
 Axios.interceptors.request.use(
     config => {
         if (AuthModule.isAuthenticated) {
-            config.headers['Authorization'] = 'Bearer ' + AuthModule.token;
+            config.headers['Authorization'] = 'Bearer ' + AuthModule.getToken;
         }
         return config;
     },

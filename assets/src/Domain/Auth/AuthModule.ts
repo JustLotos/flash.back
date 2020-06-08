@@ -102,7 +102,6 @@ class Auth extends VuexModule implements IAuthState {
     public async login(payload: LoginRequest): Promise<AuthResponse> {
         this.loading();
         const response  = await AuthService.login(payload);
-        console.log(response);
         this.AUTHENTICATING_SUCCESS(response.data);
         return Promise.resolve(response.data);
     }

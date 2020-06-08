@@ -5,6 +5,12 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import {AuthModule} from "./Domain/Auth/AuthModule";
 @Component
-export default class App extends Vue {}
+export default class App extends Vue {
+    constructor() {
+        super();
+        AuthModule.init();
+    }
+}
 </script>
