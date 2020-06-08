@@ -27,6 +27,7 @@ class Learner
      * @var Name
      * @ORM\Embedded(class="App\Domain\Flash\Entity\Learner\Types\Name")
      * @Serializer\Type(name="App\Domain\Flash\Entity\Learner\Types\Name")
+     * @Serializer\Groups({Learner::GROUP_SIMPLE})
      */
     private $name;
 
@@ -34,6 +35,8 @@ class Learner
      * @ORM\OneToMany(targetEntity="App\Domain\Flash\Entity\Deck\Deck", mappedBy="learner", orphanRemoval=true, cascade={"persist"})
      */
     private $decks;
+
+    public const GROUP_SIMPLE = 'GROUP_SIMPLE';
 
     private function __construct(Id $id)
     {

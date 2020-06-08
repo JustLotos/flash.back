@@ -37,6 +37,7 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string")
+     * @Serializer\Groups({User::GROUP_SIMPLE})
      */
     private $email;
     /**
@@ -48,6 +49,7 @@ class User implements UserInterface
     /**
      * @var string|null
      * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Groups({User::GROUP_SIMPLE})
      */
     private $resetValue;
     /**
@@ -58,24 +60,31 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=16)
+     * @Serializer\Groups({User::GROUP_SIMPLE})
      */
     private $status;
     /**
      * @var DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
+     * @Serializer\Groups({User::GROUP_DETAIL})
      */
     private $createdAt;
     /**
      * @var DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
+     * @Serializer\Groups({User::GROUP_DETAIL})
      */
     private $updatedAt;
     /**
      * @var Role
      * @ORM\Column(type="user_user_role", length=16)
      * @Serializer\Type(name="string")
+     * @Serializer\Groups({User::GROUP_SIMPLE})
      */
     private $role;
+
+    public const GROUP_SIMPLE = 'GROUP_SIMPLE';
+    public const GROUP_DETAIL = 'GROUP_DETAIL';
 
     private function __construct(Id $id, DateTimeImmutable $date)
     {
