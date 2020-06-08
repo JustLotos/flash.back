@@ -9,13 +9,10 @@ use DomainException;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Flash\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AuthenticationSuccessListener implements EventSubscriberInterface
 {
-    /**
-     * @return array
-     */
     public static function getSubscribedEvents() : array
     {
         return [Events::AUTHENTICATION_SUCCESS => 'onAuthenticationSuccessResponse'];
@@ -31,6 +28,8 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
         }
 
         $data['role'] = $user->getRoles()[0];
+        $data['status'] = $user->getStatus();
+        $data['email'] = $user->getEmail();
         $event->setData($data);
     }
 }

@@ -7,7 +7,7 @@ namespace App\Domain\User\Events;
 use App\Domain\User\Entity\User;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Symfony\Component\Security\Flash\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class HashPasswordListener implements EventSubscriber
 {
@@ -33,8 +33,8 @@ class HashPasswordListener implements EventSubscriber
         $this->encodePassword($entity);
         // necessary to force the update to see the change
         $em = $args->getEntityManager();
-        $meta = $em->getClassMetadata(get_class($entity));
-        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $entity);
+        //$meta = $em->getClassMetadata(get_class($entity));
+        //$em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $entity);
     }
 
     public function getSubscribedEvents(): array
@@ -44,10 +44,10 @@ class HashPasswordListener implements EventSubscriber
 
     private function encodePassword(User $entity): void
     {
-        if (!$entity->getPlainPassword()) {
+        if (!$entity->getPassword()) {
             return;
         }
-        $encoded = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
+        $encoded = $this->passwordEncoder->encodePassword($entity, $entity->getPassword());
         $entity->setPassword($encoded);
     }
 }

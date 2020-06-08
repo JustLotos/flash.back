@@ -45,8 +45,8 @@ services:
         arguments: [ '@request_stack' ]
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
-    app.security.hash.password.listener:
-        class: App\Domain\User\Events\HashPasswordListener
+
+    App\Domain\User\Events\HashPasswordListener:
         tags:
             - { name: doctrine.event_subscriber }
     App\Event\HTTPExceptionListener:

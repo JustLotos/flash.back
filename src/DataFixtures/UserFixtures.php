@@ -6,7 +6,6 @@ namespace App\DataFixtures;
 
 use App\Domain\User\Entity\Types\ConfirmToken;
 use App\Domain\User\Entity\Types\Id;
-use App\Domain\User\Entity\Types\Name;
 use App\Domain\User\Entity\Types\Role;
 use App\Domain\User\Entity\User;
 use DateTimeImmutable;
@@ -30,7 +29,6 @@ class UserFixtures extends BaseFixture implements ContainerAwareInterface
                 '12345678'
             );
             $user->activate();
-            $user->changeName(new Name('Roman', 'Ignashov'));
             return $user;
         });
 

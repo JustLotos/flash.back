@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\API\Flash;
 
-use App\Domain\Controller\ControllerHelper;
+use App\Controller\ControllerHelper;
 use App\Domain\Flash\Entity\Card\Card;
 use App\Domain\Flash\Entity\Card\Types\Record;
 use App\Domain\Flash\Entity\Deck\Deck;

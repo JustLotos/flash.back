@@ -33,7 +33,7 @@ class Handler
             $deckDTO->baseInterval,
             $deckDTO->limitRepeat,
             $deckDTO->limitLearning,
-            $deckDTO->difficultyIndex,
+            $deckDTO->difficultyIndex
         );
 
         $deck->updateFull($deckDTO->name, $settings, $deckDTO->description);

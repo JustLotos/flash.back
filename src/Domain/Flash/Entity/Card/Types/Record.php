@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="core_records")
+ * @ORM\Table(name="flash_records")
  */
 class Record
 {

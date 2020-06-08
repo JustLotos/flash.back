@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Entity\Types;
+namespace App\Domain\Flash\Entity\Learner\Types;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-use App\Domain\User\Entity\User;
 
 /**
  * @ORM\Embeddable
@@ -15,12 +14,12 @@ class Name
 {
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Serializer\Groups({User::GROUP_DETAILS, USER::GROUP_SIMPLE})
+     * @Serializer\Type(name="string")
      */
     private $first;
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Serializer\Groups({User::GROUP_DETAILS, USER::GROUP_SIMPLE})
+     * @Serializer\Type(name="string")
      */
     private $last;
 

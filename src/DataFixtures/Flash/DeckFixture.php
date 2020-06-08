@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\DataFixtures\Flash;
 
 use App\DataFixtures\BaseFixture;
-use App\Domain\Core\Entity\Deck\Deck;
-use App\Domain\Core\Entity\Deck\Types\Settings;
-use App\Domain\Core\Entity\Learner\Learner;
+use App\Domain\Flash\Entity\Deck\Deck;
+use App\Domain\Flash\Entity\Deck\Types\Settings;
+use App\Domain\Flash\Entity\Learner\Learner;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

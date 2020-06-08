@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Domain\User\Entity;
 
 use App\Domain\User\Entity\Types\Id;
-use App\Domain\User\Entity\Types\Name;
 use App\Domain\User\Entity\Types\Role;
 use App\Domain\User\Entity\Types\ConfirmToken;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Security\Flash\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use DomainException;
 use DateTimeImmutable;
 use Webmozart\Assert\Assert;
@@ -38,7 +37,6 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string")
-     * @Serializer\Groups({User::GROUP_DETAILS, USER::GROUP_SIMPLE})
      */
     private $email;
     /**
@@ -48,15 +46,8 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @var Name
-     * @ORM\Embedded(class="App\Domain\User\Entity\Types\Name")
-     * @Serializer\Type(name="App\Domain\User\Entity\Types\Name")
-     * @Serializer\Groups({User::GROUP_DETAILS})
-     */
-    private $name;
-    /**
      * @var string|null
-     * @ORM\Column(type="string", name="temp", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $resetValue;
     /**
@@ -67,31 +58,24 @@ class User implements UserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=16)
-     * @Serializer\Groups({USER::GROUP_DETAILS})
      */
     private $status;
     /**
      * @var DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
-     * @Serializer\Groups({User::GROUP_DETAILS})
      */
     private $createdAt;
     /**
      * @var DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
-     * @Serializer\Groups({User::GROUP_DETAILS})
      */
     private $updatedAt;
     /**
      * @var Role
      * @ORM\Column(type="user_user_role", length=16)
      * @Serializer\Type(name="string")
-     * @Serializer\Groups({User::GROUP_DETAILS, USER::GROUP_SIMPLE})
      */
     private $role;
-
-    public const GROUP_DETAILS = 'GROUP_DETAILS';
-    public const GROUP_SIMPLE = 'GROUP_SIMPLE';
 
     private function __construct(Id $id, DateTimeImmutable $date)
     {
@@ -201,17 +185,6 @@ class User implements UserInterface
         $this->activate();
     }
 
-    public function changeName(Name $name): void
-    {
-        $this->name = $name;
-        $this->updatedAt = new DateTimeImmutable();
-    }
-    public function edit(string $email, Name $name): void
-    {
-        $this->name = $name;
-        $this->email = $email;
-        $this->updatedAt = new DateTimeImmutable();
-    }
     public function changeRole(Role $role): void
     {
         if ($this->role->isEqual($role)) {
@@ -227,7 +200,7 @@ class User implements UserInterface
             throw new DomainException('User is already active.');
         }
         $this->confirmToken = null;
-        $this->temp = null;
+        $this->resetValue = null;
         $this->status = self::STATUS_ACTIVE;
         $this->updatedAt = new DateTimeImmutable();
     }
@@ -259,10 +232,6 @@ class User implements UserInterface
     public function getEmail(): string
     {
         return $this->email;
-    }
-    public function getName(): ?Name
-    {
-        return $this->name;
     }
 
     public function getConfirmToken(): ?ConfirmToken

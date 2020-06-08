@@ -39,7 +39,6 @@ class RegisterController extends AbstractController
     public function confirm(ConfirmHandler $handler, string $token): RedirectResponse
     {
         $handler->handle(new ConfirmCommand($token));
-
         return $this->redirectToRoute('index', [
             'vueRouting' => '',
             'register' => 'confirm'

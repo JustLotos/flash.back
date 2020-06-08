@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\DataFixtures\Flash;
 
 use App\DataFixtures\BaseFixture;
-use App\Domain\Core\Entity\Card\Card;
-use App\Domain\Core\Entity\Card\Types\Record;
-use App\Domain\Core\Entity\Card\Types\Repeat;
-use App\Domain\Core\Entity\Deck\Deck;
+use App\Domain\Flash\Entity\Card\Card;
+use App\Domain\Flash\Entity\Card\Types\Record;
+use App\Domain\Flash\Entity\Card\Types\Repeat;
+use App\Domain\Flash\Entity\Deck\Deck;
 use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
