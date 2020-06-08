@@ -31,7 +31,7 @@ Axios.interceptors.response.use(
         ) {
             originalRequest._retry = true;
             AuthModule.refresh().then(() => {
-                error.config.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;
+                originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;
                 return axios(originalRequest);
             });
         }

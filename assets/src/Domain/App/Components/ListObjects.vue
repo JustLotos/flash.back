@@ -33,55 +33,49 @@
     </v-flex>
 </template>
 
-<script>
-    export default {
-        name: "ListObjects",
-        props: {
-            items: {
-                required: true
-            },
-            itemsId: {
-                required: true
-            },
-            pagination: {}
-        },
-        computed: {
-            page () {
-                if(!this.pagination) {
-                    return this.itemsId;
-                }
-                if(this.itemsId && this.itemsId.length > 0) {
-                    return this.itemsId.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
-                }
-                return [];
-            },
-            countPages: function () {
-                if(this.itemsId && this.itemsId.length > this.perPage) {
-                    return Math.ceil(this.itemsId.length/this.perPage);
-                }
-                return 0;
-            },
-            perPage: function () {
-                if(this.pagination && this.pagination.perPage) {
-                    return this.pagination.perPage;
-                }
-                return 10;
-            },
-            buttonsCount: function () {
-                if(this.pagination && this.pagination.buttonsCount) {
-                    return this.pagination.buttonsCount;
-                }
-                return 9;
-            }
-        },
-        data: function () {
-            return {
-                currentPage: 1,
-            }
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+
+@Component
+export default class ListObjects extends Vue{
+    currentPage: number = 1
+
+    @Prop()
+    items;
+
+    @Prop()
+    itemsId;
+
+    @Prop()
+    pagination
+
+    get page() {
+        if(!this.pagination) {
+            return this.itemsId;
         }
+        if(this.itemsId && this.itemsId.length > 0) {
+            return this.itemsId.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
+        }
+        return [];
     }
+    get countPages() {
+        if(this.itemsId && this.itemsId.length > this.perPage) {
+            return Math.ceil(this.itemsId.length/this.perPage);
+        }
+        return 0;
+    }
+    get perPage() {
+        if(this.pagination && this.pagination.perPage) {
+            return this.pagination.perPage;
+        }
+        return 10;
+    }
+
+    get buttonsCount () {
+        if(this.pagination && this.pagination.buttonsCount) {
+            return this.pagination.buttonsCount;
+        }
+        return 9;
+    }
+}
 </script>
-
-<style scoped>
-
-</style>

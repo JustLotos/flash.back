@@ -4,19 +4,21 @@ import Store from "../../../Store";
 import {AxiosResponse} from "axios";
 import {IDeck} from "../types";
 import {cloneObject} from "../../../Utils/Helpers";
+import DeckService from "../Service/DeckService";
 
 export interface IDeckState {
     current: IDeck;
     byId: {},
-    allIds: Array<number>
+    allIds: Array<number>,
+    load: boolean;
 }
 
 @Module({dynamic: true, store: Store, name: 'DeckModule', namespaced: true})
 export default class Deck extends VuexModule implements IDeckState{
     current;
-    byId: {};
-    allIds: Array<number> = [];
-    isLoading = false;
+    byId = {};
+    allIds = [];
+    load = false;
 
     get getDecks() {
         return this.byId;
@@ -32,9 +34,7 @@ export default class Deck extends VuexModule implements IDeckState{
 
     @Mutation
     FETCH_DECKS(decks: Array<IDeck>) {
-        if(!this.byId) this.byId = {};
         decks.forEach((deck: IDeck) => {
-            deck = cloneObject(deck);
             Vue.set(this.byId, deck.id, deck);
             if (this.allIds.indexOf(deck.id) < 0 ) {
                 this.allIds.push(deck.id);
@@ -92,5 +92,6 @@ export default class Deck extends VuexModule implements IDeckState{
         return Promise.resolve(response.data);
     }
 };
+
 
 export const DeckModule = getModule(Deck);

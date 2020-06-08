@@ -1,5 +1,5 @@
 import axios from "../../../Plugins/Axios";
-import {IDeck} from "../Modules/DeckModule";
+import {IDeck} from "../types";
 import {AxiosPromise} from "axios";
 
 export default  {
