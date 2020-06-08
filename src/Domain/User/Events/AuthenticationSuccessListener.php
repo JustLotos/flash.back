@@ -27,9 +27,12 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
             throw new DomainException('Required class implements '. UserInterface::class .', '.get_class($user). ' given');
         }
 
-        $data['role'] = $user->getRoles()[0];
-        $data['status'] = $user->getStatus();
-        $data['email'] = $user->getEmail();
+        if ($user instanceof User) {
+            $data['status'] = $user->getStatus();
+            $data['email'] = $user->getEmail();
+            $data['role'] = $user->getRoles()[0];
+        }
+
         $event->setData($data);
     }
 }

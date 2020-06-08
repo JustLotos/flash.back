@@ -1,7 +1,7 @@
 import axios, {AxiosRequestConfig} from "axios";
 import {AuthModule} from "../Domain/Auth/AuthModule";
 import Router from "../Domain/Auth/Guard";
-import {AuthResponse} from "../Domain/Auth/types";
+import {AuthResponse, RefreshResponse} from "../Domain/Auth/types";
 import {LearnerModule} from "../Domain/Flash/Modules/LearnerModule";
 
 let Axios = axios.create({
@@ -13,14 +13,15 @@ let Axios = axios.create({
 
 Axios.interceptors.response.use(
     (response) => { return response },
-    function (error) {
+    async function (error) {
         const originalRequest: AxiosRequestConfig = error.config;
 
         AuthModule.loading(false);
         LearnerModule.loading(false);
-        if (error.response?.status === 401 && originalRequest.url === originalRequest.baseURL + '/auth/token/refresh') {
+
+        if (error.response?.status === 401 && originalRequest.url === '/auth/token/refresh') {
             AuthModule.logout();
-            Router.push({name: 'Login'});
+            return Router.push({name: 'Login'});
         }
 
         if (
@@ -30,14 +31,9 @@ Axios.interceptors.response.use(
             originalRequest.url !== '/auth/reset/password'
         ) {
             originalRequest._retry = true;
-            return AuthModule.refresh()
-                .then((response: AuthResponse) => {
-                    return Axios(originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken);
-                })
-                .catch(()=>{
-                    AuthModule.logout();
-                    Router.push({name: 'Login'});
-                });
+            await AuthModule.refresh();
+            error.config.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;
+            return Axios(error.config);
         }
         return Promise.reject(error);
     }

@@ -126,11 +126,9 @@ class Auth extends VuexModule implements IAuthState {
     @Action({ rawError: true })
     public async refresh(): Promise<RefreshResponse> {
         this.loading();
-        if(this.refreshToken) {
-            const response = await AuthService.refreshToken({refreshToken: this.refreshToken});
-            this.TOKEN_REFRESH_SUCCESS(response.data);
-            return Promise.resolve(response.data);
-        }
+        const response = await AuthService.refreshToken({refreshToken: <string>this.refreshToken});
+        this.TOKEN_REFRESH_SUCCESS(response.data);
+        return Promise.resolve(response.data);
     }
 
     @Action({ rawError: true })
