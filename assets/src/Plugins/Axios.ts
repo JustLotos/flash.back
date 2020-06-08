@@ -1,7 +1,6 @@
 import axios, {AxiosRequestConfig} from "axios";
 import {AuthModule} from "../Domain/Auth/AuthModule";
 import Router from "../Domain/Auth/Guard";
-import {AuthResponse, RefreshResponse} from "../Domain/Auth/types";
 import {LearnerModule} from "../Domain/Flash/Modules/LearnerModule";
 
 let Axios = axios.create({
@@ -13,7 +12,7 @@ let Axios = axios.create({
 
 Axios.interceptors.response.use(
     (response) => { return response },
-    async function (error) {
+    function (error) {
         const originalRequest: AxiosRequestConfig = error.config;
 
         AuthModule.loading(false);
@@ -31,9 +30,10 @@ Axios.interceptors.response.use(
             originalRequest.url !== '/auth/reset/password'
         ) {
             originalRequest._retry = true;
-            await AuthModule.refresh();
-            error.config.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;
-            return Axios(error.config);
+            AuthModule.refresh().then(() => {
+                error.config.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;
+                return axios(originalRequest);
+            });
         }
         return Promise.reject(error);
     }
