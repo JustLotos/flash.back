@@ -1,0 +1,81 @@
+<template>
+    <v-card class="elevation-10">
+        <v-toolbar color="primary" class="text-center" dark flat>
+            <v-toolbar-title class="fill-width text-center">Регистрация</v-toolbar-title>
+        </v-toolbar>
+        <v-form ref="registerForm">
+            <v-card-text>
+                <v-row justify="center">
+                    <v-col cols="12" lg="8" class="pa0">
+                        <v-text-field
+                            v-model="payloads.email"
+                            :error-messages="errorPayloads.email"
+                            validate-on-blur
+                            label="E-mail адресс"
+                            type="email"
+                            prepend-icon="mdi-email"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" lg="8" class="pa0">
+                        <v-text-field
+                            v-model="payloads.password"
+                            :type="show ? 'text' : 'password'"
+                            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                            :error-messages="errorPayloads.password"
+                            @click:append="show = !show"
+                            label="Пароль" validate-on-blur prepend-icon="mdi-lock"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" lg="8" class="pa0">
+                        <v-text-field v-model="payloads.plainPassword"
+                            :type="plainShow ? 'text' : 'password'"
+                            :append-icon="plainShow ? 'mdi-eye' : 'mdi-eye-off'"
+                            :error-messages="errorPayloads.plainPassword"
+                            @click:append="plainShow = !plainShow"
+                            validate-on-blur label="Подтерждение пароля" prepend-icon="mdi-lock"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            <v-divider></v-divider>
+            <v-card-actions class="justify-center">
+                <!--                :loading="isLoading"-->
+                <v-btn class="pa2" color="primary" @click="register()">Зарегистрироваться</v-btn>
+            </v-card-actions>
+        </v-form>
+    </v-card>
+</template>
+
+<script lang="ts">
+import {Component, Vue} from "vue-property-decorator";
+import {AxiosError} from "axios";
+import {RegisterRequest} from "../types";
+import {AuthModule} from "../AuthModule";
+@Component
+export default class RegisterForm extends Vue  {
+    payloads: RegisterRequest;
+    errorPayloads: RegisterRequest;
+    show: boolean = false;
+    plainShow: boolean = false;
+
+    constructor() {
+        super();
+        this.payloads = {email: '', password: '', plainPassword: ''};
+        this.errorPayloads = {email: '', password: '', plainPassword: ''};
+    }
+
+    load() {
+        return AuthModule.load;
+    }
+
+    register() {
+        AuthModule.register(this.payloads)
+            .then(() => {
+                this.$emit('register');
+            })
+            .catch((error: AxiosError)=>{
+                this.errorPayloads = error.response?.data.errors;
+            });
+    }
+}
+</script>

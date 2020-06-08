@@ -20,12 +20,10 @@ Encore
      * Add 1 entry for each "page" of your app
      * (including one that's included on every page - e.g. "app")
      *
-     * Each entry will result in one JavaScript file (e.g. app.js)
+     * Each entry will result in one JavaScript file (e.g. main.ts)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    .addEntry('app', './assets/js/app.js')
-    //.addEntry('page1', './assets/js/page1.js')
-    //.addEntry('page2', './assets/js/page2.js')
+    .addEntry('app', './assets/src/App.ts')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
@@ -36,9 +34,6 @@ Encore
 
     /*
      * FEATURE CONFIG
-     *
-     * Enable & configure other features below. For a full
-     * list of features, see:
      * https://symfony.com/doc/current/frontend.html#adding-more-features
      */
     .cleanupOutputBeforeBuild()
@@ -55,14 +50,16 @@ Encore
         corejs: 3
     })
 
+    .enableTypeScriptLoader(options => {
+        options.appendTsSuffixTo = [/\.vue$/];
+        options.transpileOnly = true;
+    })
+
     // enables Vue.js support
     .enableVueLoader()
 
     // enables Sass/SCSS support
     .enableSassLoader()
-
-    // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
@@ -74,16 +71,12 @@ Encore
     //.enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
     // .addLoader({
+    //     test: /\.vue.(ts|tsx)$/,
+    //     loader: 'vue-tslint-loader',
+    //     exclude: /(node_modules)/,
     //     enforce: 'pre',
-    //     test: /\.(js|vue)$/,
-    //     loader: 'eslint-loader',
-    //     exclude: /node_modules/,
-    //     options: {
-    //         fix: true,
-    //         emitError: true,
-    //         emitWarning: true,
-    //     },
+    //     options: { typeCheck: true, configFile: './tslint.json' },
     // })
-;
+    ;
 
 module.exports = Encore.getWebpackConfig();
