@@ -58,9 +58,9 @@ class CardController extends AbstractController
     public function postAction(Request $request, Deck $deck, CreateHandler $handler) : Response
     {
         $this->denyAccessUnlessGranted(DeckVoter::EDIT, $deck, DeckVoter::NOT_FOUND_MESSAGE);
-        /** @var CreateCommand $cardDTO */
-        $cardDTO = $this->serializer->deserialize($request, CreateCommand::class);
-        $card = $handler->handle($cardDTO, $deck);
+        /** @var CreateCommand $command */
+        $command = $this->serializer->deserialize($request, CreateCommand::class);
+        $card = $handler->handle($command, $deck);
         return $this->response($this->serializer->serialize($card, [Card::GROUP_DETAILS, Card::GROUP_FULL, Record::GROUP_DETAILS]));
     }
 
@@ -68,9 +68,9 @@ class CardController extends AbstractController
     public function putAction(Request $request, Card $card, UpdateHandler $handler) : Response
     {
         $this->denyAccessUnlessGranted(CardVoter::EDIT, $card, CardVoter::NOT_FOUND_MESSAGE);
-        /** @var UpdateCommand $cardDTO */
-        $cardDTO = $this->serializer->deserialize($request, UpdateCommand::class);
-        $card = $handler->handle($cardDTO, $card);
+        /** @var UpdateCommand $command */
+        $command = $this->serializer->deserialize($request, UpdateCommand::class);
+        $card = $handler->handle($card, $command);
         return $this->response($this->serializer->serialize($card, [Card::GROUP_DETAILS, Card::GROUP_FULL, Record::GROUP_DETAILS]));
     }
 

@@ -35,7 +35,8 @@ class Record
     private $side;
 
     /**
-     * @ORM\JoinColumn(name="card_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
+     * @var Card | null
+     * @ORM\JoinColumn(name="card_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      * @ORM\ManyToOne(targetEntity="App\Domain\Flash\Entity\Card\Card", inversedBy="records")
      */
     private $card;
@@ -88,11 +89,11 @@ class Record
         return self::BACKSIDE;
     }
 
-    public function getCard() : Card
+    public function getCard(): ?Card
     {
         return $this->card;
     }
-    public function setCard(Card $card) : self
+    public function setCard(?Card $card) : self
     {
         $this->card = $card;
         return $this;

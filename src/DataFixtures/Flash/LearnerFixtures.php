@@ -24,6 +24,8 @@ class LearnerFixtures extends BaseFixture implements DependentFixtureInterface
             /** @var User $user */
             $user = $this->getRandomReference(UserFixtures::ADMINS);
             /** @var Learner  */
+
+            $this->faker->image();
             $learner = Learner::create(new LearnerId($user->getId()->getValue()));
             return $learner->changeName(new Name('Роман', 'Игнашов'));
         });

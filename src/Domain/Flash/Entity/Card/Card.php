@@ -114,8 +114,6 @@ class Card
     public function update(string $name, Record $front, Record $back, DateTimeImmutable $createDate): Card
     {
         $this->name = $name;
-        $this->frontSideRecords = new ArrayCollection();
-        $this->backSideRecords = new ArrayCollection();
         if (!$front->isFrontSide()) {
             throw new DomainException('Parameter $front in '.Card::class.'#createBaseCard must have front side');
         }
@@ -153,16 +151,17 @@ class Card
     }
     private function removeRecords() : self
     {
-        $this->frontSideRecords = null;
-        $this->backSideRecords = null;
-//        foreach ($this->frontSideRecords as $record) {
-//            /** @var $record Record */
-//            $record->setCard(null);
-//        }
-//        foreach ($this->backSideRecords as $record) {
-//            /** @var $record Record */
-//            $record->setCard(null);
-//        }
+        foreach ($this->frontSideRecords as $record) {
+            /** @var Record $record */
+            $record->setCard(null);
+        }
+        foreach ($this->backSideRecords as $record) {
+            /** @var Record $record */
+            $record->setCard(null);
+        }
+
+        $this->backSideRecords->clear();
+        $this->frontSideRecords->clear();
         return $this;
     }
 

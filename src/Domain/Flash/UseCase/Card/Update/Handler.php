@@ -29,12 +29,12 @@ class Handler
         $this->repository = $repository;
     }
 
-    public function handle(Card $card, Command $cardDTO): Card
+    public function handle(Card $card, Command $command): Card
     {
-        $this->validator->validate($cardDTO, [CardDTO::UPDATE]);
-        $front = Record::createFrontSide($cardDTO->frontSide);
-        $back = Record::createBackSide($cardDTO->backSide);
-        $card->update($cardDTO->name, $front, $back, new DateTimeImmutable());
+        $this->validator->validate($command);
+        $front = Record::createFrontSide($command->frontSide[0]);
+        $back = Record::createBackSide($command->backSide[0]);
+        $card->update($command->name, $front, $back, new DateTimeImmutable());
         $this->flusher->flush();
         return $card;
     }

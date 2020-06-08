@@ -13,7 +13,7 @@ use DateTimeImmutable;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="core_decks")
+ * @ORM\Table(name="flash_decks")
  */
 class Deck
 {

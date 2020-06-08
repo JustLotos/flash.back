@@ -11,15 +11,13 @@ class Command
 {
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max="255)
+     * @Assert\Length(max="255")
      * @Serializer\Type(name="string")
      */
     public $name;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
-     * @Assert\Type(type="array")
      * @Assert\Count(min="1", max="1")
      * @Serializer\Type(name="ArrayCollection<string>")
      */
@@ -27,8 +25,6 @@ class Command
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Valid()
-     * @Assert\Type(type="array")
      * @Assert\Count(min="1", max="1")
      * @Serializer\Type(name="ArrayCollection<string>")
      */

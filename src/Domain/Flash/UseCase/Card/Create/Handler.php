@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Flash\UseCase\Card\Create;
 
 use App\Domain\Flash\Entity\Card\Card;
-use App\Domain\Flash\Entity\Card\CardDTO;
 use App\Domain\Flash\Entity\Card\Types\Record;
 use App\Domain\Flash\Entity\Card\Types\Repeat;
 use App\Domain\Flash\Entity\Deck\Deck;
@@ -31,13 +30,13 @@ class Handler
         $this->repository = $repository;
     }
 
-    public function handle(Command $cardDTO, Deck $deck): Card
+    public function handle(Command $command, Deck $deck): Card
     {
-        $this->validator->validate($cardDTO, [CardDTO::CREATE]);
-        $front = Record::createFrontSide($cardDTO->frontSide[0]->content);
-        $back  = Record::createBackSide($cardDTO->backSide[0]->content);
+        $this->validator->validate($command);
+        $front = Record::createFrontSide($command->frontSide[0]);
+        $back  = Record::createBackSide($command->backSide[0]);
         $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getBaseInterval());
-        $card = Card::create($deck, $cardDTO->name, $front, $back, $repeat, new DateTimeImmutable());
+        $card = Card::create($deck, $command->name, $front, $back, $repeat, new DateTimeImmutable());
 
         $this->repository->add($card);
         $this->flusher->flush();

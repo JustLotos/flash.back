@@ -32,6 +32,10 @@ class Learner
     private $name;
 
     /**
+     * @var
+     */
+    private $avatar;
+    /**
      * @ORM\OneToMany(targetEntity="App\Domain\Flash\Entity\Deck\Deck", mappedBy="learner", orphanRemoval=true, cascade={"persist"})
      */
     private $decks;
