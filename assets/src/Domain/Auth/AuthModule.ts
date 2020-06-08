@@ -9,7 +9,7 @@ class Auth extends VuexModule implements IAuthState {
     refreshToken = localStorage.getItem(REFRESH_TOKEN);
     status = localStorage.getItem(STATUS);
     role = localStorage.getItem(ROLE);
-    public load = false;
+    load = false;
 
     get isAuthenticated(): boolean {
         return !!(this.token || localStorage.getItem(TOKEN));
@@ -48,7 +48,6 @@ class Auth extends VuexModule implements IAuthState {
     private LOADING() {
         this.load = true;
     }
-
     @Mutation
     private TOKEN_REFRESH_SUCCESS (data: RefreshResponse) {
         this.token = data.token;
@@ -57,7 +56,6 @@ class Auth extends VuexModule implements IAuthState {
         localStorage.setItem(REFRESH_TOKEN, JSON.stringify(this.refreshToken));
         this.load = false;
     }
-
     @Mutation
     private AUTHENTICATING_SUCCESS (data: AuthResponse) {
         this.token = data.token;
@@ -69,7 +67,6 @@ class Auth extends VuexModule implements IAuthState {
         localStorage.setItem(STATUS, <string>this.status);
         localStorage.setItem(ROLE, <string>this.role);
     }
-
     @Mutation
     private LOGOUT() {
         this.load = false;
@@ -82,7 +79,6 @@ class Auth extends VuexModule implements IAuthState {
         localStorage.removeItem(STATUS);
         localStorage.removeItem(ROLE);
     }
-
 
     @Action({ rawError: true })
     public async login(payload: LoginRequest): Promise<AuthResponse> {
@@ -97,6 +93,14 @@ class Auth extends VuexModule implements IAuthState {
         this.LOADING();
         const response  = await AuthService.register(payload);
         this.AUTHENTICATING_SUCCESS(response.data);
+        return Promise.resolve(response.data);
+    }
+
+    @Action({ rawError: true })
+    public async resetPassword(payload: RegisterRequest): Promise<AuthResponse> {
+        this.LOADING();
+        this.LOGOUT();
+        const response  = await AuthService.resetPassword(payload);
         return Promise.resolve(response.data);
     }
 

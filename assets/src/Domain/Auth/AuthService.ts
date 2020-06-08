@@ -12,6 +12,9 @@ export default {
     async refreshToken(payloads: RefreshTokenRequest): AxiosPromise<RefreshResponse> {
         return Axios.post('/auth/token/refresh', payloads);
     },
+    async resetPassword(payloads: RegisterRequest): AxiosPromise {
+        return Axios.post('/auth/reset/password', payloads);
+    },
     logout() {
 
     }

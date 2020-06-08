@@ -22,7 +22,6 @@ Axios.interceptors.response.use(
             Router.push({name: 'Login'});
         }
 
-        debugger;
         if (
             error.response?.status === 401 && !originalRequest._retry &&
             originalRequest.url !== API_URL + Router.resolve({name: 'Login'}) &&

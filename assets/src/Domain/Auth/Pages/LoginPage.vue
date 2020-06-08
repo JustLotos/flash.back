@@ -4,11 +4,15 @@
             <v-flex xs8 sm7 md6 lg4>
                 <login-form @login="handle"></login-form>
                 <v-card-actions class="mt-5">
-                    <v-row justify="center" class="flex-wrap">
-                        <v-card flat>
+                    <v-row>
+                        <v-col cols="12" class="pa1 text-center">
                             <span>Еще не зарегестрированы?</span>
                             <v-btn text link :to="{name: 'Register'}" color="primary">Присоедениться!</v-btn>
-                        </v-card>
+                        </v-col>
+                        <v-col cols="12" class="pa1 text-center">
+                            <span>Забыли пароль?</span>
+                            <v-btn text link :to="{name: 'ResetPassword'}" color="primary">Восстановить!</v-btn>
+                        </v-col>
                     </v-row>
                 </v-card-actions>
             </v-flex>

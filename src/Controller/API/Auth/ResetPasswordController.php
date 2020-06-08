@@ -21,7 +21,7 @@ class ResetPasswordController extends AbstractController
 {
     use ControllerHelper;
 
-    /** @Route("/", name="resetPassword", methods={"POST"}) */
+    /** @Route("", name="resetPassword", methods={"POST"}) */
     public function reset(Request $request, RequestHandler $handler): Response
     {
         /** @var RequestCommand $command */
