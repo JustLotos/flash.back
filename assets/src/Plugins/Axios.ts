@@ -17,15 +17,17 @@ Axios.interceptors.response.use(
     function (error) {
         const originalRequest: AxiosRequestConfig = error.config;
 
-        if (error.response?.status === 401 && originalRequest.url === API_URL + '/auth/token/refresh') {
+        AuthModule.loading(false);
+        if (error.response?.status === 401 && originalRequest.url === originalRequest.baseURL + '/auth/token/refresh') {
             AuthModule.logout();
             Router.push({name: 'Login'});
         }
 
         if (
             error.response?.status === 401 && !originalRequest._retry &&
-            originalRequest.url !== API_URL + Router.resolve({name: 'Login'}) &&
-            originalRequest.url !== API_URL + Router.resolve({name: 'Register'})
+            originalRequest.url !== '/auth/login' &&
+            originalRequest.url !== '/auth/register'&&
+            originalRequest.url !== '/auth/reset/password'
         ) {
             originalRequest._retry = true;
             return AuthModule.refresh()

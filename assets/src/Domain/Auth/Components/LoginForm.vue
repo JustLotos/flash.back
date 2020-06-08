@@ -73,7 +73,12 @@ export default class LoginForm extends Vue {
         if(this.$refs.loginForm.validate()) {
             AuthModule.login(this.payloads)
                 .then(() => {this.$emit('login');})
-                .catch((error: AxiosError)=>{this.error = error.response?.data.errors.auth;});
+                .catch((error: AxiosError)=>{
+                    if(error.response?.data.errors && error.response?.data.errors.auth) {
+                        this.error = error.response?.data.errors.auth;
+                    }
+                    console.log(error)
+                });
         }
     }
 }

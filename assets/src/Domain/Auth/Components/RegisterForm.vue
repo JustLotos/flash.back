@@ -12,7 +12,6 @@
                     <v-text-field
                         v-model="payloads.email"
                         :error-messages="errorPayloads.email"
-                        :rules="rules.email"
                         validate-on-blur
                         label="E-mail адресс"
                         type="email"

@@ -1,7 +1,7 @@
 import {RouteConfig} from "vue-router";
 import BaseLayout from "../App/Layouts/BaseLayout.vue";
 import RegisterPage from "./Pages/RegisterPage.vue";
-import LogoutPage from "./Pages/Logout.vue";
+import LogoutPage from "./Pages/LogoutPage.vue";
 import LoginPage from "./Pages/LoginPage.vue";
 import ResetPasswordPage from "./Pages/ResetPasswordPage.vue";
 

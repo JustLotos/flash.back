@@ -1,4 +1,4 @@
-import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import {Action, getModule, Module, Mutation, MutationAction, VuexModule} from "vuex-module-decorators";
 import Store from "../../Store";
 import {AuthResponse, LoginRequest, RefreshResponse, RegisterRequest} from "./types";
 import AuthService from "./AuthService";
@@ -44,9 +44,9 @@ class Auth extends VuexModule implements IAuthState {
         return <string>this.token
     }
 
-    @Mutation
-    private LOADING() {
-        this.load = true;
+    @MutationAction
+    public loading(value = true) {
+        this.load = value;
     }
     @Mutation
     private TOKEN_REFRESH_SUCCESS (data: RefreshResponse) {
@@ -66,10 +66,10 @@ class Auth extends VuexModule implements IAuthState {
         localStorage.setItem(TOKEN, <string>this.token);
         localStorage.setItem(STATUS, <string>this.status);
         localStorage.setItem(ROLE, <string>this.role);
+        this.load = false;
     }
     @Mutation
     private LOGOUT() {
-        this.load = false;
         this.refreshToken = null;
         this.token = null;
         this.status = null;
@@ -78,27 +78,30 @@ class Auth extends VuexModule implements IAuthState {
         localStorage.removeItem(REFRESH_TOKEN);
         localStorage.removeItem(STATUS);
         localStorage.removeItem(ROLE);
+        this.load = false;
     }
 
     @Action({ rawError: true })
     public async login(payload: LoginRequest): Promise<AuthResponse> {
-        this.LOADING();
+        this.loading();
         const response  = await AuthService.login(payload);
+        console.log(response);
         this.AUTHENTICATING_SUCCESS(response.data);
         return Promise.resolve(response.data);
     }
 
     @Action({ rawError: true })
     public async register(payload: RegisterRequest): Promise<AuthResponse> {
-        this.LOADING();
+        this.loading();
         const response  = await AuthService.register(payload);
+        console.log(response);
         this.AUTHENTICATING_SUCCESS(response.data);
         return Promise.resolve(response.data);
     }
 
     @Action({ rawError: true })
     public async resetPassword(payload: RegisterRequest): Promise<AuthResponse> {
-        this.LOADING();
+        this.loading();
         this.LOGOUT();
         const response  = await AuthService.resetPassword(payload);
         return Promise.resolve(response.data);
@@ -106,7 +109,7 @@ class Auth extends VuexModule implements IAuthState {
 
     @Action({ rawError: true })
     public async refresh(): Promise<RefreshResponse> {
-        this.LOADING();
+        this.loading();
         if(this.refreshToken) {
             const response = await AuthService.refreshToken({refreshToken: this.refreshToken});
             this.TOKEN_REFRESH_SUCCESS(response.data);
