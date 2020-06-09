@@ -5,12 +5,12 @@ import {IName} from "../types";
 
 @Module({dynamic: true, store: Store, name: 'LearnerModule', namespaced: true})
 class Learner extends VuexModule implements ILearnerState{
+    uploadCheck: boolean = false;
     name: IName = {first: '', last: ''};
     load = false;
 
-    get getName(): IName {
-        return this.name;
-    }
+    get getName(): IName { return this.name }
+    get isUploaded(): boolean { return this.uploadCheck }
 
     @Mutation
     public loading(value = true) {
@@ -20,6 +20,7 @@ class Learner extends VuexModule implements ILearnerState{
     private GET_USER_PROFILE(data: ILearnerResponse)
     {
         this.name = data.name;
+        this.uploadCheck = true;
     }
 
     @Action({rawError: true})

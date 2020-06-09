@@ -3,11 +3,21 @@ import {IDeck} from "../types";
 import {AxiosPromise} from "axios";
 
 export default  {
-    getAll(): AxiosPromise<Array<IDeck>> {
-        return axios.get("/decks");
+    getAll(type: string = 'DEFAULT'): AxiosPromise<Array<IDeck>> {
+        if(type === 'DEFAULT') {
+            return axios.get("/decks");
+        } else if (type === 'DETAIL') {
+            return axios.get("/decks?type=DETAIL");
+        } else if (type === 'FULL') {
+            return axios.get("/decks?type=FULL");
+        }
     },
-    getOne(deck: IDeck): AxiosPromise<IDeck> {
-        return axios.get("/decks/" + deck.id);
+    getOne(deck: IDeck, type: string = 'DEFAULT'): AxiosPromise<IDeck> {
+        if(type === 'DEFAULT') {
+            return axios.get("/decks/" + deck.id);
+        } else if(type === 'FULL') {
+            return axios.get("/decks/" + deck.id);
+        }
     },
     delete(deck: IDeck): AxiosPromise {
         return axios.delete("/decks/" + deck.id);

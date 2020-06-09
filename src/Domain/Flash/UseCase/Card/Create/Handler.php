@@ -35,7 +35,7 @@ class Handler
         $this->validator->validate($command);
         $front = Record::createFrontSide($command->frontSide[0]);
         $back  = Record::createBackSide($command->backSide[0]);
-        $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getBaseInterval());
+        $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getStartTimeInterval());
         $card = Card::create($deck, $command->name, $front, $back, $repeat, new DateTimeImmutable());
 
         $this->repository->add($card);

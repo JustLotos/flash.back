@@ -1,52 +1,42 @@
 <template>
     <v-card>
         <v-card-title class="justify-center">Редактирование колоды</v-card-title>
-        <deck-form :deck="deck" :event-name="'update'" @update="update" :errors="updateErrors">
+        <deck-form :deck="deck" @submit="update" :errors="errors">
             <template v-slot:submit>Сохранить</template>
         </deck-form>
     </v-card>
 </template>
 
-<script>
-    import DeckForm from "./DeckForm";
-    import {mapGetters} from 'vuex';
-    import {deckDefault} from "../../../plugins/helpers";
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+import {IDeck} from "../../types";
+import DeckForm from "./DeckForm";
+import {DeckModule} from "../../Modules/DeckModule";
 
-    export default {
-        name: "DeckUpdate",
-        components: {DeckForm},
-        props: {
-            id: {
-                required: true
-            },
-        },
-        computed: {
-            deck: function () {
-                return this.$store.getters['DeckStore/decks'][this.id];
-            },
-            updateErrors: function () {
-                if (this.errors) {
-                    return this.errors;
-                }
-                return deckDefault();
-            },
-            ...mapGetters('DeckStore',{
-                errors: 'errorsUpdate',
-            })
-        },
-        methods: {
-            async update (deck) {
-                deck.id = this.deck.id;
-                await this.$store.dispatch("DeckStore/update", deck).then(()=>{
-                    this.$emit('deck-updated', 'Колода успешно сохранена!');
-                }).catch((errors)=>{console.log(errors);})
-            }
-        },
+@Component({components: {DeckForm}})
+export default class DeckCreate extends Vue {
+    @Prop() deck: IDeck;
+    errors = {};
+
+    async update (deck: IDeck) {
+        this.$emit('updated', 'Колода успешно сохранена!');
+        // await this.$store.dispatch("DeckStore/update", deck).then(()=>{
+        //
+        // }).catch((errors)=>{console.log(errors);})
     }
+
+    mounted() {
+        if(!this.deck.details) {
+            DeckModule.getOne(this.deck)
+                .then(()=>{
+                    this.deck = DeckModule.getDeckById(this.deck.id);
+                })
+                .catch((error)=>{
+                    debugger;
+                    console.log('Ошибка получения коллекции' + JSON.stringify(error));
+                });
+        }
+    }
+}
 </script>
 
-<style scoped>
-    .centered-input >>> input {
-        text-align: center
-    }
-</style>

@@ -10,6 +10,7 @@ export interface IAppState {
         opened: boolean
         withoutAnimation: boolean
     }
+    activeModal: boolean;
     language: string
     size: string
 }
@@ -20,10 +21,17 @@ class App extends VuexModule implements IAppState {
         opened: getSidebarStatus() !== 'closed',
         withoutAnimation: false
     }
-
+    public activeModal = false;
     public device = DeviceType.Desktop
     public language = getLocale()
     public size = getSize() || 'medium'
+
+    get isResetValidation() {return !this.activeModal}
+
+    @Mutation
+    public SET_ACTIVE_MODAL(value:boolean = true) {
+        this.activeModal = value;
+    }
 
     @Mutation
     private TOGGLE_SIDEBAR(withoutAnimation: boolean) {

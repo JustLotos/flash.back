@@ -1,173 +1,135 @@
 <template>
     <v-form ref="form">
         <v-row justify="center" no-gutters style="width: 560px">
-            <v-col v-if="commonError" cols="12" sm="8">
-                <v-alert
-                    class="mt-5"
-                    type="error"
-                    transition="fade-transition"
-                >{{commonError}}</v-alert>
-            </v-col>
             <v-col cols="12" sm="8">
-                <app-form-name
-                        v-model="deck.name"
-                        :error-message="errors.name"
-                ></app-form-name>
+                <control-name v-model="getDeck.name" :error="getErrors.name"></control-name>
             </v-col>
-            <v-flex v-if="detailSettings.show">
+            <v-flex v-if="details">
                 <v-row justify="center">
                     <v-col cols="12" sm="8">
-                        <app-form-description
-                            v-model="deck.description"
-                            :error-message="errors.description">
-                        </app-form-description>
+                        <app-form-description v-model="getDeck.description" :error-message="getErrors.description"></app-form-description>
                     </v-col>
-                    <v-col cols="12" sm="8">
-                        <app-form-slider
-                            v-model:slider="deck.limit_repeat"
-                            :error-message="errors.limit_repeat"
-                            :hint="'Количество карточек доступных для повторения в день'"
-                        >
-                            <template v-slot:label="{value}">
-                                <v-label>Повторение ({{value}})</v-label>
-                            </template>
-                        </app-form-slider>
+                    <v-col cols="12" sm="8" class="text-center">
+                            <v-btn elevation="0" @click="toggleSettings">Настройки</v-btn>
                     </v-col>
-                    <v-col cols="12" sm="8">
-                        <app-form-slider
-                            v-model:slider="deck.limit_learning"
-                            :error-message="errors.limit_learning"
-                            :hint="'Количество карточек доступных для повторения в день'"
-                            :label="'Изучение'"
-                        >
-                            <template v-slot:label="{value}">
-                                <v-label>Повторение ({{value}})</v-label>
-                            </template>
-                        </app-form-slider>
-                    </v-col>
-                    <v-col cols="12" sm="8">
-                        <app-form-slider
-                            v-model:slider="deck.difficulty_index"
-                            :error-message="errors.difficulty_index"
-                            :hint="'Этот коэффициент влияет вобщем на частоту повторения'"
-                            :label="'Коэффициент сложности'"
-                        >
-                            <template v-slot:label="{value}">
-                                <v-label>Коэффициент сложности ({{value}}%)</v-label>
-                            </template>
-                        </app-form-slider>
-                    </v-col>
-                    <v-col cols="12" sm="8">
-                        <app-form-slider
-                            v-model:slider="deck.base_index"
-                            :error-message="errors.base_index"
-                            :hint="'Из данного коэффициента рассчитываются периоды повторения'"
-                            :label="'Базовый коэффициент'"
-                        >
-                            <template v-slot:label="{value}">
-                                <v-label>Базовый коэффициент ({{value}})</v-label>
-                            </template>
-                        </app-form-slider>
-                    </v-col>
-                    <v-col cols="12" sm="9">
-                        <app-form-slider
-                            v-model:slider="deck.modifier_index"
-                            :error-message="errors.modifier_index"
-                            :hint="'Из данного коэффициента рассчитывается то насколько быстро будет первое повторение'"
-                            :label="'Дополнительный коэффициент'"
-                        >
-                            <template v-slot:label="{value}">
-                                <v-label>Дополнительный коэффициент ({{value}})</v-label>
-                            </template>
-                        </app-form-slider>
-                    </v-col>
+                    <v-flex v-if="settings">
+                        <v-row justify="center">
+                            <v-col cols="12" sm="8">
+                                <control-slider
+                                    v-model:slider="getDeck.settings.limitRepeat"
+                                    :hint="'Количество карточек доступных для повторения в день'">
+                                    <template v-slot:label="{value}"><v-label>Повторение ({{value}})</v-label></template>
+                                </control-slider>
+                            </v-col>
+                            <v-col cols="12" sm="8">
+                                <control-slider
+                                    v-model:slider="getDeck.settings.limitLearning"
+                                    :hint="'Количество карточек доступных для повторения в день'">
+                                    <template v-slot:label="{value}"><v-label>Изучение ({{value}})</v-label></template>
+                                </control-slider>
+                            </v-col>
+                            <v-col cols="12" sm="8">
+                                <control-slider
+                                    v-model:slider="getDeck.settings.difficultyIndex"
+                                    :hint="'Этот коэффициент влияет вобщем на частоту повторения'">
+                                    <template v-slot:label="{value}"><v-label>Коэффициент сложности ({{value}}%)</v-label></template>
+                                </control-slider>
+                            </v-col>
+                            <v-col cols="12" sm="8">
+                                <control-slider
+                                    v-model:slider="getDeck.settings.startTimeInterval"
+                                    :ticks="getBaseTimeIntervalTicks"
+                                    :max="getBaseTimeIntervalTicks.labels.length"
+                                    :hint="'С данного времени начнется интервалы повторения'">
+                                    <template v-slot:label="{value}">
+                                        <v-label>Начальное время ({{getBaseTimeIntervalTicks.labels[value-1]}})</v-label>
+                                    </template>
+                                </control-slider>
+                            </v-col>
+                            <v-col cols="12" sm="8">
+                                <control-slider
+                                    v-model:slider="getDeck.settings.minTimeInterval"
+                                    :ticks="getMinTimeIntervalTicks"
+                                    :max="getMinTimeIntervalTicks.labels.length"
+                                    :hint="'Минимальный интервал повторения'">
+                                    <template v-slot:label="{value}">
+                                        <v-label>Минимальное время ({{getMinTimeIntervalTicks.labels[value-1]}})</v-label>
+                                    </template>
+                                </control-slider>
+                            </v-col>
+                        </v-row>
+                    </v-flex>
                 </v-row>
             </v-flex>
         </v-row>
-        <v-row :justify-sm="'center'">
+        <v-row justify="center">
             <v-col sm="auto">
-                <v-btn
-                    elevation="0"
-                    @click="toggleDetailSettings"
-                >{{detailSettings.message}}</v-btn>
-                <v-btn color="primary" @click="onSubmitForm" :loading="isLoading">
-                    <slot name="submit"></slot>
-                </v-btn>
+                <v-btn elevation="0" @click="toggleDetails">{{detailsMessage}}</v-btn>
+                <v-btn color="primary" @click="submit"><slot name="submit"></slot></v-btn>
             </v-col>
         </v-row>
     </v-form>
 </template>
 
-<script>
-    import AppFormName from "../../common/FormElements/AppFormName";
-    import AppFormDescription from "../../common/FormElements/AppFormDescription";
-    import AppFormNumber from "../../common/FormElements/AppFormNumber";
-    import AppFormSlider from "../../common/FormElements/AppFormSlider";
-    import {cloneObject, deckDefault} from "../../../plugins/helpers";
-    import {mapGetters} from "vuex";
-    export default {
-        name: "DeckForm",
-        components: {AppFormSlider, AppFormNumber, AppFormDescription, AppFormName},
-        props: {
-            eventName: {
-                type: String,
-                required: true
-            },
-            deck: {},
-            errors: {
-                type: Object,
-                default: deckDefault()
-            },
-            commonError: {
-                default: false
-            }
-        },
-        data: function () {
-            return {
-                valid: false,
-                detailSettings: {
-                    show: false,
-                    message: 'Подробнее'
-                }
-            }
-        },
-        computed: {
-            ...mapGetters('DeckStore', {
-                isLoading: 'isLoading',
-            })
-        },
-        methods: {
-            toggleDetailSettings() {
-                this.detailSettings.show = !this.detailSettings.show;
-                if(this.detailSettings.show) {
-                    this.detailSettings.message = 'Скрыть';
-                } else {
-                    this.detailSettings.message = 'Подробнее';
-                }
-            },
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+import ControlName from "../../../App/Components/FormElements/ControlName.vue";
+import AppFormNumber from "../../../App/Components/FormElements/AppFormNumber";
+import AppFormDescription from "../../../App/Components/FormElements/AppFormDescription";
+import ControlSlider from "../../../App/Components/FormElements/ControlSlider.vue";
+import {IDeck, ITimeIntervals} from "../../types";
+import {DeckModule} from "../../Modules/DeckModule";
 
-            onSubmitForm() {
-                if (this.$refs.form.validate()) {
-                    let tempDeck = cloneObject(deckDefault(
-                        this.deck.limit_repeat,
-                        this.deck.limit_repeat,
-                        this.deck.difficulty_index,
-                        this.deck.base_index,
-                        this.deck.modifier_index,
-                        this.deck.name,
-                        this.deck.description
-                    ));
+@Component({
+    components: {ControlSlider, ControlName, AppFormNumber, AppFormDescription,}
+})
+export default class DeckForm extends Vue {
+    @Prop({required: false }) errors;
+    @Prop({required: false }) deck;
 
-                    this.$emit( this.eventName, tempDeck);
+    details: boolean = false;
+    settings: boolean = false;
+    detailsMessage: string = 'Подробнее';
 
-                }
-            }
+    get getDeck(): IDeck { return this.deck || DeckModule.getDeckDefault }
+    get getErrors() { return this.errors || { settings:{} } }
+    get getTicks() {
+        return function (arrIntervals: Array<ITimeIntervals>) {
+            let ticks =  {name: 'always', labels: [], step: 1, size: 0};
+            arrIntervals
+                .sort((a: ITimeIntervals, b: ITimeIntervals) => a.value - b.value)
+                .forEach((element: ITimeIntervals)=>{
+                    ticks.labels.push(element.name)
+                    ticks.size++;
+                });
+            return ticks;
+        }
+
+
+    }
+    get getBaseTimeIntervalTicks() {
+        return this.getTicks(DeckModule.baseTimeIntervals);
+    }
+    get getMinTimeIntervalTicks() {
+        return this.getTicks(DeckModule.minTimeIntervals);
+    }
+
+    toggleSettings() { this.settings = !this.settings }
+    toggleDetails() {
+        this.details = !this.details;
+        this.details ?
+            this.detailsMessage = 'Скрыть':
+            this.detailsMessage = 'Подробнее';
+    }
+
+    submit() {
+        if (this.$refs.form.validate()) {
+            this.getDeck.settings.startTimeInterval =
+                <number>DeckModule.baseTimeIntervals[this.getDeck.settings.startTimeInterval].value;
+            this.getDeck.settings.minTimeInterval =
+                <number>DeckModule.baseTimeIntervals[this.getDeck.settings.minTimeInterval].value;
+            this.$emit('submit', this.getDeck);
         }
     }
+}
 </script>
-
-<style scoped>
-    .centered-input >>> input {
-        text-align: center
-    }
-</style>

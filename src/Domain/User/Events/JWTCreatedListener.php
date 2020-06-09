@@ -46,15 +46,13 @@ class JWTCreatedListener implements EventSubscriberInterface
 
         $data = json_decode($request->getContent(), true);
 
-        if (empty($data['remember_me'])) {
+        if (empty($data['rememberMe']) && empty($data['remember_me'])) {
             return;
         }
 
         $expiration = new DateTime('+' . $this->period. ' days');
-
         $payload = $event->getData();
         $payload['exp'] = $expiration->getTimestamp();
-
         $event->setData($payload);
     }
 }

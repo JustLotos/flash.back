@@ -44,9 +44,12 @@ export function setCardStoreState(state, card, id = null)
     }
 }
 
-export function cloneObject(object)
-{
-    return JSON.parse(JSON.stringify(object));
+export function cloneObject(object) {
+    if(object instanceof Object) {
+        return JSON.parse(JSON.stringify(object));
+    } else {
+        return object;
+    }
 }
 
 export function validate({ params })

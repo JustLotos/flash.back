@@ -1,11 +1,11 @@
 <template>
     <v-pagination
-            v-model="currentPage"
-            :length="countPages"
-            :total-visible="countButtonsPagination"
-            prev-icon="mdi-menu-left"
-            next-icon="mdi-menu-right">
-        123123</v-pagination>
+        v-model="currentPage"
+        :length="countPages"
+        :total-visible="countButtonsPagination"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+    ></v-pagination>
     <slot v-bind:page="page">123123123123</slot>
 </template>
 

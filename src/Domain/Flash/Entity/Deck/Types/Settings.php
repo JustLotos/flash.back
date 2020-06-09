@@ -38,14 +38,14 @@ class Settings implements ISettings
      * @ORM\Column(type="dateinterval")
      * @Serializer\Groups({App\Domain\Flash\Entity\Deck\Deck::GROUP_DETAILS})
      */
-    private $baseInterval;
+    private $startTimeInterval;
 
     /**
      * @var DateInterval
      * @ORM\Column(type="dateinterval")
      * @Serializer\Groups({App\Domain\Flash\Entity\Deck\Deck::GROUP_DETAILS})
      */
-    private $minTimeRepeat;
+    private $minTimeInterval;
 
     /* CONSTANTS */
     public const DEFAULT_LIMIT_REPEAT = 20;
@@ -60,11 +60,11 @@ class Settings implements ISettings
         float $difficultyIndex = self::DEFAULT_DIFFICULTY_INDEX
     ) {
         $baseInterval ?
-            $this->baseInterval = $baseInterval:
-            $this->baseInterval = DateInterval::createFromDateString('3600 seconds');
+            $this->startTimeInterval = $baseInterval:
+            $this->startTimeInterval = DateInterval::createFromDateString('3600 seconds');
         $minTimeRepeat ?
-            $this->minTimeRepeat = $minTimeRepeat:
-            $this->minTimeRepeat = DateInterval::createFromDateString('60 seconds');
+            $this->minTimeInterval = $minTimeRepeat:
+            $this->minTimeInterval = DateInterval::createFromDateString('60 seconds');
 
         $this->limitRepeat = $limitRepeat;
         $this->limitLearning = $limitLearning;
@@ -73,12 +73,12 @@ class Settings implements ISettings
 
     public function getMinTimeRepeat(): DateInterval
     {
-        return $this->minTimeRepeat;
+        return $this->minTimeInterval;
     }
 
-    public function getBaseInterval() : DateInterval
+    public function getStartTimeInterval() : DateInterval
     {
-        return $this->baseInterval;
+        return $this->startTimeInterval;
     }
 
     public function getLimitRepeat() : int

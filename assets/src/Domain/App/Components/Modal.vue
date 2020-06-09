@@ -1,0 +1,55 @@
+<template>
+    <v-dialog v-model="modal" max-width="700px" @click:outside="modalToggle" @keydown="handleKeyDown">
+        <v-container>
+            <v-layout justify-center align-center style="position: relative">
+                <slot></slot>
+                <v-btn absolute top right icon dark @click="modalToggle">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-layout>
+        </v-container>
+    </v-dialog>
+</template>
+
+<script>
+    import {AppModule} from "../AppModule";
+
+    const SHORT = 'short';
+    const WIDE = 'wide';
+    const EVENT_NAME = 'modalChange'.toLowerCase();
+    export default {
+        name: "Modal",
+        props: {
+            modal: { type: Boolean, required: true },
+            type: { type: String, default: SHORT }
+        },
+        model: { prop: 'modal', event: EVENT_NAME },
+        computed: {
+            value: {
+                get: function() {
+                    AppModule.SET_ACTIVE_MODAL(true);
+                    return this.modal || this.localModal
+                },
+                set: function(value) {
+                    this.$emit(EVENT_NAME, value)
+                    AppModule.SET_ACTIVE_MODAL(value);
+                }
+            },
+        },
+        methods: {
+            modalToggle: function () {
+                this.value =  !this.value;
+            },
+            handleKeyDown: function (event) {
+                if(event.code === 'Escape') {
+                    this.modalToggle();
+                }
+            }
+        },
+        data: function () {
+            return {
+                localModal: false
+            }
+        }
+    }
+</script>

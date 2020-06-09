@@ -50,7 +50,7 @@ class Auth extends VuexModule implements IAuthState {
 
 
     @Mutation
-    public init() {
+    public INIT_AUTH() {
         this.token = localStorage.getItem(TOKEN);
         this.refreshToken = localStorage.getItem(REFRESH_TOKEN);
         this.status = localStorage.getItem(STATUS);

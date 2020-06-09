@@ -40,7 +40,7 @@ class CardFixture extends BaseFixture implements DependentFixtureInterface
         $front = Record::createFrontSide($this->faker->streetName);
         $back = Record::createBackSide($this->faker->firstNameFemale);
 
-        $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getBaseInterval());
+        $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getStartTimeInterval());
 
         return Card::create($deck, $this->faker->name, $front, $back, $repeat, new DateTimeImmutable());
     }

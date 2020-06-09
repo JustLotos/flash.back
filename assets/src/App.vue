@@ -8,9 +8,9 @@ import { Component, Vue } from 'vue-property-decorator';
 import {AuthModule} from "./Domain/Auth/AuthModule";
 @Component
 export default class App extends Vue {
-    constructor() {
-        super();
-        AuthModule.init();
-    }
+    mounted() { AuthModule.INIT_AUTH() }
 }
 </script>
+<style>
+    .centered-input >>> input { text-align: center }
+</style>

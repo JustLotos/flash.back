@@ -28,18 +28,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class DeckController extends AbstractController
 {
     use ControllerHelper;
-
-    /** @Route("/{id<\d+>}", name="get", methods={"GET"}) */
-    public function getAction(Request $request, Deck $deck): Response
-    {
-        $this->denyAccessUnlessGranted(DeckVoter::VIEW, $deck, DeckVoter::NOT_FOUND_MESSAGE);
-        $groups = [Deck::GROUP_DETAILS, Deck::GROUP_FULL, Card::GROUP_LIST];
-        if ($request->query->get('type') && $request->query->get('type') == 'FULL') {
-            $groups =  array_merge($groups, [Card::GROUP_FULL, Card::GROUP_DETAILS, Card::GROUP_FULL, Record::GROUP_DETAILS]);
-        }
-        return $this->response($this->serializer->serialize($deck, $groups));
-    }
-
     /** @Route("/", name="cget", methods={"GET"}) */
     public function cgetAction(Request $request, DeckRepository $repository): Response
     {
@@ -53,6 +41,18 @@ class DeckController extends AbstractController
         }
         return $this->response($this->serializer->serialize($decks, $groups));
     }
+
+    /** @Route("/{id<\d+>}", name="get", methods={"GET"}) */
+    public function getAction(Request $request, Deck $deck): Response
+    {
+        $this->denyAccessUnlessGranted(DeckVoter::VIEW, $deck, DeckVoter::NOT_FOUND_MESSAGE);
+        $groups = [Deck::GROUP_DETAILS, Deck::GROUP_FULL, Card::GROUP_LIST];
+        if ($request->query->get('type') && $request->query->get('type') == 'FULL') {
+            $groups =  array_merge($groups, [Card::GROUP_FULL, Card::GROUP_DETAILS, Card::GROUP_FULL, Record::GROUP_DETAILS]);
+        }
+        return $this->response($this->serializer->serialize($deck, $groups));
+    }
+
 
     /** @Route("/", name="create", methods={"POST"}) */
     public function postAction(Request $request, CreateHandler $handler, LearnerRepository $repository): Response

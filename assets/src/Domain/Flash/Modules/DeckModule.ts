@@ -2,8 +2,7 @@ import Vue from "vue";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import Store from "../../../Store";
 import {AxiosResponse} from "axios";
-import {IDeck} from "../types";
-import {cloneObject} from "../../../Utils/Helpers";
+import {IDeck, ITimeIntervals} from "../types";
 import DeckService from "../Service/DeckService";
 
 export interface IDeckState {
@@ -15,31 +14,58 @@ export interface IDeckState {
 
 @Module({dynamic: true, store: Store, name: 'DeckModule', namespaced: true})
 export default class Deck extends VuexModule implements IDeckState{
+    uploadCheck: boolean = false;
     current;
     byId = {};
     allIds = [];
     load = false;
 
-    get getDecks() {
-        return this.byId;
+    get isUploaded() { return this.uploadCheck }
+    get getDecks() { return this.byId }
+    get getDecksId(): Array<number> { return this.allIds }
+
+    get getDeckById() {
+        return (id: number) => {
+            return this.byId[id];
+        };
     }
 
-    get getDecksId(): Array<number> {
-        return this.allIds;
+    get getDeckDefault() {
+        let settings: IDeckSettings = { limitRepeat: 20, limitLearning: 20, difficultyIndex: 50, startTimeInterval: 1, minTimeInterval: 1};
+        return { details: true, id: null, name: '', description: '', createdAt: null, updatedAt: null, settings: settings};
     }
 
-    get getCurrent(): IDeck {
-        return this.current;
+    get baseTimeIntervals(): Array<ITimeIntervals> {
+        return [
+            {name: 'm',    value:60},
+            {name: '10-m', value:600},
+            {name: 'h',    value:3600},
+            {name: '2-h',  value:7200},
+            {name: '4-h',  value:14400},
+            {name: '8-h',  value:28800},
+            {name: '16-h', value:57600},
+            {name: '24-h',  value:135200},
+        ]
+    }
+
+    get minTimeIntervals(): Array<ITimeIntervals> {
+        return [
+            {name: 'm',    value:60},
+            {name: '10-m', value:600},
+            {name: 'h',    value:3600},
+        ]
     }
 
     @Mutation
     FETCH_DECKS(decks: Array<IDeck>) {
         decks.forEach((deck: IDeck) => {
+            deck.details = false;
             Vue.set(this.byId, deck.id, deck);
             if (this.allIds.indexOf(deck.id) < 0 ) {
                 this.allIds.push(deck.id);
             }
         });
+        this.uploadCheck = true;
         this.isLoading = false;
     }
 
@@ -52,8 +78,7 @@ export default class Deck extends VuexModule implements IDeckState{
 
     @Mutation
     SET_DECK(deck: IDeck) {
-        if(!this.byId) this.byId = {};
-        deck = cloneObject(deck);
+        deck.details = true;
         Vue.set(this.byId, deck.id, deck);
         if (this.allIds.indexOf(deck.id) < 0) {
             this.allIds.push(deck.id);
@@ -69,7 +94,7 @@ export default class Deck extends VuexModule implements IDeckState{
 
     @Action({rawError: true})
     async getOne(deck: IDeck) {
-        const response =await DeckService.getOne(deck);
+        const response = await DeckService.getOne(deck);
         this.SET_DECK(response.data);
     }
 

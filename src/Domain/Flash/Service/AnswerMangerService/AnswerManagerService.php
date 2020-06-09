@@ -22,7 +22,7 @@ class AnswerManagerService
     public function getRepeatInterval(IRepeat $repeat, ISettings $settings, IAnswer $answer): DateInterval
     {
         if ($repeat->isNew()) {
-            return $settings->getBaseInterval();
+            return $settings->getStartTimeInterval();
         } elseif ($repeat->isStudied()) {
             $previewRepeatInterval = $this->converter->toSeconds($repeat->getRepeatInterval());
             $averageTimeIndex = $this->getAverageIndex(

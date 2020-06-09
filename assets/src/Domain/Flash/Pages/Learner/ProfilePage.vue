@@ -65,9 +65,13 @@ export default class ProfilePage extends Vue{
     }
 
     beforeRouteEnter(to , from , next) {
-         LearnerModule.getProfile()
-            .then(()=>{next()})
-            .catch((error)=>{ console.log("Ошибка извлечения пользователя" + JSON.stringify(error))});
+        if(!LearnerModule.isUploaded) {
+            LearnerModule.getProfile()
+                .then(next())
+                .catch((error)=>{ console.log("Ошибка извлечения пользователя" + JSON.stringify(error))});
+        } else {
+            next();
+        }
     }
 }
 </script>

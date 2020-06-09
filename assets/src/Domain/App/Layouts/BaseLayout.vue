@@ -4,7 +4,9 @@
         <sidebar/>
         <transition name="fade" duration="2000">
             <v-content>
-                <slot/>
+                <v-container fill-height>
+                    <slot/>
+                </v-container>
             </v-content>
         </transition>
         <base-footer/>

@@ -9,7 +9,7 @@ use DateTimeImmutable;
 
 interface ISettings
 {
-    public function getBaseInterval() : DateInterval;
+    public function getStartTimeInterval() : DateInterval;
     public function getDifficultyIndex() : float;
     public function getMinTimeRepeat() : DateInterval;
 }
