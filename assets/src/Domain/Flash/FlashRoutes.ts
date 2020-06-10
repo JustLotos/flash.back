@@ -11,17 +11,16 @@ import RepeatPage from "./Pages/Repeat/RepeatPage.vue";
 export const FlashRoutes: Array<RouteConfig> = [
     {
         path:'/decks', name: 'Decks', component: DecksPage,
-        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-folder', label: 'Колоды', },
+        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-folder', label: 'Коллекции' },
     },
     {
         path: '/profile', name: 'Profile', component: ProfilePage,
-        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-account-circle', label: 'Мой профиль'},
+        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-account-circle', label: 'Мой профиль' },
     },
-
-    // {
-    //     path:'/deck/:id', name: 'Deck', component: DeckPage, props: true,
-    //     meta: { auth: true, menu: false, layout: BaseLayout },
-    // },
+    {
+        path:'/deck/:id', name: 'Deck', component: DeckPage, props: true,
+        meta: { auth: true, menu: false, layout: BaseLayout },
+    },
     // {
     //     path: '/card/:id', name: 'Card', component: CardDetailPage, props: true,
     //     meta: { auth: true, menu: false, layout: BaseLayout },

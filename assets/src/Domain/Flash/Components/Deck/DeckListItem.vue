@@ -17,7 +17,7 @@
                 <v-card-subtitle dark class="card-description white--text mb-2">{{ deck.description }}</v-card-subtitle>
                 <v-card-actions>
                     <v-row justify="end" no-gutters>
-                        <v-btn>Перейти<v-icon>{{ 'mdi-chevron-right' }}</v-icon></v-btn>
+                        <v-btn :to="{name: 'Deck', params: {id: deck.id}}">Перейти<v-icon>{{ 'mdi-chevron-right' }}</v-icon></v-btn>
                     </v-row>
                 </v-card-actions>
             </v-col>

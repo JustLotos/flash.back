@@ -27,7 +27,7 @@ export default class DeckCreate extends Vue {
 
     mounted() {
         if(!this.deck.details) {
-            DeckModule.getOne(this.deck)
+            DeckModule.getOne(this.deck.id)
                 .then(()=>{
                     this.deck = DeckModule.getDeckById(this.deck.id);
                 })

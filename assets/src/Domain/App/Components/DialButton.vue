@@ -1,5 +1,5 @@
 <template>
-    <v-speed-dial v-model="fab" direction="bottom">
+    <v-speed-dial v-model="fab" direction="left">
         <template v-slot:activator>
             <v-hover open-delay="0.3s" v-slot:default="{hover}">
                 <v-btn v-model="fab" :elevation="hover ? 12 : 0" :color="hover ? 'light' : 'primary'">

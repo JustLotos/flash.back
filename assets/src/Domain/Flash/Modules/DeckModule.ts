@@ -4,6 +4,8 @@ import Store from "../../../Store";
 import {AxiosResponse} from "axios";
 import {IDeck, ITimeIntervals} from "../types";
 import DeckService from "../Service/DeckService";
+import {cloneObject} from "../../../Utils/Helpers";
+import {CardModule} from "./CardModule";
 
 export interface IDeckState {
     current: IDeck;
@@ -25,7 +27,7 @@ export default class Deck extends VuexModule implements IDeckState{
     get getDecksId(): Array<number> { return this.allIds }
 
     get getDeckById() {
-        return (id: number) => {
+        return (id: number): IDeck => {
             return this.byId[id];
         };
     }
@@ -79,6 +81,10 @@ export default class Deck extends VuexModule implements IDeckState{
     @Mutation
     SET_DECK(deck: IDeck) {
         deck.details = true;
+        deck = cloneObject(deck);
+        if (deck.cards) {
+            deck.cards = deck.cards.map(card => card.id);
+        }
         Vue.set(this.byId, deck.id, deck);
         if (this.allIds.indexOf(deck.id) < 0) {
             this.allIds.push(deck.id);
@@ -93,9 +99,16 @@ export default class Deck extends VuexModule implements IDeckState{
     }
 
     @Action({rawError: true})
-    async getOne(deck: IDeck) {
-        const response = await DeckService.getOne(deck);
+    async getOne(id: number) {
+        const response = await DeckService.getOne(id);
         this.SET_DECK(response.data);
+    }
+
+    @Action({rawError: true})
+    async getOneFull(id: number) {
+        const response = await DeckService.getOne(id, 'FULL');
+        this.SET_DECK(response.data);
+        CardModule.FETCH_CARDS_FROM_DECK(response.data);
     }
 
     @Action({rawError: true})

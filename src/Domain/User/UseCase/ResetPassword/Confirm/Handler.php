@@ -41,7 +41,6 @@ class Handler
         }
 
         $user->confirmResetPassword(new DateTimeImmutable());
-        var_dump($user);
         $this->flusher->flush();
     }
 }

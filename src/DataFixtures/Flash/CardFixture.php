@@ -20,7 +20,7 @@ class CardFixture extends BaseFixture implements DependentFixtureInterface
 
     public function loadData(ObjectManager $manager) : void
     {
-        $this->createMany(2, self::ADMIN_CARDS, function () {
+        $this->createMany(20, self::ADMIN_CARDS, function () {
             /** @var Deck $deck */
             $deck = $this->getRandomReference(DeckFixture::ADMIN_DECKS);
             return $this->getCard($deck);

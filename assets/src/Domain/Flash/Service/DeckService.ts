@@ -12,11 +12,11 @@ export default  {
             return axios.get("/decks?type=FULL");
         }
     },
-    getOne(deck: IDeck, type: string = 'DEFAULT'): AxiosPromise<IDeck> {
+    getOne(id: number, type: string = 'DEFAULT'): AxiosPromise<IDeck> {
         if(type === 'DEFAULT') {
-            return axios.get("/decks/" + deck.id);
+            return axios.get("/decks/" + id);
         } else if(type === 'FULL') {
-            return axios.get("/decks/" + deck.id);
+            return axios.get("/decks/" + id);
         }
     },
     delete(deck: IDeck): AxiosPromise {

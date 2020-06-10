@@ -7,7 +7,7 @@
             <v-flex v-if="details">
                 <v-row justify="center">
                     <v-col cols="12" sm="8">
-                        <app-form-description v-model="getDeck.description" :error-message="getErrors.description"></app-form-description>
+                        <control-text v-model="getDeck.description" :error="getErrors.description" label="Описание"></control-text>
                     </v-col>
                     <v-col cols="12" sm="8" class="text-center">
                             <v-btn elevation="0" @click="toggleSettings">Настройки</v-btn>
@@ -17,21 +17,21 @@
                             <v-col cols="12" sm="8">
                                 <control-slider
                                     v-model:slider="getDeck.settings.limitRepeat"
-                                    :hint="'Количество карточек доступных для повторения в день'">
+                                    hint="Количество карточек доступных для повторения в день">
                                     <template v-slot:label="{value}"><v-label>Повторение ({{value}})</v-label></template>
                                 </control-slider>
                             </v-col>
                             <v-col cols="12" sm="8">
                                 <control-slider
                                     v-model:slider="getDeck.settings.limitLearning"
-                                    :hint="'Количество карточек доступных для повторения в день'">
+                                    hint="Количество карточек доступных для повторения в день">
                                     <template v-slot:label="{value}"><v-label>Изучение ({{value}})</v-label></template>
                                 </control-slider>
                             </v-col>
                             <v-col cols="12" sm="8">
                                 <control-slider
                                     v-model:slider="getDeck.settings.difficultyIndex"
-                                    :hint="'Этот коэффициент влияет вобщем на частоту повторения'">
+                                    hint="Этот коэффициент влияет вобщем на частоту повторения">
                                     <template v-slot:label="{value}"><v-label>Коэффициент сложности ({{value}}%)</v-label></template>
                                 </control-slider>
                             </v-col>
@@ -40,7 +40,7 @@
                                     v-model:slider="getDeck.settings.startTimeInterval"
                                     :ticks="getBaseTimeIntervalTicks"
                                     :max="getBaseTimeIntervalTicks.labels.length"
-                                    :hint="'С данного времени начнется интервалы повторения'">
+                                    hint="С данного времени начнется интервалы повторения">
                                     <template v-slot:label="{value}">
                                         <v-label>Начальное время ({{getBaseTimeIntervalTicks.labels[value-1]}})</v-label>
                                     </template>
@@ -51,7 +51,7 @@
                                     v-model:slider="getDeck.settings.minTimeInterval"
                                     :ticks="getMinTimeIntervalTicks"
                                     :max="getMinTimeIntervalTicks.labels.length"
-                                    :hint="'Минимальный интервал повторения'">
+                                    hint="Минимальный интервал повторения">
                                     <template v-slot:label="{value}">
                                         <v-label>Минимальное время ({{getMinTimeIntervalTicks.labels[value-1]}})</v-label>
                                     </template>
@@ -73,14 +73,14 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
-import ControlName from "../../../App/Components/FormElements/ControlName.vue";
-import AppFormDescription from "../../../App/Components/FormElements/AppFormDescription";
-import ControlSlider from "../../../App/Components/FormElements/ControlSlider.vue";
 import {IDeck, ITimeIntervals} from "../../types";
 import {DeckModule} from "../../Modules/DeckModule";
+import ControlName from "../../../App/Components/FormElements/ControlName.vue";
+import ControlText from "../../../App/Components/FormElements/ControlText.vue";
+import ControlSlider from "../../../App/Components/FormElements/ControlSlider.vue";
 
 @Component({
-    components: {ControlSlider, ControlName, AppFormDescription,}
+    components: {ControlSlider, ControlName, ControlText}
 })
 export default class DeckForm extends Vue {
     @Prop({required: false }) errors;
