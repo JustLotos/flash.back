@@ -27,6 +27,12 @@ class App extends VuexModule implements IAppState {
     public size = getSize() || 'medium'
 
     get isResetValidation() {return !this.activeModal}
+    get getRedirectOnGuardedPath() {
+        return {name: 'Login'};
+    }
+    get getRedirectOnUnguardedPath() {
+        return {name: 'Dashboard'};
+    }
 
     @Mutation
     public SET_ACTIVE_MODAL(value:boolean = true) {

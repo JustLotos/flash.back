@@ -6,6 +6,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import {AuthModule} from "./Domain/Auth/AuthModule";
+Component.registerHooks(['beforeRouteEnter']);
+
 @Component
 export default class App extends Vue {
     mounted() { AuthModule.INIT_AUTH() }

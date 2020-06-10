@@ -110,7 +110,6 @@ class Auth extends VuexModule implements IAuthState {
     public async register(payload: RegisterRequest): Promise<AuthResponse> {
         this.loading();
         const response  = await AuthService.register(payload);
-        console.log(response);
         this.AUTHENTICATING_SUCCESS(response.data);
         return Promise.resolve(response.data);
     }
@@ -118,6 +117,7 @@ class Auth extends VuexModule implements IAuthState {
     @Action({ rawError: true })
     public async resetPassword(payload: RegisterRequest): Promise<AuthResponse> {
         this.loading();
+        console.log(this.load);
         this.LOGOUT();
         const response  = await AuthService.resetPassword(payload);
         return Promise.resolve(response.data);

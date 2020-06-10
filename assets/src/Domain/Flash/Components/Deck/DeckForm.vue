@@ -74,14 +74,13 @@
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 import ControlName from "../../../App/Components/FormElements/ControlName.vue";
-import AppFormNumber from "../../../App/Components/FormElements/AppFormNumber";
 import AppFormDescription from "../../../App/Components/FormElements/AppFormDescription";
 import ControlSlider from "../../../App/Components/FormElements/ControlSlider.vue";
 import {IDeck, ITimeIntervals} from "../../types";
 import {DeckModule} from "../../Modules/DeckModule";
 
 @Component({
-    components: {ControlSlider, ControlName, AppFormNumber, AppFormDescription,}
+    components: {ControlSlider, ControlName, AppFormDescription,}
 })
 export default class DeckForm extends Vue {
     @Prop({required: false }) errors;
