@@ -2,10 +2,13 @@
 export interface ICard {
     id: number,
     name: string,
-    frontSide: Array<string>
-    backSide: Array<string>
+    frontSide: Array<IRecord>
+    backSide: Array<IRecord>
 }
-
+export interface IRecord {
+    id: number;
+    content: string;
+}
 /** Deck */
 export interface IDeck {
     details: boolean | null;

@@ -2,7 +2,7 @@ import Vue from "vue";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import Store from "../../../Store";
 import {AxiosResponse} from "axios";
-import {ICard, IDeck} from "../types";
+import {ICard, IDeck, IRecord} from "../types";
 import CardService from "../Service/CardService";
 
 export interface ICardState {
@@ -19,6 +19,7 @@ export default class Card extends VuexModule implements ICardState{
     allIds = [];
     load = false;
 
+    get isLoading(): boolean {return this.load}
     get getCards() { return this.byId }
     get getCardId(): Array<number> { return this.allIds }
     get getCardById() {
@@ -48,9 +49,12 @@ export default class Card extends VuexModule implements ICardState{
         }
     }
 
-
     get getCardDefault(): ICard {
-        return { id: 0, name: '', frontSide: [''], backSide: [''] }
+        return {
+            id: 0,
+            name: '',
+            frontSide:  [{id: 0, content: ''}],
+            backSide:   [{id: 0, content: ''}]}
     }
 
     @Mutation
@@ -97,6 +101,7 @@ export default class Card extends VuexModule implements ICardState{
 
     @Mutation
     SET_CARD_FULL(card: ICard) {
+        card.details = true;
         Vue.set(this.byId, card.id, card);
         if (this.allIds.indexOf(card.id) < 0) {
             this.allIds.push(card.id);
@@ -111,12 +116,12 @@ export default class Card extends VuexModule implements ICardState{
 
     @Action({rawError: true})
     async getOneFull(deckId: number) {
-        const response = await CardService.getOne(deckId);
-        this.SET_CARD(response.data);
+        const response = await CardService.getOneFull(deckId);
+        this.SET_CARD_FULL(response.data);
     }
 
     @Action({rawError: true})
-    async create(deck: IDeck, card: ICard) {
+    async create(deck: number, card: ICard) {
         const response =await CardService.create(deck, card);
         this.SET_CARD(response.data);
     }
@@ -133,6 +138,17 @@ export default class Card extends VuexModule implements ICardState{
         this.DELETE_CARD(card);
         return Promise.resolve(response.data);
     }
+
+
+    @Action
+    public convertSide(records: Array<IRecord>): string {
+        let str = ''
+        records.forEach((record: IRecord) => { str += record.content });
+        console.log(str);
+        return str;
+    }
+
+
 };
 
 

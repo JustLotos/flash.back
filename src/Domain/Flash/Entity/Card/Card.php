@@ -63,6 +63,7 @@ class Card
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Domain\Flash\Entity\Card\Types\Record", mappedBy="card", orphanRemoval=true, cascade={"persist"})
+     * @Serializer\Groups({Card::GROUP_DETAILS})
      */
     private $records;
     /**

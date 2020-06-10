@@ -1,6 +1,6 @@
 <template>
     <v-card color="light">
-<!--        <v-form ref="form" v-model="valid">-->
+        <v-form ref="form" v-model="valid">
 <!--            <v-row justify="center" align="center" class="pa-2">-->
 <!--                <v-col cols="12" sm="10" offset="2">-->
 <!--                    <v-toolbar dense elevation="0">-->

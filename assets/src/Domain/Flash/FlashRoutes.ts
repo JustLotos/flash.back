@@ -1,6 +1,6 @@
 import {RouteConfig} from "vue-router";
 import BaseLayout from "../App/Layouts/BaseLayout.vue";
-import CardDetailPage from "./Pages/Card/CardDetailPage.vue";
+import CardPage from "./Pages/Card/CardPage.vue";
 import ReviewPage from "./Pages/Card/ReviewPage.vue";
 import DecksPage from "./Pages/Deck/DecksPage.vue";
 import DeckPage from "./Pages/Deck/DeckPage.vue";
@@ -21,10 +21,10 @@ export const FlashRoutes: Array<RouteConfig> = [
         path:'/deck/:id', name: 'Deck', component: DeckPage, props: true,
         meta: { auth: true, menu: false, layout: BaseLayout },
     },
-    // {
-    //     path: '/card/:id', name: 'Card', component: CardDetailPage, props: true,
-    //     meta: { auth: true, menu: false, layout: BaseLayout },
-    // },
+    {
+        path: '/card/:id', name: 'Card', component: CardPage, props: true,
+        meta: { auth: true, menu: false, layout: BaseLayout },
+    },
     // {
     //     path: '/review', name: 'Review', component: ReviewPage,
     //     meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-cards-outline', label: 'Обзор' },
