@@ -20,13 +20,7 @@ export default class ListObjects extends Vue{
     @Prop({required: true }) items;
     @Prop({required: true }) itemsId: Array<number>;
 
-    get getItems() {
-        console.log(this.items);
-        return this.items
-    }
-    get getItemsId(): Array<number> {
-        console.log(this.itemsId);
-        return this.itemsId || []
-    }
+    get getItems() { return this.items }
+    get getItemsId(): Array<number> {return this.itemsId || []}
 }
 </script>

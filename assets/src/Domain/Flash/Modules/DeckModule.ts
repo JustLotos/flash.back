@@ -25,18 +25,15 @@ export default class Deck extends VuexModule implements IDeckState{
     get isUploaded() { return this.uploadCheck }
     get getDecks() { return this.byId }
     get getDecksId(): Array<number> { return this.allIds }
-
     get getDeckById() {
         return (id: number): IDeck => {
             return this.byId[id];
         };
     }
-
     get getDeckDefault() {
         let settings: IDeckSettings = { limitRepeat: 20, limitLearning: 20, difficultyIndex: 50, startTimeInterval: 1, minTimeInterval: 1};
         return { details: true, id: null, name: '', description: '', createdAt: null, updatedAt: null, settings: settings};
     }
-
     get baseTimeIntervals(): Array<ITimeIntervals> {
         return [
             {name: 'm',    value:60},
@@ -49,7 +46,6 @@ export default class Deck extends VuexModule implements IDeckState{
             {name: '24-h',  value:135200},
         ]
     }
-
     get minTimeIntervals(): Array<ITimeIntervals> {
         return [
             {name: 'm',    value:60},
@@ -61,10 +57,12 @@ export default class Deck extends VuexModule implements IDeckState{
     @Mutation
     FETCH_DECKS(decks: Array<IDeck>) {
         decks.forEach((deck: IDeck) => {
-            deck.details = false;
-            Vue.set(this.byId, deck.id, deck);
-            if (this.allIds.indexOf(deck.id) < 0 ) {
-                this.allIds.push(deck.id);
+            if(!this.byId[deck.id]) {
+                deck.details = false;
+                Vue.set(this.byId, deck.id, deck);
+                if (this.allIds.indexOf(deck.id) < 0 ) {
+                    this.allIds.push(deck.id);
+                }
             }
         });
         this.uploadCheck = true;

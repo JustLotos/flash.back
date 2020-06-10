@@ -86,13 +86,7 @@ export default class DeckPage extends Vue{
     modalMessage: string = '';
     setDeck(deck) { this.deck = deck }
     get getDeck() { return this.deck || {settings: {}} }
-    get getCards() {
-        let cards = {};
-        if(this.getDeck && this.getDeck.cards && this.getDeck.cards.length > 0) {
-            cards = CardModule.getCardsByCardsIds(this.getDeck.cards);
-        }
-        return cards;
-    }
+    get getCards() { return CardModule.getCardsByCardsIds(this.getDeck.cards) }
     get getCardsId() { return this.deck.cards }
 
     toggleDeleteModal() { this.deleteModal = !this.deleteModal }
@@ -121,40 +115,8 @@ export default class DeckPage extends Vue{
             .then(()=>{ next(vm=>vm.setDeck(DeckModule.getDeckById(deckId))) })
             .catch((error)=>{console.log('Ошибка получения коллекции' + JSON.stringify(error.response))});
         } else {
-            next(vm=>vm.deck.setDeck(deck))
+            next(vm=>vm.setDeck(deck))
         }
     }
 }
-
-
-    //     methods: {
-    //         setDeck(deck) {
-    //             this.deck = deck;
-    //         },
-    //         editDeckModalToggle: function () {
-    //             this.editDeckModal = !this.editDeckModal;
-    //         },
-    //         handleSuccessEditDeck: function(value) {
-    //             this.editDeckModal = !this.editDeckModal;
-    //             this.successMessage = value;
-    //             this.successModal = !this.successModal;
-    //         },
-    //         deleteDeckModalToggle: function () {
-    //             this.deleteDeckModal = !this.deleteDeckModal;
-    //         },
-    //         handleSuccessDeleteDeck: function(value) {
-    //             this.deleteDeckModal = !this.deleteDeckModal;
-    //             this.successMessage = value;
-    //             this.successModal = !this.successModal;
-    //         },
-    //         createModalToggle: function() {
-    //             this.createModal = !this.createModal;
-    //         },
-    //         handleSuccessCreate: function(value) {
-    //             this.successMessage = value;
-    //             this.successModal = !this.successModal;
-    //         },
-    //     },
-    //     }
-    // }
 </script>
