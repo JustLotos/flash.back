@@ -39,10 +39,8 @@ export default class Card extends VuexModule implements ICardState {
     get getCardsByCardsIds()  {
         return (cards: Array<number>) => {
             let temp = {};
-            if(!cards) {
-                return temp;
-            }
-            cards.map((cardId: number)=> {
+            if(!cards) { return temp }
+            cards.map((cardId: number) => {
                 temp[cardId] = this.byId[cardId];
             });
             return temp;

@@ -3,7 +3,7 @@
         <v-card>
             <v-layout justify-center>
                 <v-flex>
-                    <v-row>
+                    <v-row v-if="!isLoading">
                         <v-col cols="4">
                             <v-card-actions class="justify-center pa-2">
                                 <v-avatar class="profile" color="grey" size="164" tile>
@@ -41,6 +41,7 @@
                             </v-flex>
                         </v-col>
                     </v-row>
+                    <loader v-else />
                 </v-flex>
             </v-layout>
         </v-card>
@@ -52,9 +53,14 @@ import { Component, Vue } from "vue-property-decorator";
 import { LearnerModule } from "../../Modules/LearnerModule";
 import {AuthModule} from "../../../Auth/AuthModule";
 import {IProfile} from "../../types";
-
-@Component
+import Loader from "../../../App/Components/FormElements/Loader.vue";
+@Component({
+    components: {Loader}
+})
 export default class ProfilePage extends Vue{
+
+    get isLoading(): boolean { return LearnerModule.isFetching }
+
     get user(): IProfile {
         return {
             name: LearnerModule.getName,
@@ -65,7 +71,7 @@ export default class ProfilePage extends Vue{
     }
 
     beforeRouteEnter(to , from , next) {
-        if(!LearnerModule.isUploaded) {
+        if(!LearnerModule.isUploadedDetails) {
             LearnerModule.getProfile()
                 .then(next())
                 .catch((error)=>{ console.log("Ошибка извлечения пользователя" + JSON.stringify(error))});

@@ -1,6 +1,6 @@
 <template>
     <v-layout justify-center align-center>
-        <v-card v-if="!loadingFetch">
+        <v-card v-if="!isLoading">
             <v-row justify="center">
                 <v-col cols="9">
                     <list-objects :items="decks" :items-id="decksId">
@@ -23,12 +23,7 @@
             <modal v-model="createModal"><deck-create @created="handleCreate"/></modal>
             <modal v-model="successModal"><v-alert type="success">{{modalMessage}}</v-alert></modal>
         </v-card>
-
-        <v-row v-else justify="center">
-            <v-col cols="1">
-                <v-progress-circular :size="70" :width="7" indeterminate></v-progress-circular>
-            </v-col>
-        </v-row>
+        <loader v-else />
     </v-layout>
 
 </template>
@@ -42,17 +37,18 @@ import DeckCreate from "../../Components/Deck/DeckCreate";
 import Modal from "../../../App/Components/Modal";
 import CircleButton from "../../../App/Components/CircleButton";
 import {AppModule} from "../../../App/AppModule";
+import Loader from "../../../App/Components/FormElements/Loader.vue";
 
 @Component({
-    components: { ListObjects, DeckListItem, DeckCreate, Modal, CircleButton },
+    components: {Loader, ListObjects, DeckListItem, DeckCreate, Modal, CircleButton },
 })
 export default class DecksPage extends Vue{
     createModal: boolean = false;
     successModal: boolean = false;
     modalMessage: string = '';
 
-    get loadingFetch(): boolean {
-        return DeckModule.isFetchAllLoading;
+    get isLoading(): boolean {
+        return DeckModule.isActionFetchAllLoading;
     }
 
     toggleModal() {
@@ -65,7 +61,7 @@ export default class DecksPage extends Vue{
     }
 
     beforeRouteEnter(to , from , next) {
-        if(!DeckModule.isUploaded) {
+        if(!DeckModule.isUploadedList) {
             DeckModule.fetchAll()
                 .then(next())
                 .catch((error)=>{ console.log("Ошибка извлечения колоды" + JSON.stringify(error))});

@@ -1,7 +1,7 @@
 <template>
     <v-row justify="space-around">
         <v-col cols="12" sm="10">
-            <v-card :elevation="18" class="pa-12">
+            <v-card v-if="!isLoading" :elevation="18" class="pa-12">
                 <v-row justify="center">
                     <v-col cols="12" sm="10">
                         <v-toolbar dense short flat>
@@ -52,6 +52,7 @@
                     </v-col>
                 </v-row>
             </v-card>
+            <loader v-else/>
         </v-col>
 
         <modal v-model="updateModal">
@@ -74,8 +75,9 @@ import DeckDelete from "../../Components/Deck/DeckDelete.vue";
 import ListObjects from "../../../App/Components/ListObjects";
 import CardListItem from "../../Components/Card/CardListRow";
 import {CardModule} from "../../Modules/CardModule";
+import Loader from "../../../App/Components/FormElements/Loader.vue";
 
-@Component({components: {DialButton, Modal, DeckUpdate, DeckDelete, ListObjects, CardListItem}})
+@Component({components: {Loader, DialButton, Modal, DeckUpdate, DeckDelete, ListObjects, CardListItem}})
 export default class DeckPage extends Vue{
     @Prop() id: number;
     deck = {};
@@ -88,6 +90,7 @@ export default class DeckPage extends Vue{
     get getDeck() { return this.deck || {settings: {}} }
     get getCards() { return CardModule.getCardsByCardsIds(this.getDeck.cards) }
     get getCardsId() { return this.deck.cards }
+    get isLoading() { return DeckModule.isActionFetchOneLoading }
 
     toggleDeleteModal() { this.deleteModal = !this.deleteModal }
     handleDelete(message: string) {
@@ -102,17 +105,11 @@ export default class DeckPage extends Vue{
         this.successModal = false;
     }
 
-
-    beforeRouteEnter(from, to, next) {
-        let deckId: number;
-        if (to.name === 'Deck') { deckId = to.params.id; }
-        else if (from.name == 'Deck') { deckId = from.params.id;}
-        else {console.log('id не найден'); }
-
-        let deck = DeckModule.getDeckById(deckId) || {};
+    beforeRouteEnter(to, from, next) {
+        let deck = DeckModule.getDeckById(to.params.id) || {};
         if(!deck.details) {
-            DeckModule.getOneFull(deckId)
-            .then(()=>{ next(vm=>vm.setDeck(DeckModule.getDeckById(deckId))) })
+            DeckModule.fetchOneFull(to.params.id)
+            .then(()=>{ next(vm=>vm.setDeck(DeckModule.getDeckById(to.params.id))) })
             .catch((error)=>{console.log('Ошибка получения коллекции' + JSON.stringify(error.response))});
         } else {
             next(vm=>vm.setDeck(deck))

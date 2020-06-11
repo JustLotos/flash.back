@@ -1,5 +1,5 @@
 <template>
-    <v-container class="fill-height d-block" fluid>
+    <v-container v-if="!isLoading" class="fill-height d-block" fluid >
         <v-navigation-drawer app v-model="localSidebar" clipped fixed height="100%" :width="325">
             <v-row class="pa-0 ma-0">
                 <v-col cols="12">
@@ -48,9 +48,9 @@
                 </v-col>
             </v-row>
         </v-card>
-
         <modal v-model="modal" ><v-alert type="success">{{modalMessage}}</v-alert></modal>
     </v-container>
+    <loader v-else/>
 </template>
 
 <script lang="ts">
@@ -63,8 +63,9 @@ import {DeckModule} from "../../Modules/DeckModule";
 import {ICard, IDeck} from "../../types";
 import {CardModule} from "../../Modules/CardModule";
 import CardForm from "../../Components/Card/CardForm.vue";
+import Loader from "../../../App/Components/FormElements/Loader.vue";
 
-@Component({components: {CardForm, CardCreate, CardUpdate, ListObjects, Modal}})
+@Component({components: {Loader, CardForm, CardCreate, CardUpdate, ListObjects, Modal}})
 export default class ReviewPage extends Vue {
     localSidebar: boolean = true;
     modal: boolean = false;
@@ -91,6 +92,8 @@ export default class ReviewPage extends Vue {
     get getDecksId(): Array<number> {
         return DeckModule.getDecksId;
     }
+
+    get isLoading() { return DeckModule.isActionFetchAllLoading }
 
     getCardsIdByDeckId(id: number) {
         return  CardModule.getCardsByDeckId(id);
