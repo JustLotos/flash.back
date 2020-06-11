@@ -8,34 +8,34 @@ import {cloneObject} from "../../../Utils/Helpers";
 import {CardModule} from "./CardModule";
 
 export interface IDeckState {
-    current: IDeck;
     byId: {},
     allIds: Array<number>,
     currentActionLoad: ServiceActions | null;
+    uploadStatus: UploadStatus;
 }
 enum UploadStatus { EMPTY,LIST,DETAILS,FULL}
-enum ServiceActions { FETCH_ALL = 1, FETCH_ONE, CREATE, UPDATE, DELETE }
+enum ServiceAction { FETCH_ALL = 1, FETCH_ONE, CREATE, UPDATE, DELETE }
 
 @Module({dynamic: true, store: Store, name: 'DeckModule', namespaced: true})
 export default class Deck extends VuexModule implements IDeckState{
-    current;
     byId = {};
     allIds = [];
-    /** Загрузка - используется для анимации лодаера при начально загрузке стриниц */
-    currentActionLoad: ServiceActions | null = null;
-    /** Ступень загрузки - используется для оптимизация количества запросов */
+    currentActionLoad = null;
     uploadStatus: UploadStatus = UploadStatus.EMPTY;
 
-    get isUploaded() { return !!this.uploadStatus }
-    get isUploadedFull() { return this.uploadStatus === UploadStatus.FULL; }
-    get getUploaded() { return this.uploadStatus }
+    get isUploaded()            { return !!this.uploadStatus }
+    get isUploadedFull()        { return this.uploadStatus === UploadStatus.FULL; }
+    get isUploadedList()        { return this.uploadStatus === UploadStatus.LIST; }
+    get isUploadedDetails()     { return this.uploadStatus === UploadStatus.DETAILS; }
+    get getUploaded()           { return this.uploadStatus }
 
     get isLoading():            boolean { return !!this.currentActionLoad }
-    get isFetchAllLoading():    boolean { return this.currentActionLoad == ServiceActions.FETCH_ALL }
-    get isFetchOneLoading():    boolean { return this.currentActionLoad == ServiceActions.FETCH_ONE }
-    get isCreatLoading():       boolean { return this.currentActionLoad == ServiceActions.CREATE }
-    get isUpdateLoading():      boolean { return this.currentActionLoad == ServiceActions.UPDATE }
-    get isDeleteLoading():      boolean { return this.currentActionLoad == ServiceActions.DELETE }
+    get isFetchAllLoading():    boolean { return this.currentActionLoad == ServiceAction.FETCH_ALL }
+    get isFetchOneLoading():    boolean { return this.currentActionLoad == ServiceAction.FETCH_ONE }
+    get isCreatLoading():       boolean { return this.currentActionLoad == ServiceAction.CREATE }
+    get isUpdateLoading():      boolean { return this.currentActionLoad == ServiceAction.UPDATE }
+    get isDeleteLoading():      boolean { return this.currentActionLoad == ServiceAction.DELETE }
+    get getCurrentActionLoad(): ServiceAction { return this.currentActionLoad }
 
     get getDecks() {
         return this.byId

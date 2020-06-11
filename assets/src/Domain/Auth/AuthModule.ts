@@ -59,7 +59,7 @@ class Auth extends VuexModule implements IAuthState {
         this.loadStatus = true;
     }
     @Mutation
-    private UNSET_LOADING() {
+    private UNSET_LOAD() {
         this.loadStatus = false;
     }
 
@@ -105,7 +105,7 @@ class Auth extends VuexModule implements IAuthState {
         this.LOADING();
         const response  = await AuthService.login(payload);
         this.AUTHENTICATING_SUCCESS(response.data);
-        this.UNSET_LOADING();
+        this.UNSET_LOAD();
         return response.data;
     }
     @Action({ rawError: true })
@@ -113,7 +113,7 @@ class Auth extends VuexModule implements IAuthState {
         this.LOADING();
         const response  = await AuthService.register(payload);
         this.AUTHENTICATING_SUCCESS(response.data);
-        this.UNSET_LOADING();
+        this.UNSET_LOAD();
         return response.data;
     }
     @Action({ rawError: true })
@@ -121,7 +121,7 @@ class Auth extends VuexModule implements IAuthState {
         this.LOADING();
         this.LOGOUT();
         const response  = await AuthService.resetPassword(payload);
-        this.UNSET_LOADING();
+        this.UNSET_LOAD();
         return response.data;
     }
     @Action({ rawError: true })
@@ -129,7 +129,7 @@ class Auth extends VuexModule implements IAuthState {
         this.LOADING();
         const response = await AuthService.refreshToken({refreshToken: <string>this.refreshToken});
         this.TOKEN_REFRESH_SUCCESS(response.data);
-        this.UNSET_LOADING();
+        this.UNSET_LOAD();
         return response.data;
     }
     @Action({ rawError: true })

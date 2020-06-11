@@ -1,8 +1,8 @@
 import Axios from "../../../Plugins/Axios";
-import {ILearnerResponse} from "../Modules/LearnerModule";
+import {ILearner} from "../types";
 
 export default {
-    async profile(): AxiosResponse<ILearnerResponse> {
+    async profile(): AxiosResponse<ILearner> {
         return Axios.get("/learner/profile");
     }
 };

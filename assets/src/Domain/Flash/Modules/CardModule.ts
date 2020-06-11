@@ -6,7 +6,6 @@ import {ICard, IDeck, IRecord} from "../types";
 import CardService from "../Service/CardService";
 
 export interface ICardState {
-    current: ICard;
     byId: {},
     allIds: Array<number>,
     currentActionLoad: ServiceAction | null;
@@ -16,7 +15,6 @@ enum ServiceAction { FETCH_ALL = 1, FETCH_ONE, CREATE, UPDATE, DELETE  }
 enum UploadStatus { EMPTY,LIST,DETAILS,FULL}
 @Module({dynamic: true, store: Store, name: 'CardModule', namespaced: true})
 export default class Card extends VuexModule implements ICardState {
-    current;
     byId = {};
     allIds = [];
     currentActionLoad = null;
@@ -30,7 +28,7 @@ export default class Card extends VuexModule implements ICardState {
     get isDeleteLoading():      boolean { return this.currentActionLoad == ServiceActions.DELETE }
     get getCurrentActionLoad(): ServiceAction { return this.currentActionLoad }
 
-    get isUploaded(): boolean { return true }
+    get isUploaded(): boolean { return !!this.uploadStatus }
     get getCardId(): Array<number> { return this.allIds }
     get getCards() { return this.byId }
     get getCardById() {

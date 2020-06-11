@@ -18,24 +18,35 @@ class Learner extends VuexModule implements ILearnerState{
     currentActionLoad = null;
     uploadStatus = UploadStatus.EMPTY;
 
-    get getName(): IName { return this.name }
     get isUploaded(): boolean { return !!this.uploadStatus }
+    get isUploadedDetails(): boolean { return this.uploadStatus === UploadStatus.DETAILS }
+    get isUploadedFull(): boolean { return this.uploadStatus === UploadStatus.FULL }
+    get getName(): IName { return this.name }
+
+    get isLoading(): boolean { return  !!this.currentActionLoad }
+    get isFetching(): boolean { return this.currentActionLoad === ServiceAction.FETCH }
+    get isUpdating(): boolean { return this.currentActionLoad === ServiceAction.UPDATE }
 
     @Mutation
-    public loading(value = true) {
-        this.load = value;
+    public LOADING() {
+        this.load = true;
     }
     @Mutation
-    private GET_USER_PROFILE(data: ILearner)
-    {
+    public UNSET_LOAD() {
+        this.load = false;
+    }
+    @Mutation
+    private GET_USER_PROFILE(data: ILearner) {
         this.name = data.name;
         this.uploadStatus = UploadStatus.DETAILS;
     }
 
     @Action({rawError: true})
     public async getProfile(): Promise<ILearner>{
+        this.LOADING()
         const response = await LearnerService.profile();
         this.GET_USER_PROFILE(response.data);
+        this.UNSET_LOAD();
         return response.data;
     }
 }
