@@ -35,8 +35,13 @@ class App extends VuexModule implements IAppState {
     }
 
     @Mutation
-    public SET_ACTIVE_MODAL(value:boolean = true) {
-        this.activeModal = value;
+    public SET_ACTIVE_MODAL() {
+        this.activeModal = true;
+    }
+
+    @Mutation
+    public UNSET_ACTIVE_MODAL() {
+        this.activeModal = false;
     }
 
     @Mutation

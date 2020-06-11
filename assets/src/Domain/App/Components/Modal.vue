@@ -27,12 +27,12 @@
 
             value: {
                 get: function() {
-                    AppModule.SET_ACTIVE_MODAL(true);
+                   // AppModule.SET_ACTIVE_MODAL();
                     return this.modal || this.localModal
                 },
                 set: function(value) {
                     this.$emit(EVENT_NAME, value)
-                    AppModule.SET_ACTIVE_MODAL(value);
+                  //  AppModule.UNSET_ACTIVE_MODAL();
                 }
             },
         },

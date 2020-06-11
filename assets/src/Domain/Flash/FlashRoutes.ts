@@ -10,12 +10,8 @@ import RepeatPage from "./Pages/Repeat/RepeatPage.vue";
 
 export const FlashRoutes: Array<RouteConfig> = [
     {
-        path:'/decks', name: 'Decks', component: DecksPage,
-        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-folder', label: 'Коллекции' },
-    },
-    {
-        path: '/profile', name: 'Profile', component: ProfilePage,
-        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-account-circle', label: 'Мой профиль' },
+        path: '/study', name: 'prepare', component: PreparePage,
+        meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-teach', label: 'Повторение' },
     },
     {
         path:'/deck/:id', name: 'Deck', component: DeckPage, props: true,
@@ -29,12 +25,16 @@ export const FlashRoutes: Array<RouteConfig> = [
         path: '/review', name: 'Review', component: ReviewPage,
         meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-cards-outline', label: 'Обзор' },
     },
-    // {
-    //     path: '/study', name: 'prepare', component: PreparePage,
-    //     meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-teach', label: 'Настройка' },
-    // },
-    // {
-    //     path: '/study/:id', name: 'train', component: RepeatPage, props: true,
-    //     meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-teach', label: 'Повторение' },
-    // },
+    {
+        path: '/study/:id', name: 'Train', component: RepeatPage, props: true,
+        meta: {  auth: true, menu: false, layout: BaseLayout, icon: 'mdi-teach', label: 'Повторение' },
+    },
+    {
+        path:'/decks', name: 'Decks', component: DecksPage,
+        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-folder', label: 'Коллекции' },
+    },
+    {
+        path: '/profile', name: 'Profile', component: ProfilePage,
+        meta: { auth: true, menu: true, layout: BaseLayout, icon: 'mdi-account-circle', label: 'Мой профиль' },
+    },
 ]

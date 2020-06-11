@@ -4,6 +4,8 @@ export interface Link {
     label: string,
 }
 
-export interface UploadStatus {
-    EMPTY,LIST,DETAILS,FULL
+
+export interface ISelectItem {
+    name: string | null;
+    id: number | null;
 }

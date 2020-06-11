@@ -3,26 +3,35 @@
         <v-navigation-drawer app v-model="localSidebar" clipped fixed height="100%" :width="325">
             <v-row class="pa-0 ma-0">
                 <v-col cols="12">
-                    <v-expansion-panels flat inset class="mr-5">
-                        <list-objects :items="getDecks" :items-id="getDecksId">
-                            <template v-slot:item="deck">
-                                <v-expansion-panel>
-                                    <v-expansion-panel-header ripple
-                                      @click="resetActiveDeck(deck.item)"
-                                    >{{deck.item.name}}</v-expansion-panel-header>
-                                    <v-expansion-panel-content>
-                                        <list-objects :items="getCardsIdByDeckId(deck.item.id)" :items-id="deck.item.cards">
-                                            <template v-slot:item="card">
-                                                <v-btn block elevation="0" color="light" depressed class="mb-1 mt-1"
-                                                       @click="resetActiveCard(card.item)"
-                                                >{{card.item.name}}</v-btn>
-                                            </template>
-                                        </list-objects>
-                                    </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </template>
-                        </list-objects>
-                    </v-expansion-panels>
+                    <v-tabs v-model="tab">
+                        <v-tab href="#tab-1">Коллекции</v-tab>
+                        <v-tab href="#tab-2">Теги</v-tab>
+                    </v-tabs>
+                    <v-tabs-items v-model="tab">
+                        <v-tab-item :value="'tab-1'">
+                            <v-expansion-panels flat inset class="mr-5">
+                                <list-objects :items="getDecks" :items-id="getDecksId">
+                                    <template v-slot:item="deck">
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header ripple
+                                                                      @click="resetActiveDeck(deck.item)"
+                                            >{{deck.item.name}}</v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <list-objects :items="getCardsIdByDeckId(deck.item.id)" :items-id="deck.item.cards">
+                                                    <template v-slot:item="card">
+                                                        <v-btn block elevation="0" color="light" depressed class="mb-1 mt-1"
+                                                               @click="resetActiveCard(card.item)"
+                                                        >{{card.item.name}}</v-btn>
+                                                    </template>
+                                                </list-objects>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </template>
+                                </list-objects>
+                            </v-expansion-panels>
+                        </v-tab-item>
+                        <v-tab-item :value="'tab-2'"></v-tab-item>
+                    </v-tabs-items>
                 </v-col>
             </v-row>
         </v-navigation-drawer>
@@ -67,6 +76,7 @@ import Loader from "../../../App/Components/FormElements/Loader.vue";
 
 @Component({components: {Loader, CardForm, CardCreate, CardUpdate, ListObjects, Modal}})
 export default class ReviewPage extends Vue {
+    tab: any = null;
     localSidebar: boolean = true;
     modal: boolean = false;
     modalMessage: string = '';
