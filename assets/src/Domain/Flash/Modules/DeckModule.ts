@@ -13,8 +13,8 @@ export interface IDeckState {
     allIds: Array<number>,
     currentActionLoad: ServiceActions | null;
 }
-export enum UploadStatus { EMPTY,LIST,DETAILS,FULL}
-export enum ServiceActions { FETCH_ALL = 1, FETCH_ONE, CREATE, UPDATE, DELETE }
+enum UploadStatus { EMPTY,LIST,DETAILS,FULL}
+enum ServiceActions { FETCH_ALL = 1, FETCH_ONE, CREATE, UPDATE, DELETE }
 
 @Module({dynamic: true, store: Store, name: 'DeckModule', namespaced: true})
 export default class Deck extends VuexModule implements IDeckState{
@@ -30,15 +30,19 @@ export default class Deck extends VuexModule implements IDeckState{
     get isUploadedFull() { return this.uploadStatus === UploadStatus.FULL; }
     get getUploaded() { return this.uploadStatus }
 
-    get isLoading()         { return !!this.currentActionLoad }
-    get isFetchAllLoading() { return this.currentActionLoad == ServiceActions.FETCH_ALL }
-    get isFetchOneLoading() { return this.currentActionLoad == ServiceActions.FETCH_ONE }
-    get isCreatLoading()    { return this.currentActionLoad == ServiceActions.CREATE }
-    get isUpdateLoading()   { return this.currentActionLoad == ServiceActions.UPDATE }
-    get isDeleteLoading()   { return this.currentActionLoad == ServiceActions.DELETE }
+    get isLoading():            boolean { return !!this.currentActionLoad }
+    get isFetchAllLoading():    boolean { return this.currentActionLoad == ServiceActions.FETCH_ALL }
+    get isFetchOneLoading():    boolean { return this.currentActionLoad == ServiceActions.FETCH_ONE }
+    get isCreatLoading():       boolean { return this.currentActionLoad == ServiceActions.CREATE }
+    get isUpdateLoading():      boolean { return this.currentActionLoad == ServiceActions.UPDATE }
+    get isDeleteLoading():      boolean { return this.currentActionLoad == ServiceActions.DELETE }
 
-    get getDecks() { return this.byId }
-    get getDecksId(): Array<number> { return this.allIds }
+    get getDecks() {
+        return this.byId
+    }
+    get getDecksId(): Array<number> {
+        return this.allIds
+    }
     get getDeckById() {
         return (id: number): IDeck => {
             return this.byId[id];
@@ -79,7 +83,7 @@ export default class Deck extends VuexModule implements IDeckState{
     }
 
     @Mutation
-    public loading(value = null) {
+    public LOADING(value = null) {
         this.currentActionLoad = value;
     }
     @Mutation
@@ -135,64 +139,61 @@ export default class Deck extends VuexModule implements IDeckState{
 
     @Action({rawError: true})
     async fetchAll(): Promise<Array<IDeck>> {
-        this.loading(ServiceActions.FETCH_ALL);
+        this.LOADING(ServiceActions.FETCH_ALL);
         const response: AxiosResponse<Array<IDeck>> = await DeckService.fetchAll();
         this.FETCH_DECKS(response.data);
-        this.loading();
+        this.LOADING();
         return response.data;
     }
     @Action({rawError: true})
     async fetchAllFull(): Promise<Array<IDeck>> {
-        this.loading(ServiceActions.FETCH_ALL);
+        this.LOADING(ServiceActions.FETCH_ALL);
         const response: AxiosResponse<Array<IDeck>> = await DeckService.fetchAll('FULL');
         this.FETCH_DECKS_FULL(response.data);
         response.data.forEach((deck: IDeck)=>{
             CardModule.FETCH_CARDS_FULL_FROM_DECK(deck);
         })
-        this.loading();
+        this.LOADING();
         return response.data;
     }
     @Action({rawError: true})
     async fetchOne(id: number): Promise<IDeck> {
-        this.loading(ServiceActions.FETCH_ONE)
+        this.LOADING(ServiceActions.FETCH_ONE)
         const response: AxiosResponse<IDeck> = await DeckService.fetchOne(id);
         this.SET_DECK(response.data);
-        this.loading();
+        this.LOADING();
         return response.data;
     }
     @Action({rawError: true})
     async fetchOneFull(id: number): Promise<IDeck> {
-        this.loading(ServiceActions.FETCH_ONE);
+        this.LOADING(ServiceActions.FETCH_ONE);
         const response = await DeckService.fetchOne(id, 'FULL');
         this.SET_DECK(response.data);
         CardModule.FETCH_CARDS_FROM_DECK(response.data);
-        this.loading();
+        this.LOADING();
         return response.data;
     }
-
     @Action({rawError: true})
     async create(deck: IDeck): Promise<IDeck> {
-        this.loading(ServiceActions.CREATE);
+        this.LOADING(ServiceActions.CREATE);
         const response: AxiosResponse<IDeck> = await DeckService.create(deck);
         this.SET_DECK(response.data);
-        this.loading();
+        this.LOADING();
         return response.data;
     }
-
     @Action({rawError: true})
     async update(deck: IDeck): Promise<IDeck> {
-        this.loading(ServiceActions.UPDATE);
+        this.LOADING(ServiceActions.UPDATE);
         const response =await DeckService.update(deck);
         this.SET_DECK(response.data);
-        this.loading();
+        this.LOADING();
     }
-
     @Action({rawError: true})
     async delete(deck: IDeck) {
-        this.loading(ServiceActions.DELETE);
+        this.LOADING(ServiceActions.DELETE);
         await DeckService.delete(deck);
         this.DELETE_DECK(deck);
-        this.loading();
+        this.LOADING();
     }
 };
 

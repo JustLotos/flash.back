@@ -28,6 +28,10 @@ export interface ITimeIntervals {
     value: number
 }
 /** Learner */
+export interface ILearner {
+    name: IName;
+}
+
 interface IProfile {
     name: IName,
     email: string,
