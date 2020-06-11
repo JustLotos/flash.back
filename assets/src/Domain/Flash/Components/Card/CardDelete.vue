@@ -1,29 +1,27 @@
 <template>
-    <v-flex xs10 class="justify-center">
-        <v-card>
-            <v-flex xs10 offset-xs1 class="text-center">
-                <v-card-title>Вы действительно хотите удалить карточку?</v-card-title>
-                <v-card-actions class="justify-center">
-                    <v-btn color="primary" @click="onDelete">Удалить</v-btn>
-                </v-card-actions>
-            </v-flex>
-        </v-card>
-    </v-flex>
+    <control-confirm
+        :confirm-operation-phrase="'Удалить'"
+        :confirm-deny-phrase="'Отменить'"
+        @confirm="handleConfirm"
+        @deny="handleDeny"
+    ></control-confirm>
 </template>
 
-<script>
-    export default {
-        name: "CardDelete",
-        props: {
-            id: '',
-        },
-        methods: {
-            async onDelete () {
-                //await this.$store.dispatch("DeckStore/delete", this.deck);
-                this.$emit('card-deleted', false);
-            }
-        }
-    }
-</script>
+<script lang="ts">
+import {Component, Prop, Vue} from "vue-property-decorator";
+import {IDeck} from "../../types";
+import ControlConfirm from "../../../App/Components/FormElements/ControlConfirm.vue";
+@Component({
+    components: {ControlConfirm}
+})
+export default class CardDelete extends Vue{
+    @Prop() card: IDeck;
 
-<style scoped></style>
+    handleConfirm() {
+
+    }
+    handleDeny() {
+
+    }
+}
+</script>

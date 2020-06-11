@@ -1,11 +1,14 @@
 <template>
-    <v-card color="primary" class="white--text pa-2">
+    <v-card color="primary" class="white--text pa-2" width="900px">
         <v-row justify="center">
             <v-col cols="8">
                 <v-hover open-delay="0.3s" v-slot:default="{hover}">
                     <v-toolbar color="primary" dense short :elevation="hover ? 12 : 0">
                         <v-toolbar-title>
-                            <v-btn :color="hover ? 'primary' : 'light'">{{ deck.name }}</v-btn>
+                            <v-btn
+                                :to="{name: 'Deck', params: {id: deck.id}}"
+                                :color="hover ? 'primary' : 'light'"
+                            >{{ deck.name }}</v-btn>
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <dial-button>

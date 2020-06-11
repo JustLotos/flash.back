@@ -1,5 +1,6 @@
 <template>
-   <vue-editor @focus="handleFocus" @blur="handleBlur" v-model="value"></vue-editor>
+<!--   @focus="handleFocus" @blur="handleBlur"-->
+   <vue-editor  v-model="value"></vue-editor>
 </template>
 
 <script>
@@ -17,18 +18,18 @@ const EVENT_NAME = 'ControlEditor'.toLowerCase();
          }
      },
     mounted() {
-       this.$el.querySelector('#quill-container').classList.add('border-fixed-top');
+       // this.$el.querySelector('#quill-container').classList.add('border-fixed-top');
     },
     methods: {
-         handleFocus: function () {
-            this.$el.querySelector('.ql-toolbar').classList.add('d-block');
-            this.$el.querySelector('.ql-toolbar').classList.remove('d-none');
-         },
-         handleBlur: function () {
-            console.log('blur');
-            this.$el.querySelector('.ql-toolbar').classList.add('d-none');
-            this.$el.querySelector('.ql-toolbar').classList.remove('d-block');
-         }
+         // handleFocus: function () {
+         //    this.$el.querySelector('.ql-toolbar').classList.add('d-block');
+         //    this.$el.querySelector('.ql-toolbar').classList.remove('d-none');
+         // },
+         // handleBlur: function () {
+         //    console.log('blur');
+         //    this.$el.querySelector('.ql-toolbar').classList.add('d-none');
+         //    this.$el.querySelector('.ql-toolbar').classList.remove('d-block');
+         // }
     }
  }
 </script>

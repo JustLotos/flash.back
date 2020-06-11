@@ -2,7 +2,7 @@
     <v-speed-dial v-model="fab" direction="left">
         <template v-slot:activator>
             <v-hover open-delay="0.3s" v-slot:default="{hover}">
-                <v-btn v-model="fab" :elevation="hover ? 12 : 0" :color="hover ? 'light' : 'primary'">
+                <v-btn v-model="fab" :elevation="hover ? 12 : 0" :color="hover ? 'primary' : 'light'">
                     <v-icon v-if="fab">mdi-close</v-icon>
                     <v-icon v-else>mdi-dots-horizontal</v-icon>
                 </v-btn>

@@ -1,6 +1,6 @@
 <template>
     <v-form ref="form">
-        <v-row justify="center" no-gutters style="width: 560px">
+        <v-row justify="center" no-gutters style="max-width: 700px; min-width: 560px;">
             <v-col cols="12" sm="8">
                 <control-name v-model="getDeck.name" :error="getErrors.name"></control-name>
             </v-col>
@@ -123,11 +123,12 @@ export default class DeckForm extends Vue {
 
     submit() {
         if (this.$refs.form.validate()) {
-            this.getDeck.settings.startTimeInterval =
-                <number>DeckModule.baseTimeIntervals[this.getDeck.settings.startTimeInterval].value;
-            this.getDeck.settings.minTimeInterval =
-                <number>DeckModule.baseTimeIntervals[this.getDeck.settings.minTimeInterval].value;
+            // this.getDeck.settings.startTimeInterval =
+            //     <number>DeckModule.baseTimeIntervals[this.getDeck.settings.startTimeInterval].value;
+            // this.getDeck.settings.minTimeInterval =
+            //     <number>DeckModule.baseTimeIntervals[this.getDeck.settings.minTimeInterval].value;
             this.$emit('submit', this.getDeck);
+            this.$refs.form.reset();
         }
     }
 }

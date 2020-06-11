@@ -1,26 +1,36 @@
 <template>
-    <v-card>
-        <v-row justify="center">
-            <v-col cols="9">
-                <list-objects :items="decks" :items-id="decksId">
-                    <template v-slot:item="{item}">
-                        <deck-list-item :deck="item"/>
-                    </template>
-                    <template v-slot:empty>
-                        <v-row justify="center">
-                            <v-col cols="12" class="text-center">Колоды еще не добавлены</v-col>
-                        </v-row>
-                    </template>
-                </list-objects>
+    <v-layout justify-center align-center>
+        <v-card v-if="!loadingFetch">
+            <v-row justify="center">
+                <v-col cols="9">
+                    <list-objects :items="decks" :items-id="decksId">
+                        <template v-slot:item="{item}">
+                            <deck-list-item :deck="item"/>
+                        </template>
+                        <template v-slot:empty>
+                            <v-row justify="center">
+                                <v-col cols="12" class="text-center">Колоды еще не добавлены</v-col>
+                            </v-row>
+                        </template>
+                    </list-objects>
+                </v-col>
+            </v-row>
+
+
+            <v-card-text :class="placement">
+                <circle-button @click="toggleModal" tooltip="Создание коллекции карточек"/>
+            </v-card-text>
+            <modal v-model="createModal"><deck-create @created="handleCreate"/></modal>
+            <modal v-model="successModal"><v-alert type="success">{{modalMessage}}</v-alert></modal>
+        </v-card>
+
+        <v-row v-else justify="center">
+            <v-col cols="1">
+                <v-progress-circular :size="70" :width="7" indeterminate></v-progress-circular>
             </v-col>
         </v-row>
+    </v-layout>
 
-        <v-card-text :class="placement">
-            <circle-button @click="toggleModal" tooltip="Создание коллекции карточек"/>
-        </v-card-text>
-        <modal v-model="createModal"><deck-create @created="handleCreate"/></modal>
-        <modal v-model="successModal"><v-alert type="success">{{modalMessage}}</v-alert></modal>
-    </v-card>
 </template>
 
 <script lang="ts">
@@ -41,18 +51,22 @@ export default class DecksPage extends Vue{
     successModal: boolean = false;
     modalMessage: string = '';
 
+    get loadingFetch(): boolean {
+        return DeckModule.isFetchAllLoading;
+    }
+
     toggleModal() {
         this.createModal = !this.createModal;
     }
 
-    handleCreate() {
+    handleCreate(value) {
         this.modalMessage = value;
         this.successModal = !this.successModal;
     }
 
     beforeRouteEnter(to , from , next) {
         if(!DeckModule.isUploaded) {
-            DeckModule.getAll()
+            DeckModule.fetchAll()
                 .then(next())
                 .catch((error)=>{ console.log("Ошибка извлечения колоды" + JSON.stringify(error))});
         } else {

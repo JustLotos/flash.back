@@ -1,165 +1,137 @@
 <template>
     <v-container class="fill-height d-block" fluid>
-        <v-navigation-drawer app v-model="sidebar" clipped fixed height="100%" :width="325">
+        <v-navigation-drawer app v-model="localSidebar" clipped fixed height="100%" :width="325">
             <v-row class="pa-0 ma-0">
                 <v-col cols="12">
-                    <v-row justify="center">
-                        <v-btn @click="toggleMode" class="mt-3">{{modeLabel}}</v-btn>
-                    </v-row>
-                </v-col>
-                <v-col cols="12" class="text-center">
-                    <v-divider dark>Коллекция</v-divider>
-                </v-col>
-                <v-col cols="12" class="pa-1 ma-1">
-                    <list-objects :items="decks" :items-id="decksId">
-                        <template v-slot:item="deck">
-                            <v-expansion-panels v-if="mode">
-                                <v-expansion-panel @click="setDeck(deck.item)">
-                                    <v-expansion-panel-header>{{deck.item.name}}</v-expansion-panel-header>
+                    <v-expansion-panels flat inset class="mr-5">
+                        <list-objects :items="getDecks" :items-id="getDecksId">
+                            <template v-slot:item="deck">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header ripple
+                                      @click="resetActiveDeck(deck.item)"
+                                    >{{deck.item.name}}</v-expansion-panel-header>
                                     <v-expansion-panel-content>
-                                        <list-objects
-                                            :items="getCardsById(deck.item.cards)"
-                                            :items-id="deck.item.cards"
-                                        >
+                                        <list-objects :items="getCardsIdByDeckId(deck.item.id)" :items-id="deck.item.cards">
                                             <template v-slot:item="card">
-                                                <v-btn
-                                                    block
-                                                    elevation="0"
-                                                    color="light"
-                                                    depressed
-                                                    class="pa-0 ma-0"
-                                                    @click="setCard(card.item)"
+                                                <v-btn block elevation="0" color="light" depressed class="mb-1 mt-1"
+                                                       @click="resetActiveCard(card.item)"
                                                 >{{card.item.name}}</v-btn>
                                             </template>
                                         </list-objects>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
-                            </v-expansion-panels>
-                            <v-btn v-else block elevation="0" color="light" depressed class="pa-0 ma-0"
-                                @click="setDeck(deck.item)"
-                            >{{deck.item.name}}</v-btn>
-                        </template>
-                    </list-objects>
+                            </template>
+                        </list-objects>
+                    </v-expansion-panels>
                 </v-col>
             </v-row>
         </v-navigation-drawer>
         <v-card class="fill-height">
             <v-row justify="center">
                 <v-col cols="11">
-                    <v-toolbar>
-                        <v-app-bar-nav-icon @click="toggleSidebar()"/>
+                    <v-toolbar class="m-2">
+                        <v-app-bar-nav-icon @click="toggleLocalSidebar()"/>
                         <v-spacer/>
+                        <v-toolbar-title>{{getToolbarTitle}}</v-toolbar-title>
                     </v-toolbar>
                 </v-col>
             </v-row>
             <v-row justify="center" class="fill-height">
-                <v-col v-if="mode" cols="12" xs="10" sm="8" lg="6" class="align-center justify-center">
-                    <card-update v-if="card.id" :card="card" @card-updated="handleSuccess"/>
-                    <v-row v-else align="center" justify="center" class="fill-height">
-                        Для редактирования выберите карту
-                    </v-row>
-                </v-col>
-                <v-col v-else cols="12" xs="10" sm="8" lg="6" class="justify-center align-center">
-                    <card-create v-if="deck.id" :deck="deck" @card-created="handleSuccess"/>
-                    <v-row v-else align="center" justify="center" class="fill-height">
-                        Для создания карточки выберите колоду
-                    </v-row>
+                <v-col cols="12" lg="9" class="justify-center align-center">
+                    <card-form :card="getActiveCard" @submit="handleSubmitCardForm">
+                        <template v-slot:submit>Сохранить</template>
+                        <template v-slot:controls>
+                            <v-checkbox label="Сохранить как новую" class="ma-0 mr-5 mt-1 pa-0"
+                                v-model="saveAsNew" v-if="isRealActiveCard"/>
+                        </template>
+                    </card-form>
                 </v-col>
             </v-row>
         </v-card>
 
-        <modal v-model="deleteModal" type="short">
-            <card-delete id="card.id"/>
-        </modal>
-        <modal v-model="successModal" type="short">
-            <v-alert type="success" class="mb-0">{{successMessage}}</v-alert>
-        </modal>
+        <modal v-model="modal" ><v-alert type="success">{{modalMessage}}</v-alert></modal>
     </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import {Component, Vue} from "vue-property-decorator";
 import Modal from "../../../App/Components/Modal";
+import ListObjects from "../../../App/Components/ListObjects.vue";
+import CardUpdate from "../../Components/Card/CardUpdate.vue";
+import CardCreate from "../../Components/Card/CardCreate.vue";
+import {DeckModule} from "../../Modules/DeckModule";
+import {ICard, IDeck} from "../../types";
+import {CardModule} from "../../Modules/CardModule";
+import CardForm from "../../Components/Card/CardForm.vue";
 
-@Component({components: {Modal}})
-export default class ReviewPage extends Vue {}
+@Component({components: {CardForm, CardCreate, CardUpdate, ListObjects, Modal}})
+export default class ReviewPage extends Vue {
+    localSidebar: boolean = true;
+    modal: boolean = false;
+    modalMessage: string = '';
+    activeCard: ICard = CardModule.getCardDefault;
+    activeDeck: IDeck = DeckModule.getDeckDefault;
+    saveAsNew: boolean = false;
 
-    //export default {
-        // name: "Review",
-        // components: {CardDelete, Modal, Search, CardUpdate, CardCreate, AppFormName, ListObjects},
-        // data: function () {
-        //     return {
-        //         deleteModal: false,
-        //         createModal: false,
-        //         successModal: false,
-        //         successMessage: '',
-        //         mode: false,
-        //         card: {
-        //             id: false
-        //         },
-        //         deck: {
-        //             id: false
-        //         },
-        //         panel: false,
-        //         sidebar: true,
-        //         tabs: {
-        //             current: 'Карты',
-        //             items: ['Карты', 'Колоды']
-        //         }
-        //     }
-        // },
-        // computed: {
-        //     ...mapGetters('DeckStore', [
-        //         'decks',
-        //         'decksId',
-        //         'isLoading'
-        //     ]),
-        //     ...mapGetters('CardStore', [
-        //         'cards',
-        //         'cardsId',
-        //         'getCardsById'
-        //     ]),
-        //     overflowItems: function() {
-        //         return this.decksId.map((id) => {
-        //             return this.decks[id];
-        //         });
-        //     },
-        //     modeLabel: function () {
-        //         return this.mode ?
-        //              'Редактирование карточки': 'Добавление карточки';
-        //     },
-        // },
-        // methods: {
-        //     setDeck: async function(deck) {
-        //         await this.$store.dispatch('DeckStore/getOne', {id: deck.id});
-        //         this.deck = store.getters['DeckStore/decks'][deck.id];
-        //     },
-        //     setCard: function (card) {
-        //        this.card = card;
-        //     },
-        //     toggleSidebar: function () {
-        //         return this.sidebar= !this.sidebar;
-        //     },
-        //     toggleMode: function () {
-        //         this.mode = !this.mode;
-        //     },
-        //     deleteModalToggle: function () {
-        //         this.deleteModal = !this.deleteModal;
-        //     },
-        //     handleSuccess: function(value) {
-        //         this.successMessage = value;
-        //         this.successModal = !this.successModal;
-        //     },
-        //     handleSuccessDelete: function(value) {
-        //         this.deleteModal = !this.deleteModal;
-        //         this.successMessage = value;
-        //         this.successModal = !this.successModal;
-        //     },
-        // },
-        // beforeRouteEnter: async function (to , from , next) {
-        //     await store.dispatch('DeckStore/getAll')
-        //         .then(()=>{next();})
-        //         .catch((error)=>{console.log(error);});
-        // }
-   // }
+    get isRealActiveCard() {
+        return this.getActiveCard.id !== -1;
+    }
+
+    handleSubmitCardForm(card: ICard) {
+        if(this.saveAsNew) {
+            console.log('create');
+        }else {
+            console.log('update');
+        }
+    }
+
+    get getDecks() {
+        return DeckModule.getDecks;
+    }
+    get getDecksId(): Array<number> {
+        return DeckModule.getDecksId;
+    }
+
+    getCardsIdByDeckId(id: number) {
+        return  CardModule.getCardsByDeckId(id);
+    }
+    resetActiveDeck(deck: IDeck = DeckModule.getDeckDefault) {
+        this.activeDeck = deck;
+        this.resetActiveCard();
+    }
+    get getActiveDeck(): IDeck {
+        return this.activeDeck;
+    }
+    resetActiveCard(card: ICard = CardModule.getCardDefault) {
+        this.activeCard = card;
+    }
+    get getActiveCard(): ICard {
+        return this.activeCard;
+    }
+    toggleLocalSidebar() {
+        this.localSidebar = !this.localSidebar;
+    }
+
+    get getToolbarTitle(): string {
+        if(this.getActiveDeck.name !== '' && this.getActiveCard.name !== '') {
+            return `${this.getActiveCard.name} from ${this.getActiveDeck.name}`;
+        }
+        else if(this.getActiveDeck.name !== '') {
+            return `${this.getActiveDeck.name}`;
+        }
+        else if(this.getActiveCard.name !== '') {
+            return `${this.getActiveCard.name}`;
+        }
+        return '';
+    }
+    beforeRouteEnter(to , from , next) {
+        if(!DeckModule.isUploadedFull) {
+            DeckModule.fetchAllFull()
+                .then(()=>{next()})
+                .catch((e)=>{console.log(e)})
+        } else {
+            next();
+        }
+    }
+}
 </script>

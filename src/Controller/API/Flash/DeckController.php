@@ -37,7 +37,9 @@ class DeckController extends AbstractController
             $groups =  array_merge($groups, [Deck::GROUP_DETAILS]);
         }
         if ($request->query->get('type') && $request->query->get('type') === 'FULL') {
-            $groups =  array_merge($groups, [Deck::GROUP_DETAILS, Deck::GROUP_FULL, Card::GROUP_LIST]);
+            $groups =  array_merge($groups, [
+                Deck::GROUP_DETAILS, Deck::GROUP_FULL, Card::GROUP_LIST, Card::GROUP_FULL, Record::GROUP_DETAILS
+            ]);
         }
         return $this->response($this->serializer->serialize($decks, $groups));
     }

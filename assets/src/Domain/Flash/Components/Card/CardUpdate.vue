@@ -1,48 +1,28 @@
 <template>
     <v-card>
-        <card-form v-if="card" :card="card" :event-name="'update'" @update="update" :errors="updateErrors">
-            <template v-slot:title>Редактрирование карточки</template>
+        <v-card-title class="justify-center">Редактирование карточки</v-card-title>
+        <card-form :card="card" @submit="update" :errors="getErrors">
             <template v-slot:submit>Сохранить</template>
         </card-form>
     </v-card>
 </template>
 
-<script>
-    import CardForm from "./CardForm";
-    import {cardDefault} from "../../../plugins/helpers";
-    import {mapGetters} from "vuex";
-    export default {
-        name: "CardUpdate",
-        components: {CardForm},
-        props: {
-            card: {
-                type: Object,
-                required: true
-            }
-        },
-        computed: {
-            updateErrors: function () {
-                if (this.errors) {
-                    return this.errors;
-                }
-                return cardDefault();
-            },
-            ...mapGetters('CardStore',{
-                errors: 'errorsUpdate',
-            })
-        },
-        methods: {
-            async update(card) {
-                console.log(card);
-                await this.$store.dispatch("CardStore/update", card)
-                    .then(()=>{
-                        this.$emit('card-update', 'Карточка успешно сохранена!');
-                    })
-                    .catch((errors)=>{console.log(errors);});
-            }
+<script lang="ts">
+    import {Component, Prop, Vue} from "vue-property-decorator";
+    import {ICard} from "../../types";
+    import CardForm from "./CardForm.vue";
+    import {CardModule} from "../../Modules/CardModule";
+    @Component({
+        components: {CardForm}
+    })
+    export default class CardUpdate extends Vue {
+        @Prop() card: ICard;
+        errors: ICard = CardModule.getCardDefault;
+
+        get getErrors(): ICard {return this.errors}
+        async update(card: ICard) {
+            this.$emit('updated', 'Карточка успешно сохранена!')
         }
+
     }
 </script>
-
-<style scoped>
-</style>

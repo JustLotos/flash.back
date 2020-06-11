@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="modal" max-width="700px" @click:outside="modalToggle" @keydown="handleKeyDown">
+    <v-dialog v-model="modal" :max-width="950" @click:outside="modalToggle" @keydown="handleKeyDown">
         <v-container>
             <v-layout justify-center align-center style="position: relative">
                 <slot></slot>
@@ -13,7 +13,6 @@
 
 <script>
     import {AppModule} from "../AppModule";
-
     const SHORT = 'short';
     const WIDE = 'wide';
     const EVENT_NAME = 'modalChange'.toLowerCase();
@@ -25,6 +24,7 @@
         },
         model: { prop: 'modal', event: EVENT_NAME },
         computed: {
+
             value: {
                 get: function() {
                     AppModule.SET_ACTIVE_MODAL(true);
@@ -44,7 +44,11 @@
                 if(event.code === 'Escape') {
                     this.modalToggle();
                 }
-            }
+            },
+            width: function () {
+             //   console.log(this.$el.querySelector('.container'));
+                return 700+'px';
+            },
         },
         data: function () {
             return {

@@ -25,10 +25,10 @@ export const FlashRoutes: Array<RouteConfig> = [
         path: '/card/:id', name: 'Card', component: CardPage, props: true,
         meta: { auth: true, menu: false, layout: BaseLayout },
     },
-    // {
-    //     path: '/review', name: 'Review', component: ReviewPage,
-    //     meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-cards-outline', label: 'Обзор' },
-    // },
+    {
+        path: '/review', name: 'Review', component: ReviewPage,
+        meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-cards-outline', label: 'Обзор' },
+    },
     // {
     //     path: '/study', name: 'prepare', component: PreparePage,
     //     meta: {  auth: true, menu: true, layout: BaseLayout, icon: 'mdi-teach', label: 'Настройка' },

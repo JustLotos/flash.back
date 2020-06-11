@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title class="justify-center">Добавление колоды</v-card-title>
-        <deck-form @submit="create" :errors="errors">
+        <deck-form @submit="create" :errors="getErrors">
             <template v-slot:submit>Добавить</template>
         </deck-form>
     </v-card>
@@ -16,8 +16,10 @@ import {DeckModule} from "../../Modules/DeckModule";
 @Component({components: {DeckForm}})
 export default class DeckCreate extends Vue {
     errors = {};
-    async create(deck: IDeck) {
+    async create(deck) {
+        console.log(deck);
         this.$emit('created', 'Колода успешно создана!');
+
         // await DeckModule.create(deck)
         // .then(()=>{
         //     this.$emit('created', 'Колода успешно создаана!');
@@ -28,8 +30,6 @@ export default class DeckCreate extends Vue {
         // })
     }
 
-    get getErrors() {
-        return this.errors;
-    }
+    get getErrors() { return this.errors;}
 }
 </script>

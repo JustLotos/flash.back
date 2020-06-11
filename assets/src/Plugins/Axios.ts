@@ -2,6 +2,7 @@ import axios, {AxiosRequestConfig} from "axios";
 import {AuthModule} from "../Domain/Auth/AuthModule";
 import Router from "../Domain/Auth/Guard";
 import {LearnerModule} from "../Domain/Flash/Modules/LearnerModule";
+import {DeckModule} from "../Domain/Flash/Modules/DeckModule";
 
 let Axios = axios.create({
     baseURL: process.env.API_URL || 'http://flash.local/api/v1',
@@ -11,13 +12,11 @@ let Axios = axios.create({
 });
 
 Axios.interceptors.response.use(
-    (response) => { return response },
+    (response) => {
+        return response
+    },
     function (error) {
         const originalRequest: AxiosRequestConfig = error.config;
-
-        AuthModule.loading(false);
-        LearnerModule.loading(false);
-
         if (error.response?.status === 401 && originalRequest.url === '/auth/token/refresh') {
             AuthModule.logout();
             return Router.push({name: 'Login'});

@@ -3,3 +3,7 @@ export interface Link {
     path: string,
     label: string,
 }
+
+export interface UploadStatus {
+    EMPTY,LIST,DETAILS,FULL
+}

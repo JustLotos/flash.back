@@ -19,9 +19,15 @@ export default class Card extends VuexModule implements ICardState{
     allIds = [];
     load = false;
 
-    get isLoading(): boolean {return this.load}
-    get getCards() { return this.byId }
-    get getCardId(): Array<number> { return this.allIds }
+    get isUploaded(): boolean {
+        return true;
+    }
+    get isLoading(): boolean {
+        return this.load
+    }
+    get getCards() {
+        return this.byId
+    }
     get getCardById() {
         return (id: number): ICard => {
             return this.byId[id];
@@ -42,19 +48,37 @@ export default class Card extends VuexModule implements ICardState{
     get getCardsByDeckId() {
         return (deckId: number) => {
             let temp = {};
-            cards.filter((card)=> card.deck == deckId)
-                .map((cardId: number)=> { temp[cardId] =  this.byId[cardId]});
-            debugger;
+            this.allIds.filter((cardId: number) => {
+                return this.byId[cardId].deck == deckId
+            }).map((cardId: number) => {
+                temp[cardId] =  this.byId[cardId]
+            });
             return temp;
         }
+    }
+    get getCardId(): Array<number> {
+        return this.allIds
     }
 
     get getCardDefault(): ICard {
         return {
-            id: 0,
+            id: -1,
             name: '',
-            frontSide:  [{id: 0, content: ''}],
-            backSide:   [{id: 0, content: ''}]}
+            frontSide:  [{id: -1, content: ''}],
+            backSide:   [{id: -1, content: ''}]}
+    }
+
+    get stringifySide() {
+        return (records: Array<IRecord>): string =>  {
+            let str = '';
+            records.forEach((record: IRecord) => { str += record.content });
+            return str;
+        }
+    }
+    get parseSide() {
+        return (id: number, string: string): IRecord =>  {
+            return  {id: id, content: string}
+        }
     }
 
     @Mutation
@@ -67,27 +91,18 @@ export default class Card extends VuexModule implements ICardState{
                 this.allIds.push(card.id);
             }
         });
-        this.load = false;
     }
 
     @Mutation
-    FETCH_CARDS_FULL(deckId: number, cards: Array<ICard>) {
-        cards.forEach((card: ICard) => {
+    FETCH_CARDS_FULL_FROM_DECK(deck: IDeck) {
+        deck.cards.forEach((card: ICard) => {
             card.details = true;
-            card.deck = deckId;
+            card.deck = deck.id;
             Vue.set(this.byId, card.id, card);
             if (this.allIds.indexOf(card.id) < 0 ) {
                 this.allIds.push(card.id);
             }
         });
-        this.load = false;
-    }
-
-    @Mutation
-    DELETE_CARD(card: ICard) {
-        Vue.delete(this.byId, card.id);
-        this.allIds.splice(this.allIds.indexOf(card.id), 1);
-        this.load = false;
     }
 
     @Mutation
@@ -96,7 +111,6 @@ export default class Card extends VuexModule implements ICardState{
         if (this.allIds.indexOf(card.id) < 0) {
             this.allIds.push(card.id);
         }
-        this.load = false;
     }
 
     @Mutation
@@ -106,12 +120,12 @@ export default class Card extends VuexModule implements ICardState{
         if (this.allIds.indexOf(card.id) < 0) {
             this.allIds.push(card.id);
         }
-        this.load = false;
     }
 
-    @Action({rawError: true})
-    async getAll(deckId: number) {
-        const response: AxiosResponse<Array<ICard>> = await CardService.getAll();
+    @Mutation
+    DELETE_CARD(card: ICard) {
+        Vue.delete(this.byId, card.id);
+        this.allIds.splice(this.allIds.indexOf(card.id), 1);
     }
 
     @Action({rawError: true})
@@ -138,17 +152,6 @@ export default class Card extends VuexModule implements ICardState{
         this.DELETE_CARD(card);
         return Promise.resolve(response.data);
     }
-
-
-    @Action
-    public convertSide(records: Array<IRecord>): string {
-        let str = ''
-        records.forEach((record: IRecord) => { str += record.content });
-        console.log(str);
-        return str;
-    }
-
-
 };
 
 

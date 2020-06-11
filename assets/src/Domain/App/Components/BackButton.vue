@@ -2,15 +2,7 @@
     <v-hover v-slot:default="{ hover }">
         <div class="position-relative">
             <v-fade-transition>
-                <v-btn
-                    v-if="hover"
-                    class="position-absolute"
-                    mode=""
-                    color="primary"
-                    transition
-                    dark large absolute bottom left fab
-                    @click="redirect"
-                >
+                <v-btn @click="redirect" v-if="hover" class="position-absolute" color="primary" transition dark large absolute bottom left fab >
                     <v-icon>mdi-menu-left</v-icon>
                 </v-btn>
             </v-fade-transition>
@@ -18,16 +10,15 @@
     </v-hover>
 </template>
 
-<script>
-    export default {
-        name: "BackButton",
-        props: ['route'],
-        methods: {
-            redirect: function () {
-                this.$router.go(-1);
-            }
-        }
+<script lang="ts">
+
+import {Component, Vue} from "vue-property-decorator";
+@Component
+export default class BackButton extends Vue{
+    redirect() {
+        this.$root.$router.go(-1);
     }
+}
 </script>
 
 <style scoped>

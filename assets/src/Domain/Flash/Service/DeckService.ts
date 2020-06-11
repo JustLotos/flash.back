@@ -3,7 +3,7 @@ import {IDeck} from "../types";
 import {AxiosPromise} from "axios";
 
 export default  {
-    getAll(type: string = 'DEFAULT'): AxiosPromise<Array<IDeck>> {
+    fetchAll(type: string = 'DEFAULT'): AxiosPromise<Array<IDeck>> {
         if(type === 'DEFAULT') {
             return axios.get("/decks");
         } else if (type === 'DETAIL') {
@@ -12,7 +12,7 @@ export default  {
             return axios.get("/decks?type=FULL");
         }
     },
-    getOne(id: number, type: string = 'DEFAULT'): AxiosPromise<IDeck> {
+    fetchOne(id: number, type: string = 'DEFAULT'): AxiosPromise<IDeck> {
         if(type === 'DEFAULT') {
             return axios.get("/decks/" + id);
         } else if(type === 'FULL') {

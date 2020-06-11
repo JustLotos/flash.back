@@ -11,13 +11,10 @@ export interface IRecord {
 }
 /** Deck */
 export interface IDeck {
-    details: boolean | null;
     id: number;
     name: string;
     description: string | null,
     settings: IDeckSettings
-    createdAt: Date | null,
-    updatedAt: Date | null
 }
 export interface IDeckSettings {
     limitRepeat: number,

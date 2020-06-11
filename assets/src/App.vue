@@ -10,7 +10,9 @@ Component.registerHooks(['beforeRouteEnter']);
 
 @Component
 export default class App extends Vue {
-    mounted() { AuthModule.INIT_AUTH() }
+    async mounted() {
+        await AuthModule.INIT_AUTH()
+    }
 }
 </script>
 <style>
