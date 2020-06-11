@@ -18,11 +18,11 @@
                             <v-card-text>
                                 <v-row>
                                     <v-col cols="12" sm="10" class="p0 m0"><v-card-text>Ключ</v-card-text></v-col>
-                                    <v-col cols="12" sm="10">{{getFrontSide}}</v-col>
+                                    <v-col cols="12" sm="10"><v-sheet v-html="getFrontSide"></v-sheet></v-col>
                                 </v-row>
                                 <v-row>
                                     <v-col cols="12" sm="10" class="p0 m0"><v-card-text>Значение</v-card-text></v-col>
-                                    <v-col cols="12" sm="10">{{getBackSide}}</v-col>
+                                    <v-col cols="12" sm="10"><v-sheet v-html="getBackSide"></v-sheet></v-col>
                                 </v-row>
                             </v-card-text>
                         </v-col>

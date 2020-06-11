@@ -10,14 +10,12 @@ class Auth extends VuexModule implements IAuthState {
     status = localStorage.getItem(STATUS);
     role = localStorage.getItem(ROLE);
     email = localStorage.getItem(EMAIL);
-    load = false;
+    loadStatus = false;
 
     get isAuthenticated(): boolean {
         return !!(this.token || localStorage.getItem(TOKEN));
     }
-    get isLoading(): boolean {
-        return this.load;
-    }
+    get isLoading(): boolean { return this.loadStatus; }
     get getRole(): string {
         switch (this.role) {
             case ROLES.ADMIN:
@@ -48,7 +46,6 @@ class Auth extends VuexModule implements IAuthState {
         return <string>this.email;
     }
 
-
     @Mutation
     public INIT_AUTH() {
         this.token = localStorage.getItem(TOKEN);
@@ -58,9 +55,14 @@ class Auth extends VuexModule implements IAuthState {
         this.email = localStorage.getItem(EMAIL);
     }
     @Mutation
-    public loading(value = true) {
-        this.load = value;
+    private LOADING() {
+        this.loadStatus = true;
     }
+    @Mutation
+    private UNSET_LOADING() {
+        this.loadStatus = false;
+    }
+
     @Mutation
     private TOKEN_REFRESH_SUCCESS (data: RefreshResponse) {
         this.token = data.token;
@@ -100,37 +102,36 @@ class Auth extends VuexModule implements IAuthState {
 
     @Action({ rawError: true })
     public async login(payload: LoginRequest): Promise<AuthResponse> {
-        this.loading();
+        this.LOADING();
         const response  = await AuthService.login(payload);
         this.AUTHENTICATING_SUCCESS(response.data);
-        return Promise.resolve(response.data);
+        this.UNSET_LOADING();
+        return response.data;
     }
-
     @Action({ rawError: true })
     public async register(payload: RegisterRequest): Promise<AuthResponse> {
-        this.loading();
+        this.LOADING();
         const response  = await AuthService.register(payload);
         this.AUTHENTICATING_SUCCESS(response.data);
-        return Promise.resolve(response.data);
+        this.UNSET_LOADING();
+        return response.data;
     }
-
     @Action({ rawError: true })
     public async resetPassword(payload: RegisterRequest): Promise<AuthResponse> {
-        this.loading();
-        console.log(this.load);
+        this.LOADING();
         this.LOGOUT();
         const response  = await AuthService.resetPassword(payload);
-        return Promise.resolve(response.data);
+        this.UNSET_LOADING();
+        return response.data;
     }
-
     @Action({ rawError: true })
     public async refresh(): Promise<RefreshResponse> {
-        this.loading();
+        this.LOADING();
         const response = await AuthService.refreshToken({refreshToken: <string>this.refreshToken});
         this.TOKEN_REFRESH_SUCCESS(response.data);
-        return Promise.resolve(response.data);
+        this.UNSET_LOADING();
+        return response.data;
     }
-
     @Action({ rawError: true })
     public logout() {
         this.LOGOUT();
@@ -148,7 +149,6 @@ export interface IAuthState {
     status: string | null;
     role: string | null;
     email: string | null;
-    load: boolean;
+    loadStatus: boolean;
 }
-
 export const AuthModule = getModule(Auth);
