@@ -14,18 +14,16 @@ import CardForm from "../Card/CardForm";
 
 @Component({components: {CardForm}})
 export default class CardCreate extends Vue{
-    @Prop() deckId: number;
-    errors: ICard = CardModule.getCardDefault;
+    @Prop({required: true}) deckId: number;
+    errors = {};
 
-    get getErrors(): ICard { return this.errors }
+    get getErrors() { return this.errors }
 
     async create(card: ICard) {
-        await CardModule.create(deckId, card)
-            .then(()=>{
-                this.$emit('created', 'Карточка успешно создана!');
-            }).catch((errors)=>{
-                console.log(errors);
-            });
+        card.deck = this.deckId;
+        await CardModule.create(card)
+            .then(()=>{this.$emit('created', 'Карточка успешно создана!')})
+            .catch((errors)=>{console.log(errors)});
     }
 }
 </script>

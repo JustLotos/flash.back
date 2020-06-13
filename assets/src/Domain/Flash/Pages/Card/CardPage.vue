@@ -11,6 +11,7 @@
                                 <v-toolbar-title>{{getCard.name}}</v-toolbar-title>
                                 <v-spacer/>
                                 <dial-button>
+                                    <v-btn @click="toggleDeleteModal"><v-icon>mdi-delete</v-icon></v-btn>
                                     <v-btn @click="toggleUpdateModal"><v-icon>mdi-pencil</v-icon></v-btn>
                                 </dial-button>
                             </v-toolbar>
@@ -34,6 +35,10 @@
         <modal v-model="updateModal">
             <card-update :card="card" @updated="handleUpdate"></card-update>
         </modal>
+        <modal v-model="deleteModal">
+            <card-delete :card="card" @deleted="handleDelete"></card-delete>
+        </modal>
+        <modal v-model="successModal"><v-alert type="success">{{modalMessage}}</v-alert></modal>
     </v-flex>
 </template>
 
@@ -44,8 +49,9 @@ import {ICard} from "../../types";
 import DialButton from "../../../App/Components/DialButton";
 import Modal from "../../../App/Components/Modal.vue";
 import CardUpdate from "../../Components/Card/CardUpdate.vue";
+import CardDelete from "../../Components/Card/CardDelete.vue";
 
-@Component({components: {CardUpdate, Modal, DialButton}})
+@Component({components: {CardDelete, CardUpdate, Modal, DialButton}})
 export default class CardPage extends Vue{
     @Prop() id: number;
     card: ICard = CardModule.getCardDefault;
@@ -71,6 +77,7 @@ export default class CardPage extends Vue{
         this.toggleDeleteModal();
         this.modalMessage = message;
         this.successModal = false;
+        this.$root.$router.go(-1);
     }
     toggleUpdateModal() { this.updateModal = !this.updateModal }
     handleUpdate(message: string) {

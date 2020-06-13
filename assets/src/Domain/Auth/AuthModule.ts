@@ -55,11 +55,11 @@ class Auth extends VuexModule implements IAuthState {
         this.email = localStorage.getItem(EMAIL);
     }
     @Mutation
-    private LOADING() {
+    LOADING() {
         this.loadStatus = true;
     }
     @Mutation
-    private UNSET_LOAD() {
+    UNSET_LOAD() {
         this.loadStatus = false;
     }
 

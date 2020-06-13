@@ -18,15 +18,13 @@ class Command
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Count(min="1", max="1")
-     * @Serializer\Type(name="ArrayCollection<string>")
+     * @Serializer\Type(name="ArrayCollection<App\Domain\Flash\UseCase\Card\Update\Record>")
      */
     public $frontSide;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Count(min="1", max="1")
-     * @Serializer\Type(name="ArrayCollection<string>")
+     * @Serializer\Type(name="ArrayCollection<App\Domain\Flash\UseCase\Card\Update\Record>")
      */
     public $backSide;
 }

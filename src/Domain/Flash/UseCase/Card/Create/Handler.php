@@ -33,11 +33,10 @@ class Handler
     public function handle(Command $command, Deck $deck): Card
     {
         $this->validator->validate($command);
-        $front = Record::createFrontSide($command->frontSide[0]);
-        $back  = Record::createBackSide($command->backSide[0]);
+        $front = Record::createFrontSide($command->frontSide[0]->content);
+        $back  = Record::createBackSide($command->backSide[0]->content);
         $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getStartTimeInterval());
         $card = Card::create($deck, $command->name, $front, $back, $repeat, new DateTimeImmutable());
-
         $this->repository->add($card);
         $this->flusher->flush();
         return $card;

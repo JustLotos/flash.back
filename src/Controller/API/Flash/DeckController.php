@@ -41,6 +41,7 @@ class DeckController extends AbstractController
                 Deck::GROUP_DETAILS, Deck::GROUP_FULL, Card::GROUP_LIST, Card::GROUP_FULL, Record::GROUP_DETAILS
             ]);
         }
+
         return $this->response($this->serializer->serialize($decks, $groups));
     }
 
@@ -56,7 +57,7 @@ class DeckController extends AbstractController
     }
 
 
-    /** @Route("/", name="create", methods={"POST"}) */
+    /** @Route("", name="create", methods={"POST"}) */
     public function postAction(Request $request, CreateHandler $handler, LearnerRepository $repository): Response
     {
         /** @var Learner $learner */

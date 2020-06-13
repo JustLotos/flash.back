@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig} from "axios";
-import {AuthModule} from "../Domain/Auth/AuthModule";
 import Router from "../Domain/Auth/Guard";
+import {AuthModule} from "../Domain/Auth/AuthModule";
 import {LearnerModule} from "../Domain/Flash/Modules/LearnerModule";
 import {DeckModule} from "../Domain/Flash/Modules/DeckModule";
 
@@ -15,7 +15,12 @@ Axios.interceptors.response.use(
     (response) => {
         return response
     },
+
     function (error) {
+        AuthModule.UNSET_LOAD();
+        LearnerModule .UNSET_LOAD();
+        DeckModule.UNSET_LOAD();
+
         const originalRequest: AxiosRequestConfig = error.config;
         if (error.response?.status === 401 && originalRequest.url === '/auth/token/refresh') {
             AuthModule.logout();

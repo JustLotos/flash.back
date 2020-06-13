@@ -37,8 +37,8 @@ class DeckFixture extends BaseFixture implements DependentFixtureInterface
     private function getBaseDeck(Learner $learner): Deck
     {
         $settings = new Settings(
-            new DateInterval('PT1H'),
-            new DateInterval('PT30S'),
+            3600,
+            60,
             $this->faker->numberBetween(10, 40),
             $this->faker->numberBetween(10, 40),
             $this->faker->randomFloat(2, 0.5, 4)

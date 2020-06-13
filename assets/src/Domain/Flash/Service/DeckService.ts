@@ -4,28 +4,18 @@ import {AxiosPromise} from "axios";
 
 export default  {
     fetchAll(type: string = 'DEFAULT'): AxiosPromise<Array<IDeck>> {
-        if(type === 'DEFAULT') {
-            return axios.get("/decks");
-        } else if (type === 'DETAIL') {
-            return axios.get("/decks?type=DETAIL");
-        } else if (type === 'FULL') {
-            return axios.get("/decks?type=FULL");
-        }
+        return axios.get(`/decks/?type=${type}`);
     },
     fetchOne(id: number, type: string = 'DEFAULT'): AxiosPromise<IDeck> {
-        if(type === 'DEFAULT') {
-            return axios.get("/decks/" + id);
-        } else if(type === 'FULL') {
-            return axios.get("/decks/" + id);
-        }
+        return axios.get(`/decks/${id}?type=${type}`);
     },
     delete(deck: IDeck): AxiosPromise {
-        return axios.delete("/decks/" + deck.id);
+        return axios.delete(`/decks/${deck.id}`);
     },
     create(deck: IDeck): AxiosPromise<IDeck> {
-        return axios.post("/decks", deck);
+        return axios.post(`/decks`, deck);
     },
     update(deck: IDeck): AxiosPromise<IDeck> {
-        return axios.put("/decks/" + deck.id, deck);
+        return axios.put(`/decks/${deck.id}`, deck);
     },
 };

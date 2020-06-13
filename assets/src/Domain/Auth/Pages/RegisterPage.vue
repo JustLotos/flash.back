@@ -8,7 +8,7 @@
                 <register-form @register="handle" :errors="errors"></register-form>
                 <v-card-actions class="mt-5">
                     <v-row justify="center" class="flex-wrap">
-                        <v-card flat>
+                        <v-card dark flat class="transparent">
                             <span>Есть учетная запись?</span>
                             <v-btn text link :to="{name: 'Login'}" color="primary">Войти</v-btn>
                         </v-card>
@@ -16,27 +16,42 @@
                 </v-card-actions>
             </v-flex>
         </v-layout>
+
+        <modal v-model="modal"><v-alert type="success">{{modalMessage}}</v-alert></modal>
     </v-container>
 </template>
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
+    import {Component, Vue, Watch} from 'vue-property-decorator';
 import RegisterForm from "../Components/RegisterForm.vue";
 import {AuthModule} from "../AuthModule";
 import {AppModule} from "../../App/AppModule";
 import {RegisterRequest} from "../types";
+import Modal from "../../App/Components/Modal.vue";
 
 Component.registerHooks(['beforeRouteEnter']);
-@Component({components: {RegisterForm}})
+@Component({components: {Modal, RegisterForm}})
 export default class RegisterPage extends Vue{
+    modal: boolean = false;
+    modalMessage: string = 'На вашу почту отправлено письмо с подтвеждением аккаунта!';
+
     errors: RegisterRequest = {email: '', password: '', plainPassword: ''};
 
     private handle(payloads: RegisterRequest) {
         AuthModule.register(payloads)
-            .then(() => { this.$root.$router.push( AppModule.getRedirectOnUnguardedPath ); })
+            .then(() => { this.modal = true })
             .catch((error: AxiosError) => {
                 this.errors = error.response?.data.errors
                 console.log(error.response);
             });
+
+        //
+    }
+
+    @Watch('modal')
+    onModalClose(value: boolean) {
+        if(!value) {
+            this.$root.$router.push( AppModule.getRedirectOnUnguardedPath );
+        }
     }
 
     beforeRouteEnter (to, from, next) {

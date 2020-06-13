@@ -1,7 +1,7 @@
 <template>
     <v-layout justify-center align-center>
-        <v-card v-if="!isLoading">
-            <v-row justify="center">
+        <v-card v-if="!isLoading" class="transparent">
+            <v-row justify="center" >
                 <v-col cols="9">
                     <list-objects :items="decks" :items-id="decksId">
                         <template v-slot:item="{item}">

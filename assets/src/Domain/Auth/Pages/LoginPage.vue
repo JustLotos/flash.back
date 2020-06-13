@@ -6,9 +6,9 @@
             </v-toolbar>
             <login-form @submit="handle" :error="error" ></login-form>
             <v-card-actions class="mt-5">
-                <v-row>
+                <v-row class="text--white">
                     <v-col cols="12" class="pa1 text-center">
-                        <span>Еще не зарегестрированы?</span>
+                        <span class="text--white">Еще не зарегестрированы?</span>
                         <v-btn text link :to="{name: 'Register'}" color="primary">Присоедениться!</v-btn>
                     </v-col>
                     <v-col cols="12" class="pa1 text-center">

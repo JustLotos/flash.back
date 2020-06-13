@@ -1,7 +1,7 @@
 <template>
     <v-row justify="space-around">
         <v-col cols="12" sm="10">
-            <v-card v-if="!isLoading" :elevation="18" class="pa-12">
+            <v-card v-if="!isLoading" :elevation="18" class="pa-12" >
                 <v-row justify="center">
                     <v-col cols="12" sm="10">
                         <v-toolbar dense short flat>
@@ -26,11 +26,11 @@
                                         </v-hover>
                                     </v-col>
                                     <v-col cols="12" sm10>
-<!--                                        <v-hover open-delay="0.3s" v-slot:default="{hover}">-->
-<!--                                            <v-btn block depressed x-large color="primary" class="mb-2"-->
-<!--                                                :elevation="hover ? 24 : 0" :class="{'on-hover':hover}"-->
-<!--                                                @click="createModalToggle">Добавить карточки</v-btn>-->
-<!--                                        </v-hover>-->
+                                        <v-hover open-delay="0.3s" v-slot:default="{hover}">
+                                            <v-btn block depressed x-large color="primary" class="mb-2"
+                                                :elevation="hover ? 24 : 0" :class="{'on-hover':hover}"
+                                                @click="toggleCreateModal">Добавить карточки</v-btn>
+                                        </v-hover>
                                     </v-col>
                                     <v-col cols="12" sm10>
                                         <v-expansion-panels flat hover class="mt-2">
@@ -55,6 +55,10 @@
             <loader v-else/>
         </v-col>
 
+
+        <modal v-model="createModal">
+            <card-create :deck-id="getDeck.id" @created="handleCreate"></card-create>
+        </modal>
         <modal v-model="updateModal">
             <deck-update :deck="deck" @updated="handleUpdate"></deck-update>
         </modal>
@@ -76,33 +80,43 @@ import ListObjects from "../../../App/Components/ListObjects";
 import CardListItem from "../../Components/Card/CardListRow";
 import {CardModule} from "../../Modules/CardModule";
 import Loader from "../../../App/Components/FormElements/Loader.vue";
+import CardCreate from "../../Components/Card/CardCreate.vue";
+import {cloneObject} from "../../../../Utils/Helpers";
+import {IDeck} from "../../types";
 
-@Component({components: {Loader, DialButton, Modal, DeckUpdate, DeckDelete, ListObjects, CardListItem}})
+@Component({components: {CardCreate, Loader, DialButton, Modal, DeckUpdate, DeckDelete, ListObjects, CardListItem}})
 export default class DeckPage extends Vue{
     @Prop() id: number;
     deck = {};
 
+    createModal: boolean = false;
     deleteModal: boolean = false;
     updateModal: boolean = false;
     successModal: boolean = false;
     modalMessage: string = '';
     setDeck(deck) { this.deck = deck }
-    get getDeck() { return this.deck || {settings: {}} }
+    get getDeck(): IDeck { return this.deck || cloneObject(DeckModule.getDeckDefault) }
     get getCards() { return CardModule.getCardsByCardsIds(this.getDeck.cards) }
     get getCardsId() { return this.deck.cards }
     get isLoading() { return DeckModule.isActionFetchOneLoading }
 
+
+    toggleCreateModal() { this.createModal = !this.createModal }
+    handleCreate(message: string) {
+        this.toggleCreateModal();
+        this.modalMessage = message;
+        this.successModal = true;
+    }
     toggleDeleteModal() { this.deleteModal = !this.deleteModal }
     handleDelete(message: string) {
         this.toggleDeleteModal();
         this.modalMessage = message;
-        this.successModal = false;
+        this.successModal = true;
     }
     toggleUpdateModal() { this.updateModal = !this.updateModal }
     handleUpdate(message: string) {
-        this.toggleUpdateModal();
         this.modalMessage = message;
-        this.successModal = false;
+        this.successModal = true;
     }
 
     beforeRouteEnter(to, from, next) {

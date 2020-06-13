@@ -72,6 +72,10 @@ class Record
     {
         return $this->content;
     }
+    public function setContent(string $value)
+    {
+        $this->content = $value;
+    }
 
     public function isFrontSide(): bool
     {

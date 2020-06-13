@@ -38,7 +38,7 @@ import ControlConfirm from "../../App/Components/FormElements/ControlConfirm";
 
 @Component({components: { ControlEmail, ControlPassword, ControlConfirm}})
 export default class RegisterForm extends Vue  {
-    payloads: RegisterRequest = {email: '', password: '', plainPassword: ''};
+    payloads: RegisterRequest = {email: 'test@mail.ru', password: '12345678', plainPassword: '12345678'};
     @Prop() errors: RegisterRequest;
 
     get loading() {return AuthModule.isLoading;}

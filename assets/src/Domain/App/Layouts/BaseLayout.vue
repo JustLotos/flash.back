@@ -1,9 +1,9 @@
 <template>
-    <v-app id="inspire">
+    <v-app id="inspire" >
         <base-header/>
         <sidebar/>
         <transition name="fade" duration="2000">
-            <v-content>
+            <v-content class="bg">
                 <v-container fill-height>
                     <slot/>
                 </v-container>
@@ -22,3 +22,9 @@ import Sidebar from "./Components/Sidebar.vue";
 @Component({components: {BaseHeader, BaseFooter, Sidebar}})
 export default class BaseLayout extends Vue {}
 </script>
+
+<style scoped>
+    .bg{
+        background: #0c5460 url('https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg') no-repeat fixed center center;
+    }
+</style>

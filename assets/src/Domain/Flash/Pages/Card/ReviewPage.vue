@@ -35,17 +35,26 @@
                 </v-col>
             </v-row>
         </v-navigation-drawer>
-        <v-card class="fill-height">
+        <v-card class="fill-height transparent">
             <v-row justify="center">
                 <v-col cols="11">
-                    <v-toolbar class="m-2">
+                    <v-toolbar height="70px">
                         <v-app-bar-nav-icon @click="toggleLocalSidebar()"/>
                         <v-spacer/>
-                        <v-toolbar-title>{{getToolbarTitle}}</v-toolbar-title>
+                        <v-toolbar-title>
+                            <v-select hide-details dense solo persistent-hint return-object single-line class="ma-0 ml-8 pa-0"
+                                      style="width: 500px"
+                                      item-text="name" item-value="id" label="Выберите коллекцию"
+                                      v-model="getActiveDeck"
+                                      :items="getSelectItems"
+                                      :error-messages="error"
+                            ></v-select>
+                        </v-toolbar-title>
+
                     </v-toolbar>
                 </v-col>
             </v-row>
-            <v-row justify="center" class="fill-height">
+            <v-row justify="center" class="fill-height" >
                 <v-col cols="12" lg="9" class="justify-center align-center">
                     <card-form :card="getActiveCard" @submit="handleSubmitCardForm">
                         <template v-slot:submit>Сохранить</template>
@@ -73,6 +82,7 @@ import {ICard, IDeck} from "../../types";
 import {CardModule} from "../../Modules/CardModule";
 import CardForm from "../../Components/Card/CardForm.vue";
 import Loader from "../../../App/Components/FormElements/Loader.vue";
+import {ISelectItem} from "../../../App/types";
 
 @Component({components: {Loader, CardForm, CardCreate, CardUpdate, ListObjects, Modal}})
 export default class ReviewPage extends Vue {
@@ -83,57 +93,53 @@ export default class ReviewPage extends Vue {
     activeCard: ICard = CardModule.getCardDefault;
     activeDeck: IDeck = DeckModule.getDeckDefault;
     saveAsNew: boolean = false;
+    error: string = '';
 
     get isRealActiveCard() {
         return this.getActiveCard.id !== -1;
     }
 
+    get isRealActiveDeck() {
+        return this.getActiveDeck.id !== -1;
+    }
+
     handleSubmitCardForm(card: ICard) {
         if(this.saveAsNew) {
+            if(this.isRealActiveDeck) {
+                console.log('create');
+                console.log(card);
+            } else {
+                this.error = 'Для повторения необходимо выбрать колоду';
+            }
             console.log('create');
         }else {
             console.log('update');
+            console.log(card);
         }
     }
 
-    get getDecks() {
-        return DeckModule.getDecks;
+    get getDecks() { return DeckModule.getDecks }
+    get getDecksId(): Array<number> { return DeckModule.getDecksId }
+    get getSelectItems(): Array<ISelectItem> {
+        return this.getDecksId.map((deckId: number)=>{
+            return {id: deckId, name: this.getDecks[deckId].name}
+        });
     }
-    get getDecksId(): Array<number> {
-        return DeckModule.getDecksId;
-    }
-
     get isLoading() { return DeckModule.isActionFetchAllLoading }
-
-    getCardsIdByDeckId(id: number) {
-        return  CardModule.getCardsByDeckId(id);
-    }
+    getCardsIdByDeckId(id: number) { return  CardModule.getCardsByDeckId(id) }
     resetActiveDeck(deck: IDeck = DeckModule.getDeckDefault) {
         this.activeDeck = deck;
         this.resetActiveCard();
     }
-    get getActiveDeck(): IDeck {
-        return this.activeDeck;
-    }
-    resetActiveCard(card: ICard = CardModule.getCardDefault) {
-        this.activeCard = card;
-    }
-    get getActiveCard(): ICard {
-        return this.activeCard;
-    }
-    toggleLocalSidebar() {
-        this.localSidebar = !this.localSidebar;
-    }
+    get getActiveDeck(): IDeck {return this.activeDeck}
+    set getActiveDeck(deck: IDeck) {this.activeDeck = deck}
+    resetActiveCard(card: ICard = CardModule.getCardDefault) { this.activeCard = card; }
+    get getActiveCard(): ICard { return this.activeCard }
+    toggleLocalSidebar() { this.localSidebar = !this.localSidebar;}
 
     get getToolbarTitle(): string {
-        if(this.getActiveDeck.name !== '' && this.getActiveCard.name !== '') {
-            return `${this.getActiveCard.name} from ${this.getActiveDeck.name}`;
-        }
-        else if(this.getActiveDeck.name !== '') {
-            return `${this.getActiveDeck.name}`;
-        }
-        else if(this.getActiveCard.name !== '') {
-            return `${this.getActiveCard.name}`;
+        if(this.getActiveCard.name !== '') {
+            return `${this.getActiveCard.name} from`;
         }
         return '';
     }

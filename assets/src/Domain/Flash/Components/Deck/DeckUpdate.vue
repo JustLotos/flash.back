@@ -19,20 +19,19 @@ export default class DeckCreate extends Vue {
     errors = {};
 
     async update (deck: IDeck) {
-        this.$emit('updated', 'Колода успешно сохранена!');
-        // await this.$store.dispatch("DeckStore/update", deck).then(()=>{
-        //
-        // }).catch((errors)=>{console.log(errors);})
+        DeckModule.update(deck).then(() => {
+            this.$emit('updated', 'Колода успешно сохранена!');
+        }).catch((error)=> {
+            console.log(error);
+        })
+
     }
 
     mounted() {
         if(!this.deck.details) {
-            DeckModule.getOne(this.deck.id)
-                .then(()=>{
-                    this.deck = DeckModule.getDeckById(this.deck.id);
-                })
+            DeckModule.fetchOne(this.deck.id)
+                .then(()=>{ this.deck = DeckModule.getDeckById(this.deck.id) })
                 .catch((error)=>{
-                    debugger;
                     console.log('Ошибка получения коллекции' + JSON.stringify(error));
                 });
         }

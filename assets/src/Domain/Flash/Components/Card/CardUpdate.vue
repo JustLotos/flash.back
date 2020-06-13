@@ -21,7 +21,9 @@
 
         get getErrors(): ICard {return this.errors}
         async update(card: ICard) {
-            this.$emit('updated', 'Карточка успешно сохранена!')
+            CardModule.update(card)
+                .then(()=>{  this.$emit('updated', 'Карточка успешно сохранена!') })
+                .catch((error) => { console.log(error) })
         }
 
     }

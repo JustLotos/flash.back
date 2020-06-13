@@ -11,22 +11,19 @@ class Command
 {
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max="255")
      * @Serializer\Type(name="string")
      */
     public $name;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Count(min="1", max="1")
-     * @Serializer\Type(name="ArrayCollection<string>")
+     * @Serializer\Type(name="ArrayCollection<App\Domain\Flash\UseCase\Card\Create\Record>")
      */
     public $frontSide;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Count(min="1", max="1")
-     * @Serializer\Type(name="ArrayCollection<string>")
+     * @Serializer\Type(name="ArrayCollection<App\Domain\Flash\UseCase\Card\Create\Record>")
      */
     public $backSide;
 }

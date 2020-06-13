@@ -53,19 +53,14 @@ class Settings implements ISettings
     public const DEFAULT_DIFFICULTY_INDEX = 1;
 
     public function __construct(
-        DateInterval $baseInterval = null,
-        DateInterval $minTimeRepeat = null,
+        int $startTimeInterval = 3600,
+        int $minTimeInterval = 60,
         int $limitRepeat = self::DEFAULT_LIMIT_REPEAT,
         int $limitLearning = self::DEFAULT_LIMIT_LEARNING,
         float $difficultyIndex = self::DEFAULT_DIFFICULTY_INDEX
     ) {
-        $baseInterval ?
-            $this->startTimeInterval = $baseInterval:
-            $this->startTimeInterval = DateInterval::createFromDateString('3600 seconds');
-        $minTimeRepeat ?
-            $this->minTimeInterval = $minTimeRepeat:
-            $this->minTimeInterval = DateInterval::createFromDateString('60 seconds');
-
+        $this->startTimeInterval =  DateInterval::createFromDateString($startTimeInterval.' seconds');
+        $this->minTimeInterval = DateInterval::createFromDateString($minTimeInterval.' seconds');
         $this->limitRepeat = $limitRepeat;
         $this->limitLearning = $limitLearning;
         $this->difficultyIndex = $difficultyIndex;

@@ -1,26 +1,28 @@
 <template>
-    <v-form ref="cardForm" style="max-width: 900px">
-        <v-row justify="center" class="ma-0 pa-0">
-            <v-col cols="12" sm="10" class="ma-0 pa-0">
-                <control-name v-model="getCard.name" :error="getErrors.name"></control-name>
-            </v-col>
-        </v-row>
-        <v-flex>
+    <v-form ref="cardForm" style="max-width: 900px" class="lighten-1">
+        <v-card>
             <v-row justify="center" class="ma-0 pa-0">
-                <v-col cols="12" sm="11" class="ma-0 pa-0 mb-2">
-                    <control-editor v-model="getFrontSide"></control-editor>
-                </v-col>
-                <v-col cols="12" sm="11" class="ma-0 pa-0">
-                    <control-editor v-model="getBackSide"></control-editor>
+                <v-col cols="12" sm="10" class="ma-0 pa-0">
+                    <control-name v-model="getCard.name" :error="getErrors.name"></control-name>
                 </v-col>
             </v-row>
-        </v-flex>
-        <v-card-actions>
-            <v-row justify="center" class="ma-0 pa-0 text-center">
-                <slot name="controls"></slot>
-                <v-btn color="primary" @click="submit" :loading="loading"><slot name="submit"></slot></v-btn>
-            </v-row>
-        </v-card-actions>
+            <v-flex>
+                <v-row justify="center" class="ma-0 pa-0">
+                    <v-col cols="12" sm="11" class="ma-0 pa-0 mb-2">
+                        <control-editor v-model="getFrontSide"></control-editor>
+                    </v-col>
+                    <v-col cols="12" sm="11" class="ma-0 pa-0">
+                        <control-editor v-model="getBackSide"></control-editor>
+                    </v-col>
+                </v-row>
+            </v-flex>
+            <v-card-actions>
+                <v-row justify="center" class="ma-0 pa-0 text-center">
+                    <slot name="controls"></slot>
+                    <v-btn color="primary" @click="submit" :loading="loading"><slot name="submit"></slot></v-btn>
+                </v-row>
+            </v-card-actions>
+        </v-card>
     </v-form>
 </template>
 
@@ -35,7 +37,7 @@ import {cloneObject} from "../../../../Utils/Helpers";
 
 @Component({components: {ControlName, ControlEditor}})
 export default class CardForm extends Vue{
-    @Prop({required: true}) card: ICard;
+    @Prop() card: ICard;
     @Prop() errors: ICard;
 
     get getFrontSide(): string {

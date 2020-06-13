@@ -90,7 +90,7 @@ export default class DeckForm extends Vue {
     settings: boolean = false;
     detailsMessage: string = 'Подробнее';
 
-    get getDeck(): IDeck { return this.deck || DeckModule.getDeckDefault }
+    get getDeck(): IDeck { return this.deck }
     get getErrors() { return this.errors || { settings:{} } }
     get getTicks() {
         return function (arrIntervals: Array<ITimeIntervals>) {
@@ -123,12 +123,30 @@ export default class DeckForm extends Vue {
 
     submit() {
         if (this.$refs.form.validate()) {
-            // this.getDeck.settings.startTimeInterval =
-            //     <number>DeckModule.baseTimeIntervals[this.getDeck.settings.startTimeInterval].value;
-            // this.getDeck.settings.minTimeInterval =
-            //     <number>DeckModule.baseTimeIntervals[this.getDeck.settings.minTimeInterval].value;
-            this.$emit('submit', this.getDeck);
-            this.$refs.form.reset();
+
+            if(!Number.isInteger(this.getDeck.settings.startTimeInterval))
+                this.getDeck.settings.startTimeInterval =
+                    <number>DeckModule.baseTimeIntervals[this.getDeck.settings.startTimeInterval].value;
+            if(!Number.isInteger(this.getDeck.settings.startTimeInterval))
+                this.getDeck.settings.minTimeInterval =
+                    <number>DeckModule.baseTimeIntervals[this.getDeck.settings.minTimeInterval].value;
+
+            this.$emit('submit', {
+                id: this.getDeck.id,
+                name: this.getDeck.name,
+                description: this.getDeck.description,
+                settings: {
+                    limitRepeat: this.getDeck.settings.limitRepeat,
+                    limitLearning: this.getDeck.settings.limitLearning,
+                    difficultyIndex: this.getDeck.settings.difficultyIndex,
+                    minTimeInterval: this.getDeck.settings.minTimeInterval,
+                    startTimeInterval: this.getDeck.settings.startTimeInterval,
+                }
+            });
+
+            if(!DeckModule.isRealDeck(this.getDeck)) {
+                this.$refs.form.reset();
+            }
         }
     }
 }

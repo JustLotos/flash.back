@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DomainException;
 use JMS\Serializer\Annotation as Serializer;
+use function MongoDB\BSON\toJSON;
 
 /**
  * @ORM\HasLifecycleCallbacks()
@@ -63,7 +64,6 @@ class Card
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Domain\Flash\Entity\Card\Types\Record", mappedBy="card", orphanRemoval=true, cascade={"persist"})
-     * @Serializer\Groups({Card::GROUP_DETAILS})
      */
     private $records;
     /**
@@ -121,7 +121,23 @@ class Card
         if (!$back->isBackSide()) {
             throw new DomainException('Parameter $back in '.Card::class.'#createBaseCard must have back side');
         }
-        $this->removeRecords();
+
+
+//        foreach ($this->frontSideRecords as $record) {
+//            /* @var Record $record **/
+//            if ($record->getId() === $front->getId()) {
+//                $record->setContent($front->getContent());
+//            }
+//        }
+//
+//        foreach ($this->backSideRecords as $record) {
+//            /* @var Record $record **/
+//            if ($record->getId() === $front->getId()) {
+//                $record->setContent($front->getContent());
+//            }
+//        }
+
+        $this->clearAllRecords();
         $this->addRecord($front);
         $this->addRecord($back);
         $this->setUpdatedAt($createDate);
@@ -136,6 +152,14 @@ class Card
     {
         return $this->backSideRecords->toArray();
     }
+
+    private function clearAllRecords()
+    {
+        $this->records->clear();
+        $this->frontSideRecords->clear();
+        $this->backSideRecords->clear();
+    }
+
     private function addRecord(Record $record) : self
     {
         if (!$this->records->contains($record)) {
@@ -185,7 +209,7 @@ class Card
             }
         }
     }
-    /** @ORM\PrePersist() */
+    /** @ORM\PreFlush() */
     public function saveRecords()
     {
         $this->records = new ArrayCollection(array_merge($this->getFrontSide(), $this->getBackSide()));

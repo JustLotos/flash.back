@@ -29,11 +29,11 @@ class Handler
         $this->validator->validate($command);
 
         $settings = new Settings(
-            $command->baseInterval,
-            $command->minTime,
-            $command->limitRepeat,
-            $command->limitLearning,
-            $command->difficultyIndex
+            $command->settings->startTimeInterval,
+            $command->settings->minTimeInterval,
+            $command->settings->limitRepeat,
+            $command->settings->limitLearning,
+            $command->settings->difficultyIndex
         );
 
         $deck->updateFull($command->name, $settings, $command->description);

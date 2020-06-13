@@ -49,7 +49,7 @@ export default class ConfirmDialog extends Vue{
     get getConfirm() { return this.confirmOperationPhrase || 'Yes' };
     get getDeny() { return this.confirmDenyPhrase || 'No' };
 
-    isVerify () { return this.verify || false};
+    get isVerify () {return this.verify || false};
     confirm () { this.$emit('confirm') };
     deny () { this.$emit('deny') };
 

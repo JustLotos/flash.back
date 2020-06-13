@@ -23,36 +23,10 @@ class Command
     public $description;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\Range(min="1", max="10000")
-     * @Serializer\Type(name="integer")
+     * @Assert\Valid()
+     * @Serializer\Type(name="App\Domain\Flash\UseCase\Deck\Create\Settings")
      */
-    public $limitRepeat;
-
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Range(min="1", max="10000")
-     * @Serializer\Type(name="integer")
-     */
-    public $limitLearning;
-
-    /**
-     * @Assert\NotBlank()
-     * @Assert\Range(min="1", max="10000")
-     * @Serializer\Type(name="double")
-     */
-    public $difficultyIndex;
-
-
-    /**
-     * @Assert\NotBlank()
-     * @Serializer\Type(name="DateInterval")
-     */
-    public $baseInterval;
-
-    /**
-     * @Assert\NotBlank()
-     * @Serializer\Type(name="DateInterval")
-     */
-    public $minTime;
+    public $settings;
 }
+
+

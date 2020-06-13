@@ -1,8 +1,8 @@
 <template>
     <v-flex v-if="getItemsId.length > 0 && getItems">
-        <v-list class="pa0 m-0">
-            <v-list-item v-for="id in getItemsId" :key="id" class="pa-0">
-                <slot name="item" :item="getItems[id]"></slot>
+        <v-list class="pa-0 ma-0 transparent">
+            <v-list-item v-for="id in getItemsId" :key="id" class="pa-0 mt-3 transparent">
+                <slot v-if="getItems[id]" name="item" :item="getItems[id]"></slot>
             </v-list-item>
         </v-list>
     </v-flex>
@@ -12,7 +12,6 @@
         </v-row>
     </v-flex>
 </template>
-
 <script lang="ts">
 import {Component, Prop, Vue} from "vue-property-decorator";
 @Component

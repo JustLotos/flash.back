@@ -55,17 +55,18 @@ export default class DeckListItem extends Vue{
     modalMessage: string = '';
 
     @Prop({required: true, default: {}}) deck: IDeck;
-    toggleDeleteModal() { this.deleteModal = !this.deleteModal }
+    toggleDeleteModal() {
+        this.deleteModal = !this.deleteModal
+    }
     handleDelete(message: string) {
         this.toggleDeleteModal();
         this.modalMessage = message;
-        this.successModal = false;
+        this.successModal = true;
     }
     toggleUpdateModal() { this.updateModal = !this.updateModal }
     handleUpdate(message: string) {
-        this.toggleUpdateModal();
         this.modalMessage = message;
-        this.successModal = false;
+        this.successModal = true;
     }
 }
 </script>

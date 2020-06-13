@@ -47,7 +47,7 @@ export default class PreparePage extends Vue{
     start() {
         console.log(this.selectActiveItem);
         if(this.selectActiveItem.id) {
-            this.$root.$router.push({ name: 'Train', params: { id: this.selectActiveItem.id}});
+            this.$root.$router.push({ name: 'RepeatDiscrete', params: { id: this.selectActiveItem.id}});
         } else {
             this.error = 'Для повторения необходимо выбрать колоду';
         }

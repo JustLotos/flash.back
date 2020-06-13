@@ -4,6 +4,7 @@ import Store from "../../../Store";
 import {AxiosResponse} from "axios";
 import {ICard, IDeck, IRecord} from "../types";
 import CardService from "../Service/CardService";
+import {DeckModule} from "./DeckModule";
 
 export interface ICardState {
     byId: {},
@@ -106,6 +107,12 @@ export default class Card extends VuexModule implements ICardState {
     @Mutation
     SET_CARD(card: ICard) {
         card.details = true;
+        if(this.byId[card.id]) {
+            if(this.byId[card.id].deck) {
+                card.deck = this.byId[card.id].deck;
+            }
+        }
+
         Vue.set(this.byId, card.id, card);
         if (this.allIds.indexOf(card.id) < 0) {
             this.allIds.push(card.id);
@@ -114,30 +121,35 @@ export default class Card extends VuexModule implements ICardState {
     }
     @Mutation
     DELETE_CARD(card: ICard) {
+        let deck = DeckModule.getDeckById(card.deck);
         Vue.delete(this.byId, card.id);
         this.allIds.splice(this.allIds.indexOf(card.id), 1);
     }
 
     @Action({rawError: true})
-    async getOneFull(deckId: number) {
-        const response = await CardService.getOneFull(deckId);
+    async getOneFull(cardId: number) {
+        const response = await CardService.getOne(cardId, 'FULL');
         this.SET_CARD(response.data);
     }
     @Action({rawError: true})
-    async create(deck: number, card: ICard) {
-        const response =await CardService.create(deck, card);
+    async create(card: ICard) {
+        const response =await CardService.create(card);
         this.SET_CARD(response.data);
+        response.data.deck = card.deck;
+        DeckModule.ADD_NEW_CARD_TO_DECK(response.data);
     }
     @Action({rawError: true})
     async update(card: ICard) {
         const response =await CardService.update(card);
+        response.deck = card.deck;
         this.SET_CARD(response.data);
     }
     @Action({rawError: true})
-    async delete(card: ICard) {
+    async delete(card: ICard): Promise<any> {
         const response: AxiosResponse = await CardService.delete(card);
         this.DELETE_CARD(card);
-        return Promise.resolve(response.data);
+        DeckModule.REMOVE_CARD_FROM_DECK(card);
+        return response.data;
     }
 };
 

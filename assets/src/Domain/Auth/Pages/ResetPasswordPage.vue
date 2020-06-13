@@ -2,13 +2,13 @@
     <v-layout align-center justify-center>
         <v-flex sm10 md8 lg6>
             <v-toolbar color="primary" dark flat>
-                <v-toolbar-title>Регистрация</v-toolbar-title>
+                <v-toolbar-title>Восстановление</v-toolbar-title>
             </v-toolbar>
             <reset-password-form @reset="handle" :errors="errors"></reset-password-form>
             <v-card-actions class="mt-5">
                 <v-row justify="center" class="flex-wrap">
-                    <v-card flat>
-                        <span>Есть учетная запись?</span>
+                    <v-card flat class="transparent">
+                        <span class="text--white">Есть учетная запись?</span>
                         <v-btn text link :to="{name: 'Login'}" color="primary">Войти</v-btn>
                     </v-card>
                 </v-row>

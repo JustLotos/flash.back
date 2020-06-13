@@ -2,7 +2,7 @@ import Vue from "vue";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import Store from "../../../Store";
 import {AxiosResponse} from "axios";
-import {IDeck, ITimeIntervals} from "../types";
+import {ICard, IDeck, ITimeIntervals} from "../types";
 import DeckService from "../Service/DeckService";
 import {cloneObject} from "../../../Utils/Helpers";
 import {CardModule} from "./CardModule";
@@ -14,7 +14,7 @@ export interface IDeckState {
     uploadStatus: UploadStatus;
 }
 enum UploadStatus { EMPTY = null, LIST = 'LIST', DETAILS = 'DETAILS', FULL = 'FULL'}
-enum ServiceAction { FETCH_ALL = 'FETCH_ALL', FETCH_ONE = 'FETCH_ALL', CREATE = 'CREATE', UPDATE = 'UPDATE', DELETE='DELETE'}
+enum ServiceAction { FETCH_ALL = 'FETCH_ALL', FETCH_ONE = 'FETCH_ONE', CREATE = 'CREATE', UPDATE = 'UPDATE', DELETE='DELETE'}
 
 @Module({dynamic: true, store: Store, name: 'DeckModule', namespaced: true})
 export default class Deck extends VuexModule implements IDeckState{
@@ -22,6 +22,8 @@ export default class Deck extends VuexModule implements IDeckState{
     allIds = [];
     currentActionLoad = null;
     uploadStatus: UploadStatus = UploadStatus.EMPTY;
+    dateIntervalRegex = /\d+/;
+
 
     get isUploadedList()        {
         return this.uploadStatus === UploadStatus.LIST
@@ -49,7 +51,7 @@ export default class Deck extends VuexModule implements IDeckState{
     get getDecksId(): Array<number> { return this.allIds }
     get getDeckById() { return (id: number): IDeck =>  this.byId[id] }
 
-
+    get isRealDeck() { return (deck: IDeck) => { return deck.id !== -1} }
     get getDeckDefault(): IDeck {
         return {
             id: -1,
@@ -84,7 +86,6 @@ export default class Deck extends VuexModule implements IDeckState{
         ]
     }
 
-
     @Mutation
     public LOADING(value: ServiceAction) {
         this.currentActionLoad = value;
@@ -93,6 +94,20 @@ export default class Deck extends VuexModule implements IDeckState{
     public UNSET_LOAD() {
         this.currentActionLoad = null;
     }
+
+    @Mutation
+    REMOVE_CARD_FROM_DECK(card: ICard) {
+        if(card.deck) {
+            let index = this.byId[card.deck].cards.indexOf(card.id);
+            this.byId[card.deck].cards.splice(index, 1);
+        }
+    }
+
+    @Mutation
+    ADD_NEW_CARD_TO_DECK(card: ICard) {
+        this.byId[card.deck].cards.push(card.id);
+    }
+
     @Mutation
     FETCH_DECKS(decks: Array<IDeck>) {
         decks.forEach((deck: IDeck) => {
@@ -104,12 +119,19 @@ export default class Deck extends VuexModule implements IDeckState{
         });
         this.uploadStatus = UploadStatus.LIST;
     }
+
     @Mutation
     FETCH_DECKS_FULL(decks: Array<IDeck>) {
         decks.forEach((deck: IDeck) => {
             deck = cloneObject(deck);
             deck.details = true;
-            deck.cards = deck.cards.map(card => card.id);
+            deck.settings.startTimeInterval =
+                Number((String(deck.settings.startTimeInterval)).match(this.dateIntervalRegex)[0]);
+            deck.settings.minTimeInterval =
+                Number((String(deck.settings.minTimeInterval)).match(this.dateIntervalRegex)[0]);
+            if (deck.cards) {
+                deck.cards = deck.cards.map(card => card.id);
+            }
             Vue.set(this.byId, deck.id, deck);
             if (this.allIds.indexOf(deck.id) < 0 ) {
                 this.allIds.push(deck.id);
@@ -117,6 +139,7 @@ export default class Deck extends VuexModule implements IDeckState{
         });
         this.uploadStatus = UploadStatus.FULL;
     }
+
     @Mutation
     SET_DECK(deck: IDeck) {
         deck.details = true;
@@ -124,12 +147,10 @@ export default class Deck extends VuexModule implements IDeckState{
         if (deck.cards) {
             deck.cards = deck.cards.map(card => card.id);
         }
-
-        // this.minTimeIntervals.forEach((interval)=> {
-        //      if(interval.value === deck.settings.minTimeInterval) {
-        //          deck.settings.minTimeInterval = interval.value;
-        //      }
-        // });
+        deck.settings.startTimeInterval =
+            Number((String(deck.settings.startTimeInterval)).match(this.dateIntervalRegex)[0]);
+        deck.settings.minTimeInterval =
+            Number((String(deck.settings.minTimeInterval)).match(this.dateIntervalRegex)[0]);
         Vue.set(this.byId, deck.id, deck);
         if (this.allIds.indexOf(deck.id) < 0) {
             this.allIds.push(deck.id);
@@ -156,7 +177,9 @@ export default class Deck extends VuexModule implements IDeckState{
         const response: AxiosResponse<Array<IDeck>> = await DeckService.fetchAll('FULL');
         this.FETCH_DECKS_FULL(response.data);
         response.data.forEach((deck: IDeck)=>{
-            CardModule.FETCH_CARDS_FULL_FROM_DECK(deck);
+            if(deck.cards) {
+                CardModule.FETCH_CARDS_FULL_FROM_DECK(deck);
+            }
         })
         this.UNSET_LOAD();
         return response.data;
@@ -189,7 +212,7 @@ export default class Deck extends VuexModule implements IDeckState{
     @Action({rawError: true})
     async update(deck: IDeck): Promise<IDeck> {
         this.LOADING(ServiceAction.UPDATE);
-        const response =await DeckService.update(deck);
+        const response = await DeckService.update(deck);
         this.SET_DECK(response.data);
         this.UNSET_LOAD();
     }
