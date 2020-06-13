@@ -83,6 +83,8 @@ import Loader from "../../../App/Components/FormElements/Loader.vue";
 import CardCreate from "../../Components/Card/CardCreate.vue";
 import {cloneObject} from "../../../../Utils/Helpers";
 import {IDeck} from "../../types";
+import {AxiosError} from "axios";
+import {handle404Exception} from "../../../Auth/Guard";
 
 @Component({components: {CardCreate, Loader, DialButton, Modal, DeckUpdate, DeckDelete, ListObjects, CardListItem}})
 export default class DeckPage extends Vue{
@@ -124,7 +126,10 @@ export default class DeckPage extends Vue{
         if(!deck.details) {
             DeckModule.fetchOneFull(to.params.id)
             .then(()=>{ next(vm=>vm.setDeck(DeckModule.getDeckById(to.params.id))) })
-            .catch((error)=>{console.log('Ошибка получения коллекции' + JSON.stringify(error.response))});
+            .catch((error: AxiosError)=>{
+                handle404Exception(error, {name: "Decks"});
+                console.log('Ошибка получения коллекции' + JSON.stringify(error.response))
+            });
         } else {
             next(vm=>vm.setDeck(deck))
         }

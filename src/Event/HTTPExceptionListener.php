@@ -21,9 +21,7 @@ class HTTPExceptionListener
     public function onKernelException(ExceptionEvent $event) : void
     {
         $error = $event->getThrowable();
-
         $this->logger->critical($error->getMessage());
-
         if ($error instanceof ApplicationException) {
             $response = $this->handleKnownExceptions($error);
         } elseif ($error instanceof AccessDeniedHttpException || $error instanceof NotFoundHttpException) {
@@ -31,39 +29,31 @@ class HTTPExceptionListener
         } else {
             $response = $this->handleUnknownExceptions($error);
         }
-
+        $response->headers->set('Content-Type', 'application/json');
         $event->setResponse($response);
     }
 
     private function handle404(Throwable $exception)
     {
-//        json_encode(['errors' => ['message' => str_replace('"', '\'', $exception->getMessage())]]),
-        $response = new Response(
+        return new Response(
             $exception->getMessage(),
             Response::HTTP_NOT_FOUND
         );
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 
     private function handleKnownExceptions(Throwable $exception)
     {
-        $response = new Response($exception->getMessage(), $exception->getStatusCode());
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return new Response($exception->getMessage(), $exception->getStatusCode());
     }
 
     private function handleUnknownExceptions(Throwable $exception) : Response
     {
-//        var_dump( );;
-//        json_encode(['errors' => ['message' => str_replace('"', '\'', $exception->getMessage())]]),
-        $response = new Response(
-            $exception->getMessage(),
-            Response::HTTP_UNPROCESSABLE_ENTITY
-        );
-        $response->headers->set('Content-Type', 'application/json');
+        try {
+            $statusCode = $exception->getStatusCode();
+        } catch (\Exception $exception) {
+            $statusCode = Response::HTTP_NOT_FOUND;
+        }
 
-        return $response;
+        return new Response($exception->getMessage(), $statusCode);
     }
 }

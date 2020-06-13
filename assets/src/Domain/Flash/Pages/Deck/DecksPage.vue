@@ -50,11 +50,11 @@ export default class DecksPage extends Vue{
     get isLoading(): boolean {
         return DeckModule.isActionFetchAllLoading;
     }
+    get decks() { return DeckModule.getDecks }
+    get decksId() { return DeckModule.getDecksId }
+    get placement() { return { 'on-side': !!this.decksId.length, 'on-card': !(!!this.decksId.length) } }
 
-    toggleModal() {
-        this.createModal = !this.createModal;
-    }
-
+    toggleModal() { this.createModal = !this.createModal }
     handleCreate(value) {
         this.modalMessage = value;
         this.successModal = !this.successModal;
@@ -62,22 +62,13 @@ export default class DecksPage extends Vue{
 
     beforeRouteEnter(to , from , next) {
         if(!DeckModule.isUploadedList) {
-            DeckModule.fetchAll()
-                .then(next())
-                .catch((error)=>{ console.log("Ошибка извлечения колоды" + JSON.stringify(error))});
+            DeckModule.fetchAll().then(next())
+                .catch((error)=>{ console.log("Ошибка извлечения коллекции" + JSON.stringify(error))});
         } else {
             next()
         }
     }
-    get decks() {
-        return DeckModule.getDecks;
-    }
-    get decksId() {
-        return DeckModule.getDecksId;
-    }
-    get placement() {
-        return { 'on-side': !!this.decksId.length, 'on-card': !(!!this.decksId.length) }
-    }
+
 }
 </script>
 <style scoped>

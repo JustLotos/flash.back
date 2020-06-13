@@ -46,7 +46,6 @@ export default class RegisterForm extends Vue  {
         return this.errors || {email: '', password: '', plainPassword: ''}
     }
 
-
     register() {
         if(this.$refs.registerForm.validate()) {
             this.$emit('register', this.payloads)

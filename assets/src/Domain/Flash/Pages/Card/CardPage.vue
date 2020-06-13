@@ -50,6 +50,7 @@ import DialButton from "../../../App/Components/DialButton";
 import Modal from "../../../App/Components/Modal.vue";
 import CardUpdate from "../../Components/Card/CardUpdate.vue";
 import CardDelete from "../../Components/Card/CardDelete.vue";
+import {handle404Exception} from "../../../Auth/Guard";
 
 @Component({components: {CardDelete, CardUpdate, Modal, DialButton}})
 export default class CardPage extends Vue{
@@ -91,7 +92,10 @@ export default class CardPage extends Vue{
         if(!card.details) {
             CardModule.getOneFull(to.params.id)
                 .then(()=>{ next(vm=>vm.setCard(CardModule.getCardById(to.params.id))) })
-                .catch((error)=>{ console.log('Ошибка получения карточки' + JSON.stringify(error.response)) });
+                .catch((error)=>{
+                    handle404Exception(error, {name: "Deck"});
+                    console.log('Ошибка получения карточки' + JSON.stringify(error.response))
+                });
         } else {
             next(vm=>vm.setCard(<ICard>card))
         }
