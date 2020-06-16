@@ -64,8 +64,8 @@ export default class PreparePage extends Vue{
         return [ v => !!v || '' ]
     }
     beforeRouteEnter(to, from, next) {
-        if(!DeckModule.isUploadedList) {
-            DeckModule.fetchAll().then(() => {next()})
+        if(!DeckModule.isUploadedFull) {
+            DeckModule.fetchAllFull().then(() => {next()})
                 .catch((error)=>{ console.log("Ошибка извлечения колоды" + JSON.stringify(error))});
         } else {
             next()

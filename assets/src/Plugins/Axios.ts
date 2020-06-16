@@ -23,6 +23,7 @@ Axios.interceptors.response.use(
 
         const originalRequest: AxiosRequestConfig = error.config;
         if (error.response?.status === 401 && originalRequest.url === '/auth/token/refresh') {
+            debugger;
             AuthModule.logout();
             return Router.push({name: 'Login'});
         }
@@ -33,6 +34,7 @@ Axios.interceptors.response.use(
             originalRequest.url !== '/auth/register'&&
             originalRequest.url !== '/auth/reset/password'
         ) {
+            debugger;
             originalRequest._retry = true;
             AuthModule.refresh().then(() => {
                 originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;

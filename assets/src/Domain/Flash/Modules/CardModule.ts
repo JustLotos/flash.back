@@ -20,6 +20,7 @@ export default class Card extends VuexModule implements ICardState {
     allIds = [];
     currentActionLoad = null;
     uploadStatus =  UploadStatus.EMPTY;
+    dateIntervalRegex = /\d+/;
 
     get isLoading():            boolean { return !!this.currentActionLoad }
     get isFetchAllLoading():    boolean { return this.currentActionLoad == ServiceActions.FETCH_ALL }
@@ -58,8 +59,6 @@ export default class Card extends VuexModule implements ICardState {
             return temp;
         }
     }
-
-
     get getCardDefault(): ICard {
         return {
             id: -1,
@@ -67,6 +66,16 @@ export default class Card extends VuexModule implements ICardState {
             frontSide:  [{id: -1, content: ''}],
             backSide:   [{id: -1, content: ''}]}
     }
+    get getReadyForRepeatCards() {
+        return (deckId: number) => {
+            return this.allIds.filter((cardId: number) => {
+                console.log(this.byId[cardId]);
+                debugger;
+                return this.byId[cardId] == deckId;
+            })
+        }
+    }
+
     get stringifySide() {
         return (records: Array<IRecord>): string =>  {
             let str = '';
@@ -92,11 +101,17 @@ export default class Card extends VuexModule implements ICardState {
         });
         this.uploadStatus = UploadStatus.LIST;
     }
+
     @Mutation
     FETCH_CARDS_FULL_FROM_DECK(deck: IDeck) {
         deck.cards.forEach((card: ICard) => {
             card.details = true;
             card.deck = deck.id;
+            if(card.repeat) {
+                card.repeat.date = Date.parse(card.repeat.date);
+                card.repeat.interval =
+                Number((String(card.repeat.interval)).match(this.dateIntervalRegex)[0]);
+            }
             Vue.set(this.byId, card.id, card);
             if (this.allIds.indexOf(card.id) < 0 ) {
                 this.allIds.push(card.id);
@@ -104,6 +119,7 @@ export default class Card extends VuexModule implements ICardState {
         });
         this.uploadStatus = UploadStatus.FULL;
     }
+    
     @Mutation
     SET_CARD(card: ICard) {
         card.details = true;
@@ -151,6 +167,8 @@ export default class Card extends VuexModule implements ICardState {
         DeckModule.REMOVE_CARD_FROM_DECK(card);
         return response.data;
     }
+
+
 };
 
 

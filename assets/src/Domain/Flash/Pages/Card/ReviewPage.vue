@@ -14,7 +14,7 @@
                                     <template v-slot:item="deck">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header ripple
-                                                                      @click="resetActiveDeck(deck.item)"
+                                                @click="resetActiveDeck(deck.item)"
                                             >{{deck.item.name}}</v-expansion-panel-header>
                                             <v-expansion-panel-content>
                                                 <list-objects :items="getCardsIdByDeckId(deck.item.id)" :items-id="deck.item.cards">
@@ -42,12 +42,12 @@
                         <v-app-bar-nav-icon @click="toggleLocalSidebar()"/>
                         <v-spacer/>
                         <v-toolbar-title>
-                            <v-select hide-details dense solo persistent-hint return-object single-line class="ma-0 ml-8 pa-0"
-                                      style="width: 500px"
-                                      item-text="name" item-value="id" label="Выберите коллекцию"
-                                      v-model="getActiveDeck"
-                                      :items="getSelectItems"
-                                      :error-messages="error"
+                            <v-select dense solo persistent-hint return-object single-line class="ma-0 ml-8 pa-0"
+                              style="width: 500px"
+                              item-text="name" item-value="id" label="Выберите коллекцию"
+                              v-model="getActiveDeck"
+                              :items="getSelectItems"
+                              :error-messages="error"
                             ></v-select>
                         </v-toolbar-title>
 
@@ -92,7 +92,7 @@ export default class ReviewPage extends Vue {
     modalMessage: string = '';
     activeCard: ICard = CardModule.getCardDefault;
     activeDeck: IDeck = DeckModule.getDeckDefault;
-    saveAsNew: boolean = false;
+    saveAsNew: boolean = true;
     error: string = '';
 
     get isRealActiveCard() {
@@ -104,17 +104,25 @@ export default class ReviewPage extends Vue {
     }
 
     handleSubmitCardForm(card: ICard) {
-        if(this.saveAsNew) {
+        if (this.saveAsNew) {
             if(this.isRealActiveDeck) {
-                console.log('create');
-                console.log(card);
+                card.deck = this.getActiveDeck.id;
+                CardModule.create(card)
+                    .then(()=>{
+                        this.modalMessage = 'Карта успешно создана'!
+                        this.modal = true;
+                    })
+                    .catch((error)=>{console.log(error)})
             } else {
                 this.error = 'Для повторения необходимо выбрать колоду';
             }
-            console.log('create');
         }else {
-            console.log('update');
-            console.log(card);
+            CardModule.update(card)
+                .then(()=>{
+                    this.modalMessage = 'Карта успешно обновлена'!
+                    this.modal = true;
+                })
+                .catch((error)=>{console.log(error)})
         }
     }
 

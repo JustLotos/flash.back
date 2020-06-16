@@ -20,8 +20,22 @@ class RepeatController extends AbstractController
 {
     use ControllerHelper;
 
+    /** @Route("/ready", name="getRedyCards", methods={"GET"}) */
+    public function ready(Request $request, Card $card, DiscreteRepeatHandler $handler): Response
+    {
+        $this->denyAccessUnlessGranted(CardVoter::VIEW, $card, CardVoter::NOT_FOUND_MESSAGE);
+        /** @var DiscreteRepeatCommand $command */
+        $command = $this->serializer->deserialize($request, DiscreteRepeatCommand::class);
+        $handler->handle($card, $command);
+        return $this->response($this->serializer->serialize($card, [
+            Card::GROUP_DETAILS,
+            Card::GROUP_FULL,
+            Record::GROUP_DETAILS
+        ]));
+    }
+
     /** @Route("/discrete", name="discreteRepeat", methods={"POST"}) */
-    public function getAction(Request $request, Card $card, DiscreteRepeatHandler $handler): Response
+    public function discrete(Request $request, Card $card, DiscreteRepeatHandler $handler): Response
     {
         $this->denyAccessUnlessGranted(CardVoter::VIEW, $card, CardVoter::NOT_FOUND_MESSAGE);
         /** @var DiscreteRepeatCommand $command */

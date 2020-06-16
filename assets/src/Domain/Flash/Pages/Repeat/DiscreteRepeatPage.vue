@@ -50,6 +50,7 @@ export default class DiscreteRepeatPage extends Vue{
     activeCard: ICard = CardModule.getCardDefault;
     state: STATE = STATE.INIT;
     resultTime: number = 0;
+    repeatedCards;
 
     setInit() {
         this.state = STATE.INIT;
@@ -71,7 +72,9 @@ export default class DiscreteRepeatPage extends Vue{
 
     setDeck(deck: IDeck) {
         this.deck = deck;
-        this.activeCard = CardModule.getCardById(deck.cards[0]);
+        debugger;
+        this.repeatedCards = CardModule.getReadyForRepeatCards(this.deck.id);
+        //this.activeCard = CardModule.getCardById(deck.cards[0]);
         this.setInit();
     }
 
