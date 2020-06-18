@@ -1,14 +1,23 @@
 /** Card */
 export interface ICard {
-    id: number,
-    name: string,
-    frontSide: Array<IRecord>
-    backSide: Array<IRecord>
+    id: number;
+    name: string;
+    frontSide: Array<IRecord>;
+    backSide: Array<IRecord>;
+    repeat?: IRepeat;
 }
 export interface IRecord {
     id: number;
     content: string;
 }
+
+export interface IRepeat {
+    state: string;
+    count: number;
+    date: number;
+    interval: number;
+}
+
 /** Deck */
 export interface IDeck {
     id: number;
@@ -42,3 +51,25 @@ export interface IName {
     first: string;
     last: string;
 }
+/** Repeat */
+/** Discrete */
+export interface IDiscreteRepeatOptions {
+    forgot: IDiscreteRepeatOption;
+    recognize: IDiscreteRepeatOption;
+    remember: IDiscreteRepeatOption;
+    know: IDiscreteRepeatOption
+}
+export interface IDiscreteRepeatOption {
+    repeatCount: number;
+    name: string;
+    label: string;
+    color: string;
+}
+export interface IDiscreteRepeatAnswer {
+    cardId: number;
+    status: string;
+    time: number;
+    date: string;
+}
+
+

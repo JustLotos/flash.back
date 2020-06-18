@@ -3,7 +3,7 @@
         <v-flex>
             <v-card color="primary" class="pt-5 pr-5 pl-5">
                 <v-row justify="center" no-gutters style="position: relative">
-                    <v-sheet class="timer"> {{resultTime.toFixed(1)}} </v-sheet>
+                    <v-sheet v-if="resultTime" class="timer"> {{resultTime.toFixed(1)}} </v-sheet>
                     <v-col cols="12" sm="12" class="mb-5">
                         <v-sheet color="light" min-height="200px">
                             <v-card-text v-html="getFrontSide"></v-card-text>
@@ -29,35 +29,40 @@
                 </v-card-actions>
             </v-card>
         </v-flex>
+        <modal v-model="modal"><v-alert type="warning">{{modalMessage}}</v-alert></modal>
     </v-layout>
 </template>
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
+import {Component, Prop, Vue, Watch} from "vue-property-decorator";
 import {DeckModule} from "../../Modules/DeckModule";
 import {CardModule} from "../../Modules/CardModule";
 import {ICard, IDeck} from "../../types";
+import Modal from "../../../App/Components/Modal.vue";
 import DiscreteRepeatAnswerButtons from "../../Components/Repeat/DiscreteRepeatAnswerButtons.vue";
+import {RepeatModule} from "../../Modules/RepeatModule";
+import date from "../../../../Utils/date";
 
 enum STATE { INIT = 'INIT', ANSWER = 'ANSWER' , NEXT = 'NEXT' }
-@Component({
-    components: {DiscreteRepeatAnswerButtons}
-})
+@Component({ components: { DiscreteRepeatAnswerButtons, Modal }})
 export default class DiscreteRepeatPage extends Vue{
     @Prop({required: true}) id: number;
     isRunning: boolean = false;
     interval = null;
+    modal: boolean = false;
+    modalMessage: string = '';
+    state: STATE = STATE.INIT;
+
     deck: IDeck;
     activeCard: ICard = CardModule.getCardDefault;
-    state: STATE = STATE.INIT;
     resultTime: number = 0;
-    repeatedCards;
+    repeatedCardsIds: Array<number>;
 
     setInit() {
         this.state = STATE.INIT;
-        this.interval = setInterval(
-            () => { this.resultTime += + 0.1 },
-            100
-        )
+        if(this.checkRepeatedCards()) {
+            this.activeCard = CardModule.getCardById(<number>this.repeatedCardsIds.pop());
+            this.interval = setInterval(() => { this.resultTime += + 0.1 }, 100)
+        }
     }
 
     setAnswer() {
@@ -68,15 +73,43 @@ export default class DiscreteRepeatPage extends Vue{
 
     setNext(value: string) {
         this.state = STATE.NEXT;
+        RepeatModule.repeatDiscrete({
+            cardId: this.activeCard.id,
+            date: date('Y-m-d\\TH:i:sP', this.activeCard.repeat?.date),
+            status: value,
+            time: this.resultTime
+        });
     }
 
     setDeck(deck: IDeck) {
         this.deck = deck;
-        debugger;
-        this.repeatedCards = CardModule.getReadyForRepeatCards(this.deck.id);
-        //this.activeCard = CardModule.getCardById(deck.cards[0]);
-        this.setInit();
+        this.repeatedCardsIds = CardModule.getReadyForRepeatCards(this.deck.id);
+        if(this.checkRepeatedCards()) {
+            this.setInit();
+        }
     }
+
+    checkRepeatedCards() {
+        if(this.repeatedCardsIds && this.repeatedCardsIds.length) {
+            return true;
+        } else {
+            this.callModal('В данной коллекции отсутствую карточки для повторения, ' +
+                'пожайлуста выберите другую коллекцию или добавьте новые карточки');
+        }
+    }
+
+    callModal(message: string) {
+        this.modal = true;
+        this.modalMessage = message;
+    }
+
+    @Watch('modal')
+    redirect(modal: boolean) {
+        if(!modal) {
+            this.$root.$router.push({name: 'Prepare'});
+        }
+    }
+
 
     get isInit()                    { return this.state === STATE.INIT }
     get isAnswer()                  { return this.state === STATE.ANSWER }

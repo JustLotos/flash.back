@@ -25,11 +25,7 @@ class AnswerManagerService
             return $settings->getStartTimeInterval();
         } elseif ($repeat->isStudied()) {
             $previewRepeatInterval = $this->converter->toSeconds($repeat->getRepeatInterval());
-            $averageTimeIndex = $this->getAverageIndex(
-                $repeat->getTotalTime(),
-                $repeat->getCount(),
-                $answer->getTime()
-            );
+            $averageTimeIndex = $this->getAverageIndex($repeat->getTotalTime(), $repeat->getCount(), $answer->getTime());
             $simpleIndex = $previewRepeatInterval * $answer->getEstimateAnswer();
             $complexIndex = $simpleIndex  * $averageTimeIndex;
             return  $this->makeInterval($complexIndex, $settings);
@@ -37,11 +33,7 @@ class AnswerManagerService
             $previewRepeatInterval = $this->converter->toSeconds($repeat->getRepeatInterval());
             $simpleIndex = $previewRepeatInterval * $answer->getEstimateAnswer();
             $countRepeatIndex = $repeat->getSuccessCount() / $repeat->getCount();
-            $averageTimeIndex = $this->getAverageIndex(
-                $repeat->getTotalTime(),
-                $repeat->getCount(),
-                $answer->getTime()
-            );
+            $averageTimeIndex = $this->getAverageIndex($repeat->getTotalTime(), $repeat->getCount(), $answer->getTime());
             $complexIndex = $simpleIndex * $countRepeatIndex / $averageTimeIndex;
             return  $this->makeInterval($complexIndex, $settings);
         }
@@ -52,7 +44,7 @@ class AnswerManagerService
         $totalTimeSec = $this->converter->toSeconds($totalTime);
         $currentTimeSec = $this->converter->toSeconds($currentTime);
         $averageTimeSec = $totalTimeSec / $countRepeat;
-        return $currentTimeSec / $averageTimeSec;
+        return $currentTimeSec / ($averageTimeSec + 0.1);
     }
 
     private function makeInterval(float $complexIndex, ISettings $settings): DateInterval

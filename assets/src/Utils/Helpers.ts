@@ -88,3 +88,7 @@ export function cardDefault(
         backRecords: backRecords,
     }
 }
+
+export function phpDateIntervalToSeconds(value: string) {
+
+}

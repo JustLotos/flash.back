@@ -64,14 +64,16 @@ class Repeat implements IRepeat
 
     public function __construct(
         DateTimeImmutable $date,
-        DateInterval $interval
+        DateInterval $interval,
+        int $count = self::INITIAL_COUNT_REPEAT,
+        int $successCount = self::INITIAL_COUNT_REPEAT
     ) {
         $this->state = self::NEW;
         $this->date = $date;
         $this->interval = $interval;
-        $this->totalTime = DateInterval::createFromDateString('0 seconds');
-        $this->count = self::INITIAL_COUNT_REPEAT;
-        $this->successCount = self::INITIAL_COUNT_REPEAT;
+        $this->count = $count;
+        $this->successCount = $successCount;
+        $this->totalTime =  DateInterval::createFromDateString('0 seconds');
     }
 
     public function update(IAnswer $answer, DateInterval $repeatInterval)

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Flash\UseCase\Card\DiscreteRepeat;
+namespace App\Domain\Flash\UseCase\Repeat\Discrete;
 
 use DateInterval;
 use DateTimeImmutable;
@@ -19,9 +19,9 @@ class Command
     public $date;
 
     /**
-     * @var DateInterval
+     * @var int
      * @Assert\NotBlank()
-     * @Serializer\Type(name="DateInterval")
+     * @Serializer\Type(name="int")
      */
     public $time;
 

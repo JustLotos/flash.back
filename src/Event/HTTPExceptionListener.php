@@ -49,11 +49,11 @@ class HTTPExceptionListener
     private function handleUnknownExceptions(Throwable $exception) : Response
     {
         try {
-            $statusCode = $exception->getStatusCode();
+            //$statusCode = $exception->getStatusCode();
         } catch (\Exception $exception) {
             $statusCode = Response::HTTP_NOT_FOUND;
         }
-
+        $statusCode = Response::HTTP_NOT_FOUND;
         return new Response($exception->getMessage(), $statusCode);
     }
 }

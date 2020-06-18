@@ -10,12 +10,14 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
+    #
+    #    serializer:
+    #        name_converter: 'serializer.name_converter.camel_case_to_snake_case'
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Model/User/Entity,Model/Card/Entity, Model/Deck/Entity,Migrations,Tests,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -25,3 +27,46 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    #BUNDLES
+    Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler:
+        autowire: true
+    Gesdinet\JWTRefreshTokenBundle\Service\RefreshToken:
+        alias: "gesdinet.jwtrefreshtoken"
+
+    #EVENT
+    App\Domain\User\Events\AuthenticationSuccessListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
+    App\Domain\User\Events\AuthenticationFailureListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_failure, method: onAuthenticationFailureResponse }
+    App\Domain\User\Events\JWTCreatedListener:
+        arguments: [ '@request_stack' ]
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    App\Domain\User\Events\HashPasswordListener:
+        tags:
+            - { name: doctrine.event_subscriber }
+    App\Event\HTTPExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    #CUSTOM SERVICE
+    App\Service\TwigService: ~
+    App\Service\MailSenderService: ~
+    App\Service\SerializeService: ~
+    App\Service\ValidateService: ~
+    App\Domain\User\UserRepository: ~
+    App\Domain\User\Service\TokenService: ~
+
+    #VALIDATORS
+    validator.unique.uniqueuser:
+        class: App\Validator\UniqueEntityConstraint\UniqueEntityValidator
+        tags:
+            - { name: validator.constraint_validator, alias: UniqueEntity }
+    validator.unique.existinguser:
+        class: App\Validator\ExistEntityConstraint\ExistEntityValidator
+        tags:
+            - { name: validator.constraint_validator, alias: ExistEntity }

@@ -63,7 +63,7 @@ class Card
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Domain\Flash\Entity\Card\Types\Record", mappedBy="card", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Domain\Flash\Entity\Card\Types\Record", mappedBy="card", orphanRemoval=true, cascade={"persist", "refresh"})
      */
     private $records;
     /**
@@ -212,7 +212,12 @@ class Card
     /** @ORM\PreFlush() */
     public function saveRecords()
     {
-        $this->records = new ArrayCollection(array_merge($this->getFrontSide(), $this->getBackSide()));
+        foreach ($this->getFrontSide() as $record) {
+            $this->records->add($record);
+        }
+        foreach ($this->getBackSide() as $record) {
+            $this->records->add($record);
+        }
     }
 
     public function setUpdatedAt(DateTimeImmutable $updatedAt): self

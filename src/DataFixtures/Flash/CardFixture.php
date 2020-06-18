@@ -20,7 +20,7 @@ class CardFixture extends BaseFixture implements DependentFixtureInterface
 
     public function loadData(ObjectManager $manager) : void
     {
-        $this->createMany(600, self::ADMIN_CARDS, function () {
+        $this->createMany(40, self::ADMIN_CARDS, function () {
             /** @var Deck $deck */
             $deck = $this->getRandomReference(DeckFixture::ADMIN_DECKS);
             return $this->getCard($deck);
@@ -39,8 +39,13 @@ class CardFixture extends BaseFixture implements DependentFixtureInterface
     {
         $front = Record::createFrontSide($this->faker->streetName);
         $back = Record::createBackSide($this->faker->firstNameFemale);
-
-        $repeat = new Repeat(new DateTimeImmutable(), $deck->getSettings()->getStartTimeInterval());
+        $count = $this->faker->numberBetween(0, 20);
+        $repeat = new Repeat(
+            new DateTimeImmutable('-1 day'),
+            $deck->getSettings()->getStartTimeInterval(),
+            $count,
+            $this->faker->numberBetween(0, $count)
+        );
 
         return Card::create($deck, $this->faker->name, $front, $back, $repeat, new DateTimeImmutable());
     }

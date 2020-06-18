@@ -184,6 +184,20 @@ export default class Deck extends VuexModule implements IDeckState{
         this.UNSET_LOAD();
         return response.data;
     }
+
+    @Action({rawError: true})
+    async fetchOneFull(id: number): Promise<IDeck> {
+        this.LOADING(ServiceAction.FETCH_ONE);
+        const response = await DeckService.fetchOne(id, 'FULL');
+        let deck: IDeck = response.data;
+        this.SET_DECK(deck);
+        if(deck.cards) {
+            CardModule.FETCH_CARDS_FULL_FROM_DECK(deck);
+        }
+        this.UNSET_LOAD();
+        return deck;
+    }
+
     @Action({rawError: true})
     async fetchOne(id: number): Promise<IDeck> {
         this.LOADING(ServiceAction.FETCH_ONE)
@@ -192,15 +206,7 @@ export default class Deck extends VuexModule implements IDeckState{
         this.UNSET_LOAD();
         return response.data;
     }
-    @Action({rawError: true})
-    async fetchOneFull(id: number): Promise<IDeck> {
-        this.LOADING(ServiceAction.FETCH_ONE);
-        const response = await DeckService.fetchOne(id, 'FULL');
-        this.SET_DECK(response.data);
-        CardModule.FETCH_CARDS_FROM_DECK(response.data);
-        this.UNSET_LOAD();
-        return response.data;
-    }
+
     @Action({rawError: true})
     async create(deck: IDeck): Promise<IDeck> {
         this.LOADING(ServiceAction.CREATE);

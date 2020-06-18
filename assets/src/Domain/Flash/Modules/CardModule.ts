@@ -2,9 +2,10 @@ import Vue from "vue";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
 import Store from "../../../Store";
 import {AxiosResponse} from "axios";
-import {ICard, IDeck, IRecord} from "../types";
+import {ICard, IDeck, IDiscreteRepeatAnswer, IDiscreteRepeatOptions, IRecord} from "../types";
 import CardService from "../Service/CardService";
 import {DeckModule} from "./DeckModule";
+import RepeatService from "../Service/RepeatService";
 
 export interface ICardState {
     byId: {},
@@ -59,6 +60,8 @@ export default class Card extends VuexModule implements ICardState {
             return temp;
         }
     }
+
+
     get getCardDefault(): ICard {
         return {
             id: -1,
@@ -68,14 +71,18 @@ export default class Card extends VuexModule implements ICardState {
     }
     get getReadyForRepeatCards() {
         return (deckId: number) => {
-            return this.allIds.filter((cardId: number) => {
-                console.log(this.byId[cardId]);
-                debugger;
-                return this.byId[cardId] == deckId;
+            return this.allIds
+                .filter( cardId => this.byId[cardId].deck === deckId )
+                .filter((cardId: number) => {
+                let card: ICard = this.byId[cardId];
+                let repeat = card.repeat;
+                let timeRepeat: number = repeat.date + repeat.interval;
+                let now: number = Math.round(+new Date / 1000);
+
+                if(timeRepeat < now) { return true }
             })
         }
     }
-
     get stringifySide() {
         return (records: Array<IRecord>): string =>  {
             let str = '';
@@ -86,6 +93,14 @@ export default class Card extends VuexModule implements ICardState {
     get parseSide() {
         return (id: number, string: string): IRecord =>  {
             return  {id: id, content: string}
+        }
+    }
+    get discreteRepeatOptions(): IDiscreteRepeatOptions {
+        return {
+            forgot:     {   repeatCount: 0,     name: 'FORGOT',     label: 'Забыл', color: '#E8F5E9'},
+            recognize:  {   repeatCount: 0,     name: 'RECOGNIZE',  label: 'Узнаю', color: '#81C784'},
+            remember:   {   repeatCount: 5,     name: 'REMEMBER',   label: 'Помню', color: '#43A047'},
+            know:       {   repeatCount: 12,    name: 'KNOW',       label: 'Знаю',  color: '#2E7D32'}
         }
     }
 
@@ -108,7 +123,7 @@ export default class Card extends VuexModule implements ICardState {
             card.details = true;
             card.deck = deck.id;
             if(card.repeat) {
-                card.repeat.date = Date.parse(card.repeat.date);
+                card.repeat.date = Math.round(Date.parse(card.repeat.date)/1000);
                 card.repeat.interval =
                 Number((String(card.repeat.interval)).match(this.dateIntervalRegex)[0]);
             }
@@ -167,8 +182,6 @@ export default class Card extends VuexModule implements ICardState {
         DeckModule.REMOVE_CARD_FROM_DECK(card);
         return response.data;
     }
-
-
 };
 
 
