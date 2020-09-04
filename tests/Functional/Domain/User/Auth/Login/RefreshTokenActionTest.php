@@ -19,15 +19,11 @@ class RefreshTokenActionTest extends AbstractTest
         return [UserFixtures::class];
     }
 
-    public function setUp() : void
-    {
-        parent::setUp();
-        $this->clientAuth = $this->createAuthenticatedClient();
-    }
-
     public function testValid() : void
     {
+        $this->clientAuth = $this->createAuthenticatedClient();
         /** @var Response $response */
+
         $response = $this->clientAuth->getResponse();
         $content = json_decode($response->getContent(), true);
 
@@ -44,41 +40,18 @@ class RefreshTokenActionTest extends AbstractTest
         static::assertArrayHasKey('refreshToken', $content);
     }
 
-    public function testLoginInvalidValue() : void
+    public function testInvalidValue() : void
     {
-        $this->makeRequest($this->method, $this->uri, [
-            'refreshToken'=> ''
-        ]);
+        $client = $this->makeRequest($this->method, $this->uri, [
+            'refreshToken'=> '123123'
+        ], false);
 
         /** @var Response $response */
-        $response = $this->clientAuth->getResponse();
+        $response = $client->getResponse();
         $content = json_decode($response->getContent(), true);
 
-        $this->assertResponseCode(Response::HTTP_UNPROCESSABLE_ENTITY, $response);
+        $this->assertResponseCode(Response::HTTP_UNAUTHORIZED, $response);
         static::assertArrayHasKey('errors', $content);
-        static::assertArrayHasKey('refreshToken', $content['errors']);
-    }
-
-    public function testLoginInvalidKey() : void
-    {
-        /** @var Response $response */
-        $response = $this->clientAuth->getResponse();
-        $content = json_decode($response->getContent(), true);
-
-        var_dump($content);
-        $this->makeRequest($this->method, $this->uri, [
-            'refresh'=> $content['refreshToken']
-        ]);
-
-
-        /** @var Response $response */
-        $response = $this->clientAuth->getResponse();
-        $content = json_decode($response->getContent(), true);
-
-        var_dump($content);
-
-        $this->assertResponseCode(Response::HTTP_UNPROCESSABLE_ENTITY, $response);
-        static::assertArrayHasKey('errors', $content);
-        static::assertArrayHasKey('refreshToken', $content['errors']);
+        static::assertArrayHasKey('auth', $content['errors']);
     }
 }
