@@ -265,6 +265,9 @@ class User implements UserInterface
     }
     public function getEmail(): Email
     {
+        if (is_string($this->email)) {
+            return new Email((string)$this->email);
+        }
         return $this->email;
     }
     public function getConfirmToken(): ?ConfirmToken
@@ -281,6 +284,9 @@ class User implements UserInterface
     }
     public function getPassword(): Password
     {
+        if (is_string($this->password)) {
+            return new Password((string)$this->password);
+        }
         return $this->password;
     }
     public function getRoles(): array
@@ -313,10 +319,14 @@ class User implements UserInterface
         $this->password = $password;
         return $this;
     }
-    public function eraseCredentials(): void
+
+    public function getSalt()
     {
+        // TODO: Implement getSalt() method.
     }
-    public function getSalt(): void
+
+    public function eraseCredentials()
     {
+        // TODO: Implement eraseCredentials() method.
     }
 }

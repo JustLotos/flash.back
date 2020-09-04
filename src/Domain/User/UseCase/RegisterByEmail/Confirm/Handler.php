@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\UseCase\ResetPassword\Confirm;
+namespace App\Domain\User\UseCase\RegisterByEmail\Confirm;
 
-use App\Domain\User\Entity\User;
 use App\Domain\User\UserRepository;
-use App\Domain\User\Service\PasswordEncoder;
 use App\Service\FlushService;
+use App\Service\MailService\MailSenderService;
 use App\Service\MailService\BaseMessage;
 use App\Service\MailService\MailBuilderService;
-use App\Service\MailService\MailSenderService;
 use App\Service\ValidateService;
 use DateTimeImmutable;
 use DomainException;
@@ -25,8 +23,8 @@ class Handler
 
     public function __construct(
         UserRepository $repository,
-        ValidateService $validator,
         FlushService $flusher,
+        ValidateService $validator,
         MailSenderService $sender,
         MailBuilderService $builder
     ) {
@@ -37,25 +35,21 @@ class Handler
         $this->builder = $builder;
     }
 
-    public function handle(Command $command): void
+    public function handle(Command $token): void
     {
-        $this->validator->validate($command);
-
-        /** @var User $user */
-        if (!$user = $this->repository->findByConfirmToken($command->token)) {
+        $this->validator->validate($token);
+        if (!$user = $this->repository->findByConfirmToken($token->value)) {
             throw new DomainException('Incorrect or confirmed token.');
         }
+        $user->confirmRegister(new DateTimeImmutable());
 
-        $user->confirmResetPassword(new DateTimeImmutable());
         $this->flusher->flush();
 
         $message = BaseMessage::getDefaultMessage(
             $user->getEmail(),
-            'Успешная смена проля в приложении Flash',
-            'Смена пароля',
-            $this->builder
-                ->setParam('url',  '123123123')
-                ->build('mail/user/register.html.twig')
+            'Регистрация в приложении Flash',
+            'Подтверждение регистрации',
+            $this->builder->build('mail/user/registerCongrats.html.twig')
         );
 
         $this->sender->send($message);

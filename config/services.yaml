@@ -55,7 +55,8 @@ services:
 
     #CUSTOM SERVICE
     App\Service\TwigService: ~
-    App\Service\MailSenderService: ~
+    App\Service\MailService\MailSenderService: ~
+    App\Service\MailService\MailBuilderService: ~
     App\Service\SerializeService: ~
     App\Service\ValidateService: ~
     App\Domain\User\UserRepository: ~

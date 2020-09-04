@@ -7,6 +7,7 @@ namespace App\Tests;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use http\Env;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -38,7 +39,7 @@ abstract class AbstractTest extends WebTestCase
     protected function setUp() : void
     {
         static::getClient();
-        $this->url = 'http://'.$_ENV['APP_HOST'].'/api/v1';
+        $this->url = getenv('DEFAULT_HOST').'/api/v1';
         $this->loadFixtures($this->getFixtures());
     }
 
@@ -210,22 +211,14 @@ abstract class AbstractTest extends WebTestCase
         return preg_replace('#[\n\r]+#', ' ', $text);
     }
 
-    protected function createAuthenticatedClient(
-        $username = 'ignashov-roman@mail.ru',
-        $password = '12345678'
-    ) {
+    public function createAuthenticatedClient(string $startEmail = null, string $startPassword = null)
+    {
+        $email = $startEmail ? $startEmail : getenv('TEST_USER_EMAIL');
+        $password = $startPassword ? $startPassword : getenv('TEST_USER_PASSWORD');
+        $credentials = ['email' => $email, 'password' => $password,];
+
         $client = static::getClient();
-        $client->request(
-            'POST',
-            '/api/v1/auth/login',
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode([
-                'email' => $username,
-                'password' => $password,
-            ])
-        );
+        $client->request('POST', '/api/v1/auth/login', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($credentials));
 
         $data = json_decode($client->getResponse()->getContent(), true);
         $client = static::getClient();
@@ -235,13 +228,13 @@ abstract class AbstractTest extends WebTestCase
         return $client;
     }
 
-    protected function logout() : void
+    public function logout() : void
     {
         $client = static::getClient();
         $client->setServerParameter('HTTP_Authorization', sprintf(''));
     }
 
-    public function makeRequest($method, $uri, $data = '', $auth = true): AbstractBrowser
+    public function makeRequest(string $method, string $uri, array $data = [], bool $auth = true): AbstractBrowser
     {
         if ($auth) {
             $client = $this->createAuthenticatedClient();
@@ -249,14 +242,7 @@ abstract class AbstractTest extends WebTestCase
             $client = self::getClient();
         }
 
-        $client->request(
-            $method,
-            $this->url.$uri,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            json_encode($data)
-        );
+        $client->request($method, $this->url.$uri, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         return $client;
     }
 }

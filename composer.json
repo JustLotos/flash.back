@@ -9,7 +9,6 @@
         "ext-mbstring": "*",
         "dama/doctrine-test-bundle": "^6.3",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
-        "friendsofsymfony/rest-bundle": "^2.7",
         "gesdinet/jwt-refresh-token-bundle": "^0.9.1",
         "jms/serializer": "^3.4",
         "jms/serializer-bundle": "^3.5",

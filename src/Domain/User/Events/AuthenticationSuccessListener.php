@@ -29,7 +29,7 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
 
         if ($user instanceof User) {
             $data['status'] = $user->getStatus();
-            $data['email'] = $user->getEmail();
+            $data['email'] = $user->getEmail()->getValue();
             $data['role'] = $user->getRoles()[0];
         }
 

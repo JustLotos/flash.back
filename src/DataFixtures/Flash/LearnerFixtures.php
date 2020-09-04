@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\DataFixtures\Flash;
 
 use App\DataFixtures\BaseFixture;
-use App\DataFixtures\UserFixtures;
+use App\DataFixtures\User\UserFixtures;
 use App\Domain\Flash\Entity\Learner\Learner;
 use App\Domain\Flash\Entity\Learner\Types\Id as LearnerId;
 use App\Domain\Flash\Entity\Learner\Types\Name;

@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Domain\User\UseCase\ResetPassword\Request;
 
+use App\Domain\User\Entity\Types\ConfirmToken;
+use App\Domain\User\Entity\Types\Password;
 use App\Domain\User\Entity\User;
 use App\Domain\User\UserRepository;
 use App\Domain\User\Service\TokenService;
 use App\Service\FlushService;
-use App\Service\MailSenderService;
+use App\Service\MailService\BaseMessage;
+use App\Service\MailService\MailBuilderService;
+use App\Service\MailService\MailSenderService;
 use App\Service\ValidateService;
-use DateTimeImmutable;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Handler
 {
@@ -19,19 +23,28 @@ class Handler
     private $tokenizer;
     private $sender;
     private $validator;
+    private $builder;
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $generator;
 
     public function __construct(
         ValidateService $validator,
         FlushService $flusher,
         UserRepository $repository,
         TokenService $tokenizer,
-        MailSenderService $sender
+        MailSenderService $sender,
+        MailBuilderService $builder,
+        UrlGeneratorInterface $generator
     ) {
         $this->flusher = $flusher;
         $this->repository = $repository;
         $this->tokenizer = $tokenizer;
         $this->sender = $sender;
         $this->validator = $validator;
+        $this->builder = $builder;
+        $this->generator = $generator;
     }
 
     public function handle(Command $command): void
@@ -40,12 +53,21 @@ class Handler
         /** @var User $user */
         $user = $this->repository->getByEmail($command->email);
         $user->requestResetPassword(
-            $this->tokenizer->generate(),
-            new DateTimeImmutable(),
-            $command->password
+            $this->tokenizer->generateTokenByClass(ConfirmToken::class),
+            new Password($command->password)
         );
 
         $this->flusher->flush();
-        $this->sender->resetPasswordConfirm($user->getEmail(), $user->getConfirmToken()->getToken());
+
+        $message = BaseMessage::getDefaultMessage(
+            $user->getEmail(),
+            'Регистрация в приложении Flash',
+            'Подтверждение регистрации',
+            $this->builder
+                ->setParam('url', $this->generator->generate('resetPasswordConfirm', ['token' => $user->getConfirmToken()->getToken()]))
+                ->build('mail/user/registerCongrats.html.twig')
+        );
+
+        $this->sender->send($message);
     }
 }

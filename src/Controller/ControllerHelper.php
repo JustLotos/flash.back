@@ -25,4 +25,9 @@ trait ControllerHelper
     {
         return json_encode(['success' => true]);
     }
+
+    public function getSimpleErrorResponse(array $errors)
+    {
+        return json_encode(['success' => false, 'errors'=>json_encode($errors)]);
+    }
 }

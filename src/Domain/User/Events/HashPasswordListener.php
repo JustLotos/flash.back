@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Events;
 
+use App\Domain\User\Entity\Types\Password;
 use App\Domain\User\Entity\User;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -48,6 +49,6 @@ class HashPasswordListener implements EventSubscriber
             return;
         }
         $encoded = $this->passwordEncoder->encodePassword($entity, $entity->getPassword());
-        $entity->setPassword($encoded);
+        $entity->setPassword(new Password($encoded));
     }
 }
