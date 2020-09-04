@@ -11,13 +11,11 @@ use App\Domain\User\UseCase\RegisterByEmail\Confirm\Command as ConfirmCommand;
 use App\Domain\User\UseCase\RegisterByEmail\Confirm\Handler as ConfirmHandler;
 use App\Domain\User\UseCase\RegisterByEmail\Request\Command as RegisterPayloads;
 use App\Domain\User\UseCase\RegisterByEmail\Request\Handler as RegisterHandler;
-use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 /** @Route(value="api/v1/auth/register") */
 class RegisterByEmailController extends AbstractController
@@ -27,8 +25,7 @@ class RegisterByEmailController extends AbstractController
     public function register(
         Request $request,
         RegisterHandler $handler,
-        AuthenticationSuccessHandler $ash,
-        Security $security
+        AuthenticationSuccessHandler $ash
     ) {
         /** @var RegisterPayloads $command */
         $command = $this->serializer->deserialize($request, RegisterPayloads::class);

@@ -25,7 +25,7 @@ class MailBuilderService
 
     public function setParam(string $name, $value)
     {
-        $this->params[] = [$name => $value];
-         return $this;
+        $this->params[$name] = $value;
+        return $this;
     }
 }

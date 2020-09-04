@@ -73,12 +73,18 @@ class Handler
         $this->repository->add($user);
         $this->flusher->flush();
 
+
+
         $message = BaseMessage::getDefaultMessage(
             $user->getEmail(),
             'Регистрация в приложении Flash',
             'Подтверждение регистрации',
             $this->builder
-                ->setParam('url', $this->generator->generate('registerConfirm', ['token' => $user->getConfirmToken()->getToken()]))
+                ->setParam('url', $this->generator->generate(
+                    'registerConfirm',
+                    ['token' => $user->getConfirmToken()->getToken()]
+                ))
+                ->setParam('token', $user->getConfirmToken()->getToken())
                 ->build('mail/user/register.html.twig')
         );
 

@@ -9,7 +9,7 @@ use App\Tests\AbstractTest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class RegisterByEmailActionTest extends AbstractTest
+class RequestRegisterByEmailActionTest extends AbstractTest
 {
     private $email =  'email@email.eamil';
     private $password = '12345678Ab';
