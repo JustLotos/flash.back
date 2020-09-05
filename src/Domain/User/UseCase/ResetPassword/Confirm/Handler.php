@@ -14,6 +14,7 @@ use App\Service\MailService\MailSenderService;
 use App\Service\ValidateService;
 use DateTimeImmutable;
 use DomainException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Handler
 {
@@ -22,19 +23,22 @@ class Handler
     private $validator;
     private $sender;
     private $builder;
+    private $generator;
 
     public function __construct(
         UserRepository $repository,
         ValidateService $validator,
         FlushService $flusher,
         MailSenderService $sender,
-        MailBuilderService $builder
+        MailBuilderService $builder,
+        UrlGeneratorInterface $generator
     ) {
         $this->repository = $repository;
         $this->flusher = $flusher;
         $this->validator = $validator;
         $this->sender = $sender;
         $this->builder = $builder;
+        $this->generator = $generator;
     }
 
     public function handle(Command $command): void
@@ -43,7 +47,7 @@ class Handler
 
         /** @var User $user */
         if (!$user = $this->repository->findByConfirmToken($command->token)) {
-            throw new DomainException('Incorrect or confirmed token.');
+            throw new DomainException('Invalid or not found token.');
         }
 
         $user->confirmResetPassword(new DateTimeImmutable());
@@ -53,9 +57,7 @@ class Handler
             $user->getEmail(),
             'Успешная смена проля в приложении Flash',
             'Смена пароля',
-            $this->builder
-                ->setParam('url',  '123123123')
-                ->build('mail/user/register.html.twig')
+            $this->builder->build('mail/user/resetPassword.html.twig')
         );
 
         $this->sender->send($message);

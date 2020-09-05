@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegisterByEmailController extends AbstractController
 {
     use ControllerHelper;
-    /** @Route("/email", name="register", methods={"POST"}) */
+    /** @Route("/email/", name="register", methods={"POST"}) */
     public function register(
         Request $request,
         RegisterHandler $handler,
@@ -34,7 +34,7 @@ class RegisterByEmailController extends AbstractController
         return $ash->handleAuthenticationSuccess($user);
     }
 
-    /** @Route("/email/confirm/{token}", name="registerConfirm", methods={"GET"}) */
+    /** @Route("/email/confirm/{token}/", name="registerConfirm", methods={"GET"}) */
     public function confirm(ConfirmHandler $handler, string $token): RedirectResponse
     {
         $handler->handle(new ConfirmCommand($token));

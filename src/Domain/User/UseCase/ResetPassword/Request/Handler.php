@@ -24,9 +24,6 @@ class Handler
     private $sender;
     private $validator;
     private $builder;
-    /**
-     * @var UrlGeneratorInterface
-     */
     private $generator;
 
     public function __construct(
@@ -47,11 +44,12 @@ class Handler
         $this->generator = $generator;
     }
 
-    public function handle(Command $command): void
+    public function handle(Command $command): User
     {
         $this->validator->validate($command);
         /** @var User $user */
         $user = $this->repository->getByEmail($command->email);
+
         $user->requestResetPassword(
             $this->tokenizer->generateTokenByClass(ConfirmToken::class),
             new Password($command->password)
@@ -59,13 +57,23 @@ class Handler
 
         $this->flusher->flush();
 
+        $this->sendConfirmMessage($user);
+        return $user;
+    }
+
+    public function sendConfirmMessage(User $user): void
+    {
         $message = BaseMessage::getDefaultMessage(
             $user->getEmail(),
             'Регистрация в приложении Flash',
             'Подтверждение регистрации',
             $this->builder
-                ->setParam('url', $this->generator->generate('resetPasswordConfirm', ['token' => $user->getConfirmToken()->getToken()]))
-                ->build('mail/user/registerCongrats.html.twig')
+                ->setParam('url', $this->generator->generate(
+                    'resetPasswordConfirm',
+                    ['token' => $user->getConfirmToken()->getToken()]
+                ))
+                ->setParam('token', $user->getConfirmToken()->getToken())
+                ->build('mail/user/resetPassword.html.twig')
         );
 
         $this->sender->send($message);

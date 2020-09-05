@@ -73,8 +73,13 @@ class Handler
         $this->repository->add($user);
         $this->flusher->flush();
 
+        $this->sendConfirmMessage($user);
+
+        return $user;
+    }
 
 
+    public function sendConfirmMessage(User $user): void {
         $message = BaseMessage::getDefaultMessage(
             $user->getEmail(),
             'Регистрация в приложении Flash',
@@ -89,6 +94,6 @@ class Handler
         );
 
         $this->sender->send($message);
-        return $user;
     }
+
 }

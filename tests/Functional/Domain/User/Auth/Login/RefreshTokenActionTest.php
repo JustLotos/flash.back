@@ -10,9 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RefreshTokenActionTest extends AbstractTest
 {
-    private $clientAuth;
-    private $method = 'POST';
-    private $uri = '/auth/token/refresh';
+    protected $method = 'POST';
+    protected $uri = '/auth/token/refresh/';
 
     public function getFixtures() : array
     {
@@ -21,37 +20,24 @@ class RefreshTokenActionTest extends AbstractTest
 
     public function testValid() : void
     {
-        $this->clientAuth = $this->createAuthenticatedClient();
-        /** @var Response $response */
-
-        $response = $this->clientAuth->getResponse();
-        $content = json_decode($response->getContent(), true);
-
-        $client = $this->makeRequest($this->method, $this->uri, [
-            'refreshToken'=> $content['refreshToken']
-        ]);
+        $clientAuth = $this->createAuthenticatedClient();
 
         /** @var Response $response */
-        $response = $client->getResponse();
+        $response = $clientAuth->getResponse();
         $content = json_decode($response->getContent(), true);
 
-        $this->assertResponseOk($response);
-        static::assertArrayHasKey('token', $content);
-        static::assertArrayHasKey('refreshToken', $content);
+        $this->makeRequest([ 'refreshToken'=> $content['refreshToken']]);
+
+        $this->assertResponseOk($this->response);
+        static::assertArrayHasKey('token', $this->content);
+        static::assertArrayHasKey('refreshToken', $this->content);
     }
 
     public function testInvalidValue() : void
     {
-        $client = $this->makeRequest($this->method, $this->uri, [
-            'refreshToken'=> '123123'
-        ], false);
-
-        /** @var Response $response */
-        $response = $client->getResponse();
-        $content = json_decode($response->getContent(), true);
-
-        $this->assertResponseCode(Response::HTTP_UNAUTHORIZED, $response);
-        static::assertArrayHasKey('errors', $content);
-        static::assertArrayHasKey('auth', $content['errors']);
+        $this->makeRequest(['refreshToken'=> '123123']);
+        $this->assertResponseCode(Response::HTTP_UNAUTHORIZED, $this->response);
+        static::assertArrayHasKey('errors', $this->content);
+        static::assertArrayHasKey('auth', $this->content['errors']);
     }
 }

@@ -16,10 +16,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractTest extends WebTestCase
 {
-    // #TODO заменить hardcode на константы (в фиктурах также)
     public const USER_EMAIL = 'ignashov-roman@mail.ru';
     public const STRANGER_EMAIL = 'test0@mail.com';
     protected $url;
+    protected $uri;
+    protected $method;
+    protected $response;
+    protected $content;
+
+    public function getUrl(): string
+    {
+        return  $this->url.$this->uri;
+    }
 
     /** @var AbstractBrowser $client */
     protected static $client;
@@ -234,15 +242,24 @@ abstract class AbstractTest extends WebTestCase
         $client->setServerParameter('HTTP_Authorization', sprintf(''));
     }
 
-    public function makeRequest(string $method, string $uri, array $data = [], bool $auth = true): AbstractBrowser
+    public function makeRequest(array $data = [], string $url = '', string $method = ''): AbstractBrowser
     {
-        if ($auth) {
-            $client = $this->createAuthenticatedClient();
-        } else {
-            $client = self::getClient();
-        }
+        $url = $url ? $this->url.$url : $this->getUrl();
+        $method = $method ? $method : $this->method;
 
-        $client->request($method, $this->url.$uri, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $client = self::getClient();
+        $client->request($method, $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $this->response = $client->getResponse();
+        $this->content = json_decode($this->response->getContent(), true);
+        return $client;
+    }
+
+    public function makeRequestWithAuth(array $data = []): AbstractBrowser
+    {
+        $client = $this->createAuthenticatedClient();
+        $client->request($this->method, $this->getUrl(), [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $this->response = $client->getResponse();
+        $this->content = json_decode($this->response->getContent(), true);
         return $client;
     }
 }

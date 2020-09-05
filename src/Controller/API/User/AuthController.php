@@ -20,7 +20,7 @@ class AuthController extends AbstractController
         throw new DomainException('You shouldn\'t have gotten to this place');
     }
 
-    /** @Route("/token/refresh", name="refreshToken", methods={"POST"}) */
+    /** @Route("/token/refresh/", name="refreshToken", methods={"POST"}) */
     public function refresh(Request $request, RefreshToken $refreshService)
     {
         return $refreshService->refresh($request);
