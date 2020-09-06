@@ -7,7 +7,6 @@ namespace App\Tests;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use http\Env;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DomCrawler\Crawler;
@@ -254,10 +253,13 @@ abstract class AbstractTest extends WebTestCase
         return $client;
     }
 
-    public function makeRequestWithAuth(array $data = []): AbstractBrowser
+    public function makeRequestWithAuth(array $data = [], string $url = '', string $method = ''): AbstractBrowser
     {
+        $url = $url ? $this->url.$url : $this->getUrl();
+        $method = $method ? $method : $this->method;
+
         $client = $this->createAuthenticatedClient();
-        $client->request($this->method, $this->getUrl(), [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
+        $client->request($method, $url, [], [], ['CONTENT_TYPE' => 'application/json'], json_encode($data));
         $this->response = $client->getResponse();
         $this->content = json_decode($this->response->getContent(), true);
         return $client;

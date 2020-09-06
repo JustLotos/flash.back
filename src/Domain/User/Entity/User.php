@@ -106,7 +106,7 @@ class User implements UserInterface
         $this->updatedAt = $date;
     }
 
-    public static function registerByEmail(Id $id, DateTimeImmutable $date, Role $role, Email $email, Password $password): self
+    public static function createByEmail(Id $id, DateTimeImmutable $date, Role $role, Email $email, Password $password): self
     {
         Assert::email($email);
         $user = new self($id, $date);
@@ -117,7 +117,7 @@ class User implements UserInterface
         return $user;
     }
 
-    public function requestRegisterConfirm(ConfirmToken $token): ConfirmToken
+    public function requestRegisterByEmail(ConfirmToken $token): ConfirmToken
     {
         if (!$this->isWait()) {
             throw new DomainException('User is already confirmed.');
@@ -130,8 +130,7 @@ class User implements UserInterface
         $this->status = self::STATUS_WAIT;
         return $this->confirmToken;
     }
-
-    public function confirmRegister(DateTimeImmutable $date = null): void
+    public function confirmRegisterByEmail(DateTimeImmutable $date = null): void
     {
         if (!$this->confirmToken && $this->isActive()) {
             throw new DomainException('Confirm user in not requested.');
@@ -175,6 +174,11 @@ class User implements UserInterface
         $this->confirmToken = null;
         $this->temporaryPassword = null;
     }
+    public function resetTemporaryPassword(): self
+    {
+        $this->temporaryPassword = null;
+        return $this;
+    }
 
     public function requestChangeEmail(ConfirmToken $token, Email $email): void
     {
@@ -192,7 +196,6 @@ class User implements UserInterface
         $this->confirmToken = $token;
         $this->temporaryEmail = $email;
     }
-
     public function confirmChangeEmail(DateTimeImmutable $date = null): void
     {
         if (!$this->confirmToken && $this->isActive() && !$this->temporaryEmail) {
@@ -206,6 +209,11 @@ class User implements UserInterface
         $this->confirmToken = null;
         $this->activate();
     }
+    public function resetTemporaryEmail(): self
+    {
+        $this->temporaryEmail = null;
+        return $this;
+    }
 
     public function changeRole(Role $role): void
     {
@@ -214,18 +222,6 @@ class User implements UserInterface
         }
         $this->role = $role;
         $this->updatedAt = new DateTimeImmutable();
-    }
-
-    public function resetTemporaryEmail(): self
-    {
-        $this->temporaryEmail = null;
-        return $this;
-    }
-
-    public function resetTemporaryPassword(): self
-    {
-        $this->temporaryPassword = null;
-        return $this;
     }
 
     public function activate(): void

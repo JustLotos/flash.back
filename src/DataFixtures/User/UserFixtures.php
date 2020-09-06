@@ -22,7 +22,7 @@ class UserFixtures extends BaseFixture implements ContainerAwareInterface
     public function loadData(ObjectManager $manager) : void
     {
         $this->createMany(1, self::ADMINS, function () {
-            $user = User::registerByEmail(
+            $user = User::createByEmail(
                 Id::next(),
                 new DateTimeImmutable(),
                 Role::createAdmin(),
@@ -34,7 +34,7 @@ class UserFixtures extends BaseFixture implements ContainerAwareInterface
         });
 
         $this->createMany(1, self::USERS, function () {
-            $user = User::registerByEmail(
+            $user = User::createByEmail(
                 Id::next(),
                 new DateTimeImmutable(),
                 Role::createUser(),
