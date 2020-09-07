@@ -13,7 +13,6 @@ class Role
     public const USER = 'ROLE_USER';
     public const ADMIN = 'ROLE_ADMIN';
 
-    /** @Serializer\Groups({User::GROUP_DETAILS, USER::GROUP_SIMPLE}) */
     private $name;
 
     public function __construct(string $name)
@@ -53,8 +52,8 @@ class Role
 
     /**
      * @Serializer\VirtualProperty()
-     * @Serializer\SerializedName("role")
-     * @Serializer\Groups({User::GROUP_DETAILS, USER::GROUP_SIMPLE})
+     * @Serializer\SerializedName("roles")
+     * @Serializer\Groups({USER::GROUP_SIMPLE})
      */
     public function getName(): string
     {

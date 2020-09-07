@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\MailService;
 
-use App\Domain\User\Entity\Types\Email;
+use App\Domain\User\Entity\Types\Doctrine\Email;
 
 class BaseMessage implements IMessage
 {

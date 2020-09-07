@@ -6,6 +6,8 @@ namespace App\Domain\User\Entity\Types;
 
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
+use JMS\Serializer\Annotation as Serializer;
+use App\Domain\User\Entity\User;
 
 class Id
 {
@@ -22,6 +24,11 @@ class Id
         return new self(Uuid::uuid4()->toString());
     }
 
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("id")
+     * @Serializer\Groups({User::GROUP_DETAIL})
+     */
     public function getValue(): string
     {
         return $this->value;

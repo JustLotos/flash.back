@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\User\UseCase\Reset\ByEmail\Request;
 
-use App\Domain\User\Entity\Types\ConfirmToken;
-use App\Domain\User\Entity\Types\Password;
+use App\Domain\User\Entity\Types\Doctrine\ConfirmToken;
+use App\Domain\User\Entity\Types\Doctrine\Password;
 use App\Domain\User\Entity\User;
 use App\Domain\User\UserRepository;
 use App\Domain\User\Service\TokenService;

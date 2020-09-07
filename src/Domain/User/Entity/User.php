@@ -32,32 +32,35 @@ class User implements UserInterface
 
     /**
      * @var Id
-     * @ORM\Column(type="user_user_id")
+     * @ORM\Column(type="users_user_id")
      * @ORM\Id
+     * @Serializer\Type(name="string")
+     * @Serializer\Groups({User::GROUP_DETAIL})
      */
     private $id;
 
     /**
      * @var Email
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="users_user_email", name="email")
+     * @Serializer\Type(name="string")
      * @Serializer\Groups({User::GROUP_SIMPLE})
      */
     private $email;
     /**
      * @var Email|null
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="users_user_email", nullable=true)
      */
     private $temporaryEmail;
 
     /**
      * @var Password
-     * @ORM\Column(type="string", name="password")
+     * @ORM\Column(type="users_user_password", name="password")
      */
     private $password;
 
     /**
      * @var Password|null
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="users_user_password", nullable=true)
      */
     private $temporaryPassword;
 
@@ -90,7 +93,7 @@ class User implements UserInterface
 
     /**
      * @var Role
-     * @ORM\Column(type="user_user_role", length=16)
+     * @ORM\Column(type="users_user_role", length=16)
      * @Serializer\Type(name="string")
      * @Serializer\Groups({User::GROUP_SIMPLE})
      */
@@ -261,9 +264,6 @@ class User implements UserInterface
     }
     public function getEmail(): Email
     {
-        if (is_string($this->email)) {
-            return new Email((string)$this->email);
-        }
         return $this->email;
     }
     public function getConfirmToken(): ?ConfirmToken
@@ -280,9 +280,6 @@ class User implements UserInterface
     }
     public function getPassword(): Password
     {
-        if (is_string($this->password)) {
-            return new Password((string)$this->password);
-        }
         return $this->password;
     }
     public function getRoles(): array

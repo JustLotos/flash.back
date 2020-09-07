@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\API\User\Change;
 
 use App\Controller\ControllerHelper;
-use App\Domain\User\UseCase\Change\Email\Confirm\Command as ConfirmCommand;
-use App\Domain\User\UseCase\Change\Email\Confirm\Handler as ConfirmHandler;
+use App\Domain\User\UseCase\Change\Role\Command as ConfirmCommand;
+use App\Domain\User\UseCase\Change\Role\Handler as ConfirmHandler;
 use App\Domain\User\UseCase\Change\Email\Request\Command as RequestCommand;
 use App\Domain\User\UseCase\Change\Email\Request\Handler as RequestHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

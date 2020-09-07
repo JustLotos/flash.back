@@ -2,23 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Entity\Types;
+namespace App\Domain\User\Entity\Types\Doctrine;
 
+use App\Domain\User\Entity\Types\Email;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\StringType;
 
-class PasswordType extends GuidType
+class EmailType extends StringType
 {
-    public const NAME = 'user_user_password';
+    public const NAME = 'users_user_email';
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return $value instanceof Password ? $value->getValue() : $value;
+        return $value instanceof Email ? $value->getValue() : $value;
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return !empty($value) ? new Password($value) : null;
+        return !empty($value) ? new Email($value) : null;
     }
 
     public function getName(): string

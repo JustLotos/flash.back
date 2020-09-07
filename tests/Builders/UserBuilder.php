@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Builders;
 
-use App\Domain\User\Entity\Types\ConfirmToken;
-use App\Domain\User\Entity\Types\Email;
-use App\Domain\User\Entity\Types\Id;
-use App\Domain\User\Entity\Types\Password;
-use App\Domain\User\Entity\Types\Role;
+use App\Domain\User\Entity\Types\Doctrine\ConfirmToken;
+use App\Domain\User\Entity\Types\Doctrine\Email;
+use App\Domain\User\Entity\Types\Doctrine\Id;
+use App\Domain\User\Entity\Types\Doctrine\Password;
+use App\Domain\User\Entity\Types\Doctrine\Role;
 use App\Domain\User\Entity\User;
 use App\Domain\User\Service\TokenService;
 

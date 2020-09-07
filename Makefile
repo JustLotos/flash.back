@@ -18,6 +18,7 @@ docker-build:
 
 up: docker-up v-dev
 init: docker-down docker-pull docker-build docker-up composer-update v-dev
+serv-up: docker-down docker-up
 
 #COMPOSER
 composer-update:
