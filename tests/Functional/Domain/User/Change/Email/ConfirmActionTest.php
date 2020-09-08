@@ -35,7 +35,6 @@ class ConfirmActionTest extends AbstractTest
 
         $client = $this->makeRequest([], $this->uri.'/'.$code);
 
-        var_dump($this->response);
         self::assertTrue($this->response->isRedirect());
 
         /** @var Response $response */

@@ -10,13 +10,13 @@ use App\Tests\AbstractTest;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\RawMessage;
 
 class RequestActionTest extends AbstractTest
 {
     protected $method = 'POST';
     protected $uri = '/user/change/role/';
-    private $user;
 
     public function getFixtures() : array
     {
@@ -36,10 +36,10 @@ class RequestActionTest extends AbstractTest
 
     public function testNotValidData() : void
     {
-        $this->makeRequestWithAuth([ 'id' => '1asdfsadf', 'role' => '12']);
-
-        var_dump($this->response);
+        $this->makeRequestWithAuth([ 'id' => '1asdfsadf', 'role' => '123']);
         $this->assertResponseCode(JsonResponse::HTTP_NOT_FOUND, $this->response);
+
+        self::assertResponseCode(Response::HTTP_NOT_FOUND, $this->response);
         self::assertArrayHasKey('errors', $this->content);
         self::assertArrayHasKey('role', $this->content['errors']);
         self::assertArrayHasKey('id', $this->content['errors']);
