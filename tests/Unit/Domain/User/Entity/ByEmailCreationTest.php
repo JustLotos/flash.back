@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Domain\User\Entity;
 
-use App\Domain\User\Entity\Types\Doctrine\ConfirmToken;
+use App\Domain\User\Entity\Types\ConfirmToken;
 use App\Domain\User\Service\TokenService;
 use App\Tests\Builders\UserBuilder;
 use DateTimeImmutable;

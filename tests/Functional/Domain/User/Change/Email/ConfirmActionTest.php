@@ -27,8 +27,6 @@ class ConfirmActionTest extends AbstractTest
             'newEmail' => 'test@test.jest'
         ], '/user/change/email/request/', 'POST');
 
-        var_dump($this->response);
-
         /** @var RawMessage $email */
         $email = self::getMailerMessage(0);
 
@@ -36,6 +34,8 @@ class ConfirmActionTest extends AbstractTest
         $code = $crawler->filter('a.confirm-link')->attr('data-token');
 
         $client = $this->makeRequest([], $this->uri.'/'.$code);
+
+        var_dump($this->response);
         self::assertTrue($this->response->isRedirect());
 
         /** @var Response $response */

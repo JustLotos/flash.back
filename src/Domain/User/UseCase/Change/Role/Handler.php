@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\User\UseCase\Change\Role;
 
-use App\Domain\User\Entity\Types\Doctrine\Role;
+use App\Domain\User\Entity\Types\Id;
+use App\Domain\User\Entity\Types\Role;
 use App\Domain\User\Entity\User;
 use App\Domain\User\UserRepository;
 use App\Domain\User\Service\PasswordEncoder;
@@ -21,7 +22,6 @@ class Handler
     private $validator;
     private $sender;
     private $builder;
-    private $generator;
 
     public function __construct(
         UserRepository $repository,
@@ -42,22 +42,9 @@ class Handler
         $this->validator->validate($command);
 
         /** @var User $user */
-        $user = $this->repository->get($command->id);
+        $user = $this->repository->get(new Id($command->id));
 
-        $user->changeRole(new Role($command->value));
+        $user->changeRole(new Role($command->role));
         $this->flusher->flush();
-//        $this->sendConfirmMessage($user);
-    }
-
-    public function sendConfirmMessage(User $user): void
-    {
-        $message = BaseMessage::getDefaultMessage(
-            $user->getEmail(),
-            'Успешная смена email в приложении Flash',
-            'Успешная смена email в приложении Flash',
-            $this->builder->build('mail/user/change/email/confirm.html.twig')
-        );
-
-        $this->sender->send($message);
     }
 }

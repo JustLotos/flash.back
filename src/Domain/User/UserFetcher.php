@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User;
 
-use App\Domain\User\Entity\Types\Doctrine\ConfirmToken;
+use App\Domain\User\Entity\Types\ConfirmToken;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;

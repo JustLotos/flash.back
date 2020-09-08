@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\User\UseCase\Change\Email\Request;
 
-use App\Domain\User\Entity\Types\Doctrine\ConfirmToken;
-use App\Domain\User\Entity\Types\Doctrine\Email;
+use App\Domain\User\Entity\Types\ConfirmToken;
+use App\Domain\User\Entity\Types\Email;
 use App\Domain\User\Entity\User;
 use App\Domain\User\UserRepository;
 use App\Domain\User\Service\TokenService;

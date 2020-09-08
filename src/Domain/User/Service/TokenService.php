@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Service;
 
-use App\Domain\User\Entity\Types\Doctrine\ConfirmToken;
+use App\Domain\User\Entity\Types\ConfirmToken;
 use DateInterval;
 use DateTimeImmutable;
 use Ramsey\Uuid\Uuid;
