@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/** @Route(value="api/v1/user/change/email") */
+/** @Route(value="api/user/change/email") */
 class ChangeEmailController extends AbstractController
 {
     use ControllerHelper;

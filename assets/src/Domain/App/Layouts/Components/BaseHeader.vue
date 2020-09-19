@@ -15,8 +15,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Navbar from './Navbar.vue';
 import {Link} from "../../types";
-import {AppModule} from "../../AppModule";
-import {AuthModule} from "../../../Auth/AuthModule";
+import { AppModule } from "../../AppModule";
+import { UserModule } from "../../../User/UserModule";
 
 @Component({components: {Navbar}})
 export default class BaseHeader extends Vue {
@@ -31,7 +31,7 @@ export default class BaseHeader extends Vue {
             this.$root.$route.name !== this.$root.$router.resolve({name: 'Home'}).resolved.name &&
             this.$root.$route.name !== this.$root.$router.resolve({name: 'Dashboard'}).resolved.name
         ) {
-            if(AuthModule.isAuthenticated) {
+            if(UserModule.isAuthenticated) {
                 return this.$root.$router.push({name: 'Dashboard'});
             }
             return this.$root.$router.push({name: 'Home'});

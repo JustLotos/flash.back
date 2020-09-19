@@ -17,4 +17,11 @@
         {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </body>
+    <script>
+        {#if({{ resetRoutes }}) {#}
+        {#    localStorage.removeItem('routes');#}
+        {#}#}
+
+        localStorage.setItem('routes',JSON.stringify({{ routes|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }}))
+    </script>
 </html>

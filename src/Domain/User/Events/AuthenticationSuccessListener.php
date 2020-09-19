@@ -31,6 +31,9 @@ class AuthenticationSuccessListener implements EventSubscriberInterface
             $data['status'] = $user->getStatus();
             $data['email'] = $user->getEmail()->getValue();
             $data['role'] = $user->getRoles()[0];
+            $data['accessToken'] = $data['token'];
+            $data['id'] = $user->getId()->getValue();
+            //unset($data['token']);
         }
 
         $event->setData($data);

@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
 import {getLocale} from "../../Plugins/I18n/I18n";
-import Store from "../../Store";
+import {Store} from "./Store";
 import {getSidebarStatus, getSize, setLanguage, setSidebarStatus, setSize} from "../../Plugins/Cookies";
 
 export enum DeviceType { Mobile, Desktop}
@@ -16,21 +16,22 @@ export interface IAppState {
 }
 
 @Module({dynamic: true, store: Store, name: 'AppModule' , namespaced: true})
-class App extends VuexModule implements IAppState {
+class VuexApplication extends VuexModule implements IAppState {
     public sidebar = {
         opened: getSidebarStatus() !== 'closed',
         withoutAnimation: false
     }
+
     public activeModal = false;
     public device = DeviceType.Desktop
     public language = getLocale()
     public size = getSize() || 'medium'
 
     get isResetValidation() {return !this.activeModal}
-    get getRedirectOnGuardedPath() {
+    get getRedirectToUnAuth() {
         return {name: 'Login'};
     }
-    get getRedirectOnUnguardedPath() {
+    get getRedirectToAuth() {
         return {name: 'Dashboard'};
     }
 
@@ -108,4 +109,4 @@ class App extends VuexModule implements IAppState {
     }
 }
 
-export const AppModule = getModule(App);
+export const AppModule = getModule(VuexApplication);

@@ -16,12 +16,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/** @Route(value="api/v1/user/reset/email") */
+/** @Route(value="api/user/reset/email") */
 class ResetByEmailController extends AbstractController
 {
     use ControllerHelper;
 
-    /** @Route("/request/", name="resetByEmail", methods={"POST"}) */
+    /** @Route("/request/", name="resetByEmail", methods={"POST"}, options={"no_auth": true}) */
     public function reset(Request $request, RequestHandler $handler): Response
     {
         /** @var RequestCommand $command */
@@ -30,7 +30,7 @@ class ResetByEmailController extends AbstractController
         return $this->response($this->getSimpleSuccessResponse());
     }
 
-    /** @Route("/confirm/{token}/", name="resetByEmailConfirm", methods={"GET"}) */
+    /** @Route("/confirm/{token}/", name="resetByEmailConfirm", methods={"GET"}, options={"no_auth": true}) */
     public function confirm(ConfirmHandler $handler, string $token): RedirectResponse
     {
         $handler->handle(new ConfirmCommand($token));

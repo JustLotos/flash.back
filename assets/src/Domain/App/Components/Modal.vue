@@ -12,7 +12,6 @@
 </template>
 
 <script>
-    import {AppModule} from "../AppModule";
     const SHORT = 'short';
     const WIDE = 'wide';
     const EVENT_NAME = 'modalChange'.toLowerCase();

@@ -17,11 +17,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/** @Route(value="api/v1/user/register/email") */
+/** @Route(value="api/user/register/email") */
 class RegisterByEmailController extends AbstractController
 {
     use ControllerHelper;
-    /** @Route("/request/", name="registerByEmail", methods={"POST"}) */
+    /** @Route("/request/", name="registerByEmail", methods={"POST"}, options={"no_auth": true}) */
     public function register(
         Request $request,
         RegisterHandler $handler,
@@ -34,7 +34,7 @@ class RegisterByEmailController extends AbstractController
         return $ash->handleAuthenticationSuccess($user);
     }
 
-    /** @Route("/confirm/{token}/", name="registerByEmailConfirm", methods={"GET"}) */
+    /** @Route("/confirm/{token}/", name="registerByEmailConfirm", methods={"GET"}, options={"no_auth": true}) */
     public function confirm(ConfirmHandler $handler, string $token): RedirectResponse
     {
         $handler->handle(new ConfirmCommand($token));

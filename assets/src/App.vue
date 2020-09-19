@@ -5,30 +5,9 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {AuthModule} from "./Domain/Auth/AuthModule";
-import {LearnerModule} from "./Domain/Flash/Modules/LearnerModule";
-import date from "./Utils/date";
 Component.registerHooks(['beforeRouteEnter']);
-
 @Component
-export default class App extends Vue {
-    async mounted() {
-        await AuthModule.INIT_AUTH();
-
-
-        let start = new Date();
-        window.addEventListener('beforeunload',  async (event) => {
-            event.preventDefault();
-            let end = new Date();
-            debugger;
-            let response = await LearnerModule.sendSession({
-                date: date('Y-m-d\\TH:i:sP', start),
-                duration: ((start.getTime() - end.getTime()) / 1000)
-            });
-            debugger;
-        });
-    }
-}
+export default class App extends Vue {}
 </script>
 <style>
     .centered-input >>> input { text-align: center }

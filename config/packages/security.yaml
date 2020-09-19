@@ -17,29 +17,29 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern:  ^/api/v1/auth/login
+            pattern:  ^/api/auth/login/
             stateless: true
             anonymous: true
             json_login:
-                check_path:  /api/v1/auth/login
+                check_path:  /api/auth/login/
                 username_path: email
                 remember_me: true
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         register:
-            pattern:  ^/api/v1/user/register/
+            pattern:  ^/api/user/register/
             stateless: true
             anonymous: true
         reset:
-            pattern: ^/api/v1/user/reset
+            pattern: ^/api/user/reset
             stateless: true
             anonymous: true
         refreshToken:
-            pattern:  ^/api/v1/auth/token/refresh
+            pattern:  ^/api/auth/token/refresh
             stateless: true
             anonymous: true
         doc:
-            pattern:  ^/api/v1/doc
+            pattern:  ^/api/doc
             stateless: true
             anonymous: true
         api:
@@ -52,9 +52,9 @@ security:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
-        - { path: ^/api/v1/doc,             roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v1/auth/login,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v1/auth/token,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v1/user/register,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v1/user/reset,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,                    roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/doc,             roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/auth/login,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/auth/token,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/user/register,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/user/reset,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api,                 roles: IS_AUTHENTICATED_FULLY }

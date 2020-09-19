@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/** @Route(value="api/v1/user/current") */
+/** @Route(value="api/user/current") */
 class CurrentUserController extends AbstractController
 {
     use ControllerHelper;

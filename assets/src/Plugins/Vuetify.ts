@@ -6,4 +6,4 @@ Vue.use(Vuetify);
 
 const opts = {};
 
-export default new Vuetify(opts)
+export const VuetifyCustom = new Vuetify(opts)

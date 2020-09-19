@@ -1,14 +1,10 @@
 import axios, {AxiosRequestConfig} from "axios";
-import Router from "../Domain/Auth/Guard";
-import {AuthModule} from "../Domain/Auth/AuthModule";
-import {LearnerModule} from "../Domain/Flash/Modules/LearnerModule";
-import {DeckModule} from "../Domain/Flash/Modules/DeckModule";
+import { Router } from "../Domain/User/Guard";
+import { UserModule } from "../Domain/User/UserModule";
+import {RouterApi} from "../Domain/App/RouterAPI";
 
 let Axios = axios.create({
-    baseURL: process.env.API_URL || 'http://flash.local/api/v1',
-    headers: {
-        "Content-type": "application/json"
-    }
+    headers: { "Content-type": "application/json" }
 });
 
 Axios.interceptors.response.use(
@@ -17,27 +13,23 @@ Axios.interceptors.response.use(
     },
 
     function (error) {
-        AuthModule.UNSET_LOAD();
-        LearnerModule .UNSET_LOAD();
-        DeckModule.UNSET_LOAD();
-
+        UserModule.UNSET_LOADING();
         const originalRequest: AxiosRequestConfig = error.config;
-        if (error.response?.status === 401 && originalRequest.url === '/auth/token/refresh') {
-            debugger;
-            AuthModule.logout();
+
+        debugger;
+
+        if (error.response?.status === 401 && originalRequest.url === RouterApi.getUrlByName('refreshToken').path) {
+            UserModule.LOGOUT();
             return Router.push({name: 'Login'});
         }
 
-        if (
-            error.response?.status === 401 && !originalRequest._retry &&
-            originalRequest.url !== '/auth/login' &&
-            originalRequest.url !== '/auth/register'&&
-            originalRequest.url !== '/auth/reset/password'
+        if ( error.response?.status === 401 &&
+            !originalRequest._retry &&
+            RouterApi.isNotAuthRequiredRoute({ path: <string>originalRequest.url})
         ) {
-            debugger;
             originalRequest._retry = true;
-            AuthModule.refresh().then(() => {
-                originalRequest.headers.common['Authorization'] = 'Bearer' + AuthModule.getToken;
+            UserModule.refreshToken().then(() => {
+                originalRequest.headers.common['Authorization'] = 'Bearer' + UserModule.user.accessToken;
                 return axios(originalRequest);
             });
         }
@@ -47,8 +39,8 @@ Axios.interceptors.response.use(
 
 Axios.interceptors.request.use(
     config => {
-        if (AuthModule.isAuthenticated) {
-            config.headers['Authorization'] = 'Bearer ' + AuthModule.getToken;
+        if (UserModule.isAuthenticated) {
+            config.headers['Authorization'] = 'Bearer ' + UserModule.user.accessToken;
         }
         return config;
     },

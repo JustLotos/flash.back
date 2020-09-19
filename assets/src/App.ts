@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui';
-import Vuetify from "./Plugins/Vuetify";
+import {VuetifyCustom} from "./Plugins/Vuetify";
 import i18n from "./Plugins/I18n/I18n";
-import Router from "./Domain/Auth/Guard.ts";
+import {Router} from "./Domain/User/Guard.ts";
 import App from './App.vue';
-import Store from "./Store.ts";
+import {Store} from "./Domain/App/Store.ts";
 import {AppModule} from "./Domain/App/AppModule";
+import {RouterApi} from "./Domain/App/RouterAPI";
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {
@@ -17,8 +18,10 @@ const app =  new Vue({
     el: '#app',
     i18n: i18n,
     router: Router,
-    vuetify: Vuetify,
+    routerApi: RouterApi,
+    vuetify: VuetifyCustom,
     store: Store,
     render: h => h(App),
 });
+
 export default app;

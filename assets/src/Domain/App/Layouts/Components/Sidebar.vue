@@ -15,16 +15,16 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {getMenuLinks} from "./Navbar.vue";
-import {RouteConfig} from "vue-router";
-import {routes} from "../../../../Router";
-import {AuthModule} from "../../../Auth/AuthModule";
-import {AppModule} from "../../AppModule";
+import { getMenuLinks } from "./Navbar.vue";
+import { RouteConfig } from "vue-router";
+import { routes } from "../../Router";
+import { AppModule } from "../../AppModule";
+import { UserModule } from "../../../User/UserModule";
 
 @Component
 export default class Sidebar extends Vue {
     get menu(): Array<RouteConfig>{
-        return getMenuLinks(routes, AuthModule.isAuthenticated);
+        return getMenuLinks(routes, UserModule.isAuthenticated);
     }
 
     get sidebar(): boolean {

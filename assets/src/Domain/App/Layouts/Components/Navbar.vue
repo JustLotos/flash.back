@@ -12,14 +12,14 @@
 
 <script lang="ts">
 import { Component, Vue} from "vue-property-decorator";
-import {RouteConfig} from "vue-router";
-import {routes} from "../../../../Router";
-import {AuthModule} from "../../../Auth/AuthModule";
+import { RouteConfig } from "vue-router";
+import { routes } from "../../Router";
+import { UserModule } from "../../../User/UserModule";
 
 @Component
 export default class Navbar extends Vue {
     get menu(): Array<RouteConfig>{
-        return getMenuLinks(routes, AuthModule.isAuthenticated);
+        return getMenuLinks(routes, UserModule.isAuthenticated);
     }
 }
 export function getMenuLinks(r: Array<RouteConfig>, auth: boolean): Array<RouteConfig>  {
