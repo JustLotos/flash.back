@@ -1,5 +1,6 @@
 import { RouteConfig } from "vue-router";
 import { UserModule } from "../../../User/UserModule";
+import {mdiGithub} from "@mdi/js";
 
 export class Menu {
     private _routes;
@@ -19,5 +20,11 @@ export class Menu {
             }
             return item.meta.menu && !item.meta.auth;
         });
+    }
+
+    get getFooterMenu(): Array<RouteConfig> {
+        return [
+            {path: 'https://github.com/JustLotos/flash.back', name: 'gitHub', meta: {icon: mdiGithub, label: 'github'}}
+        ];
     }
 }

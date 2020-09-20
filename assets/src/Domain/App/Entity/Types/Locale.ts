@@ -1,8 +1,15 @@
+import en from "../../../../Plugins/I18n/Locales/EN/en";
+import ru from "../../../../Plugins/I18n/Locales/RU/ru";
+
 export class Locale {
     private _language: string;
 
     constructor() {
         this._language = 'ru';
+    }
+
+    get getLocaleList(): Array<string> {
+        return ['ru', 'en'];
     }
 
     get getLocale(): string {
@@ -24,10 +31,12 @@ export class Locale {
 
     get getMessages() {
         return {
-            // en: {
-            //     ...enLocale,
-            //     ...elementEnLocale
-            // }
+            en: {
+                ...en
+            },
+            ru: {
+                ...ru
+            }
         }
     }
 
