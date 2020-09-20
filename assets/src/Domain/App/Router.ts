@@ -3,7 +3,24 @@ import Router, {RouteConfig} from 'vue-router'
 import {AppRoutes} from "./AppRoutes";
 import {UserRoutes} from "../User/UserRoutes";
 
-Vue.use(Router);
+class VueRouterEx extends Router {
+    matcher: any;
+    public routes: RouteConfig[] = [];
+    constructor(options) {
+        super(options);
+        const { addRoutes } = this.matcher;
+        const { routes } = options;
+
+        this.routes = routes;
+
+        this.matcher.addRoutes = (newRoutes) => {
+            this.routes.push(...newRoutes);
+            addRoutes(newRoutes);
+        };
+    }
+}
+
+Vue.use(VueRouterEx);
 
 export const routes: Array<RouteConfig> = [
     ...AppRoutes,
@@ -14,7 +31,8 @@ export const routes: Array<RouteConfig> = [
     }
 ];
 
-export default new Router({
+
+export default new VueRouterEx({
     mode: 'history',
     base: process.env.APP_HOST,
     routes: routes

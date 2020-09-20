@@ -5,9 +5,15 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { AppModule } from "./Domain/App/AppModule";
+import { routes } from "./Domain/App/Router";
 Component.registerHooks(['beforeRouteEnter']);
 @Component
-export default class App extends Vue {}
+export default class App extends Vue {
+    mounted() {
+        AppModule.INIT(this.$router.routes);
+    }
+}
 </script>
 <style>
     .centered-input >>> input { text-align: center }

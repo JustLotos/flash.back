@@ -3,7 +3,7 @@
         <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="toggleSideBar"/>
         <div class="text-center">
             <v-btn large  color="primary" @click="handleLogoRedirect">
-                <v-icon left>{{ logo.icon }}</v-icon> {{ logo.label }}
+                <v-icon left>{{ logo.meta.icon }}</v-icon> {{ logo.meta.label }}
             </v-btn>
         </div>
         <v-spacer/>
@@ -14,29 +14,26 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Navbar from './Navbar.vue';
-import {Link} from "../../types";
 import { AppModule } from "../../AppModule";
 import { UserModule } from "../../../User/UserModule";
+import { RouteConfig } from "vue-router";
 
 @Component({components: {Navbar}})
 export default class BaseHeader extends Vue {
-    logo: Link = { path: '/', label: 'FlashBack', icon: 'mdi-home'};
+    logo: RouteConfig = AppModule.getApp.logo;
 
     private toggleSideBar() {
-        AppModule.ToggleSideBar(false);
+        return AppModule.getApp.sidebar.toggleStatus();
     }
 
     handleLogoRedirect() {
-        if (
-            this.$root.$route.name !== this.$root.$router.resolve({name: 'Home'}).resolved.name &&
-            this.$root.$route.name !== this.$root.$router.resolve({name: 'Dashboard'}).resolved.name
+        if (this.$route.name !== this.$router.resolve({name: 'Home'}).resolved.name &&
+            this.$route.name !== this.$router.resolve({name: 'Dashboard'}).resolved.name
         ) {
-            if(UserModule.isAuthenticated) {
-                return this.$root.$router.push({name: 'Dashboard'});
-            }
-            return this.$root.$router.push({name: 'Home'});
+          debugger;
+            if(UserModule.isAuthenticated) { return this.$router.push({name: 'Dashboard'}) }
+            return this.$router.push({name: 'Home'});
         }
-
     }
 }
 </script>

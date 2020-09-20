@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-model="sidebar" class="deep-purple accent-4" app absolute clipped temporary>
+    <v-navigation-drawer v-model="sidebar.status" class="deep-purple accent-4" app absolute clipped temporary>
         <v-list nav dense>
             <v-list-item v-for="item in menu" :key="item.name" link>
                 <v-list-item-icon>
@@ -15,26 +15,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { getMenuLinks } from "./Navbar.vue";
 import { RouteConfig } from "vue-router";
-import { routes } from "../../Router";
 import { AppModule } from "../../AppModule";
-import { UserModule } from "../../../User/UserModule";
+import { Sidebar as Sd}  from "../../Entity/Types/Sidebar";
 
 @Component
 export default class Sidebar extends Vue {
+
     get menu(): Array<RouteConfig>{
-        return getMenuLinks(routes, UserModule.isAuthenticated);
+        return AppModule.getApp.menu.getNavMenu;
     }
 
-    get sidebar(): boolean {
-        return AppModule.sidebar.opened;
-    }
-
-    set sidebar(value) {
-        if(!value == AppModule.sidebar.opened) {
-            AppModule.SetSideBar(value, false);
-        }
+    get sidebar(): Sd {
+        return AppModule.getApp.sidebar;
     }
 }
 </script>

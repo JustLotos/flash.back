@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from "axios";
-import { Router } from "../Domain/User/Guard";
+import { router as Router } from "../Domain/User/Guard";
 import { UserModule } from "../Domain/User/UserModule";
 import {RouterApi} from "../Domain/App/RouterAPI";
 
