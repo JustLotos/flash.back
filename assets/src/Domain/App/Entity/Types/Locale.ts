@@ -3,9 +3,10 @@ import ru from "../../../../Plugins/I18n/Locales/RU/ru";
 
 export class Locale {
     private _language: string;
+    private static LANGUAGE: string = 'LANGUAGE';
 
     constructor() {
-        this._language = 'ru';
+        this.language = <string>localStorage.getItem(Locale.LANGUAGE) || this.getLocaleList[0];
     }
 
     get getLocaleList(): Array<string> {
@@ -31,12 +32,8 @@ export class Locale {
 
     get getMessages() {
         return {
-            en: {
-                ...en
-            },
-            ru: {
-                ...ru
-            }
+            en,
+            ru
         }
     }
 
@@ -45,7 +42,12 @@ export class Locale {
     }
 
     set language(value: string) {
+        if (!this.getLocaleList.some((locale) => locale === value)) {
+            throw 'Invalid locale value';
+        }
         this._language = value;
+        localStorage.setItem(Locale.LANGUAGE, value);
+
         return this;
     }
 }

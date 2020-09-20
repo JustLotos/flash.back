@@ -1,7 +1,7 @@
 <template>
     <v-container fluid fill-height>
+        <v-banner>{{ $t("welcome") }}</v-banner>
         <v-layout align-center justify-center>
-            <p>{{ $t("welcome") }}</p>
             <h1 class="text-center text--white">Это главная вкладка приложения</h1>
             <p class="text-center text--white">и скоро тут появятся виджеты</p>
         </v-layout>

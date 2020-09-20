@@ -1,3 +1,10 @@
 export default {
-    "welcome": 'Добро пожаловать в приложение FLashBack'
+    "welcome": 'Welcome to the FLashBack app',
+    "menu": {
+        "main": {
+            "login": "Login",
+            "register": "Register",
+            "logout": "logout"
+        }
+    },
 }

@@ -6,8 +6,12 @@
                     <v-icon size="24px">{{ item.meta.icon }}</v-icon>
                 </v-btn>
                 <label for="selectLocale"></label>
-                <select id="selectLocale" style="color: white">
-                    <option v-for="locale in localeList" :key="locale" :value="locale" style="color: black">{{locale}}</option>
+                <select id="selectLocale" style="color: white" v-model="selectLocale" @change="setLocale">
+                    <option style="color: black"
+                            v-for="(lang, i) in localeList"
+                            :key="`Lang${i}`"
+                            :value="lang"
+                    >{{lang}}</option>
                 </select>
             </v-col>
         </v-row>
@@ -22,5 +26,12 @@ import { RouteConfig } from "vue-router";
 export default class BaseFooter extends Vue {
     footerMenu: Array<RouteConfig> = AppModule.getApp.menu.getFooterMenu;
     localeList: Array<string> = AppModule.getApp.locale.getLocaleList;
+    selectLocale: string = this.$root.$i18n.locale;
+
+    public setLocale() {
+        this.$root.$i18n.locale = this.selectLocale;
+        AppModule.getApp.locale.language = this.selectLocale;
+        this.$router.go(0);
+    }
 }
 </script>
