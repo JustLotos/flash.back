@@ -1,19 +1,16 @@
 import {Device} from "./Types/Device";
-import {Sidebar} from "./Types/Sidebar";
 import {Locale} from "./Types/Locale";
 import {Menu} from "./Types/Menu";
 import {RouteConfig} from "vue-router";
 
 export class Application {
     private _device: Device;
-    private _sidebar: Sidebar;
     private _locale: Locale;
     private _menu: Menu;
     private readonly _logo: RouteConfig;
 
     constructor() {
         this._device = new Device();
-        this._sidebar = new Sidebar();
         this._locale = new Locale();
         this._menu = new Menu();
         this._logo = { path: '/', name: 'logo', meta: { label: 'FlashBack', icon: 'mdi-home'}};
@@ -30,14 +27,6 @@ export class Application {
     set locale(value: Locale) {
         this._locale = value;
         return this;
-    }
-
-    set sidebar(value: Sidebar) {
-        this._sidebar = value;
-        return this;
-    }
-    get sidebar(): Sidebar {
-        return this._sidebar;
     }
 
     get device(): Device {

@@ -6,11 +6,14 @@ export class Locale {
     private static LANGUAGE: string = 'LANGUAGE';
 
     constructor() {
-        this.language = <string>localStorage.getItem(Locale.LANGUAGE) || this.getLocaleList[0];
+        this.language = <string>localStorage.getItem(Locale.LANGUAGE) || this.getLocaleList[0].value;
     }
 
-    get getLocaleList(): Array<string> {
-        return ['ru', 'en'];
+    get getLocaleList(): Array<Object>{
+        return [
+            {value:'ru', label: "Русский"},
+            {value:'en', label: "English"}
+        ];
     }
 
     get getLocale(): string {
@@ -42,7 +45,7 @@ export class Locale {
     }
 
     set language(value: string) {
-        if (!this.getLocaleList.some((locale) => locale === value)) {
+        if (!this.getLocaleList.some((locale) => locale.value === value)) {
             throw 'Invalid locale value';
         }
         this._language = value;

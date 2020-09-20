@@ -1,6 +1,7 @@
 <template>
     <v-app-bar app clipped-left dark color="primary">
-        <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="toggleSideBar"/>
+        <sidebar :sidebar="sidebar" @change="toggleSideBar"/>
+        <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="openSideBar"/>
         <div class="text-center">
             <v-btn large  color="primary" @click="handleLogoRedirect">
                 <v-icon left>{{ logo.meta.icon }}</v-icon> {{ logo.meta.label }}
@@ -17,14 +18,12 @@ import Navbar from './Navbar.vue';
 import { AppModule } from "../../AppModule";
 import { UserModule } from "../../../User/UserModule";
 import { RouteConfig } from "vue-router";
+import Sidebar from "./Sidebar.vue";
 
-@Component({components: {Navbar}})
+@Component({components: {Sidebar, Navbar}})
 export default class BaseHeader extends Vue {
     logo: RouteConfig = AppModule.getApp.logo;
-
-    private toggleSideBar() {
-        return AppModule.getApp.sidebar.toggleStatus();
-    }
+    sidebar: boolean = false;
 
     handleLogoRedirect() {
         if (this.$route.name !== this.$router.resolve({name: 'Home'}).resolved.name &&
@@ -35,5 +34,8 @@ export default class BaseHeader extends Vue {
             return this.$router.push({name: 'Home'});
         }
     }
+
+    private openSideBar() { this.sidebar = true }
+    private toggleSideBar(value: boolean) { this.sidebar = value}
 }
 </script>

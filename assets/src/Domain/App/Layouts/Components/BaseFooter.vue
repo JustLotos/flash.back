@@ -10,8 +10,8 @@
                     <option style="color: black"
                             v-for="(lang, i) in localeList"
                             :key="`Lang${i}`"
-                            :value="lang"
-                    >{{lang}}</option>
+                            :value="lang.value"
+                    >{{ lang.label }}</option>
                 </select>
             </v-col>
         </v-row>
@@ -25,7 +25,7 @@ import { RouteConfig } from "vue-router";
 @Component
 export default class BaseFooter extends Vue {
     footerMenu: Array<RouteConfig> = AppModule.getApp.menu.getFooterMenu;
-    localeList: Array<string> = AppModule.getApp.locale.getLocaleList;
+    localeList: Array<Object> = AppModule.getApp.locale.getLocaleList;
     selectLocale: string = this.$root.$i18n.locale;
 
     public setLocale() {
