@@ -7,8 +7,9 @@ import LoginResponse from "./Entity/API/Login/LoginResponse";
 import LoginRequest from "./Entity/API/Login/LoginRequest";
 import RegisterResponse from "./Entity/API/Register/ByEmail/RegisterByEmailResponse";
 import ResetByEmailRequest from "./Entity/API/Reset/ByEmail/ResetByEmailRequest";
-import ResetByEmailResponse from "./Entity/API/Reset/ByEmail/ResetByEmailResponse";
+import ResetByEmailResponse from "./Entity/API/Reset/ByEmail/ResetByEmailConfirm";
 import RegisterByEmailRequest from "./Entity/API/Register/ByEmail/RegisterByEmailRequest";
+import ResetByEmailConfirm from "./Entity/API/Reset/ByEmail/ResetByEmailConfirm";
 
 @Module({dynamic: true, store: Store, name: 'UserModule'})
 class VuexUser extends VuexModule {
@@ -58,10 +59,17 @@ class VuexUser extends VuexModule {
     }
 
     @Action({ rawError: true })
-    public async resetPassword(payload: ResetByEmailRequest): Promise<ResetByEmailResponse> {
+    public async resetByEmailRequest(payload: ResetByEmailRequest): Promise<any> {
         this.LOADING();
-        this.LOGOUT();
-        const response  = await AuthService.resetByEmail(payload);
+        const response  = await AuthService.resetByEmailRequest(payload);
+        this.UNSET_LOADING();
+        return response.data;
+    }
+
+    @Action({ rawError: true })
+    public async resetByEmailConfirm(payload: ResetByEmailConfirm): Promise<any> {
+        this.LOADING();
+        const response  = await AuthService.resetByEmailConfirm(payload);
         this.UNSET_LOADING();
         return response.data;
     }

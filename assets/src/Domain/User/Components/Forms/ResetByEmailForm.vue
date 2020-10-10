@@ -6,23 +6,12 @@
                     <v-sheet>Введите данные для восстановления</v-sheet>
                 </v-col>
                 <v-col cols="12" sm="9" class="pa1">
-                    <control-email v-model="payloads.email" :error="getErrors.email"></control-email>
-                </v-col>
-                <v-col cols="12" sm="9" class="pa1">
-                    <control-password v-model="payloads.password" :error="getErrors.password"></control-password>
-                </v-col>
-                <v-col cols="12" sm="9" class="pa1">
-                    <control-confirm
-                        v-model="payloads.plainPassword"
-                        :error="getErrors.plainPassword"
-                        :field="payloads.password"
-                        label="Подтверждение пароля"
-                    ></control-confirm>
+                    <control-email v-model="payloads.email" :error="getErrors.email" />
                 </v-col>
             </v-row>
             <v-divider></v-divider>
             <v-card-actions class="justify-center">
-                <v-btn class="pa2 text-center primary" @click="resetPassword" :loading="loading">Отправить запрос</v-btn>
+                <v-btn class="pa2 text-center primary" @click="resetPassword" :loading="loading">Восстановить</v-btn>
             </v-card-actions>
         </v-form>
     </v-card>
@@ -38,12 +27,12 @@ import ControlConfirm from "../../../App/Components/FormElements/ControlConfirm.
 import ResetByEmailRequest from "../../Entity/API/Reset/ByEmail/ResetByEmailRequest";
 
 @Component({components: { ControlEmail, ControlPassword, ControlConfirm}})
-export default class RegisterForm extends Vue  {
+export default class ResetByEmailForm extends Vue  {
     @Prop() errors: ResetByEmailRequest;
-    payloads: ResetByEmailRequest = { email: '', password: '', plainPassword: '' };
+    payloads: ResetByEmailRequest = { email: '' };
 
     get getErrors(): ResetByEmailRequest {
-        return this.errors || { email: '', password: '', plainPassword: '' };
+        return this.errors || { email: '' };
     }
 
     get loading() { return UserModule.isLoading }

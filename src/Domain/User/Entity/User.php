@@ -59,12 +59,6 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @var Password|null
-     * @ORM\Column(type="users_user_password", nullable=true)
-     */
-    private $temporaryPassword;
-
-    /**
      * @var ConfirmToken|null
      * @ORM\Embedded(class="App\Domain\User\Entity\Types\ConfirmToken", columnPrefix="confirm_token_")
      */
@@ -133,6 +127,7 @@ class User implements UserInterface
         $this->status = self::STATUS_WAIT;
         return $this->confirmToken;
     }
+
     public function confirmRegisterByEmail(DateTimeImmutable $date = null): void
     {
         if (!$this->confirmToken && $this->isActive()) {
@@ -146,7 +141,7 @@ class User implements UserInterface
         $this->activate();
     }
 
-    public function requestResetPassword(ConfirmToken $token, Password $password): void
+    public function requestResetPassword(ConfirmToken $token): void
     {
         if (!$this->isActive()) {
             throw new DomainException('User is not active.');
@@ -154,17 +149,14 @@ class User implements UserInterface
         if ($this->confirmToken && !$this->confirmToken->isExpiredToNow()) {
             throw new DomainException('Resetting is already requested.');
         }
-        if ($this->getPassword()->isEqual($password)) {
-            throw new DomainException('Password the same.');
-        }
 
         $this->block();
         $this->confirmToken = $token;
-        $this->temporaryPassword = $password;
     }
-    public function confirmResetPassword(DateTimeImmutable $date = null): void
+
+    public function confirmResetPassword(Password $password, DateTimeImmutable $date = null): void
     {
-        if (!$this->confirmToken && $this->isActive() && !$this->temporaryPassword) {
+        if (!$this->confirmToken && $this->isActive()) {
             throw new DomainException('Resetting is not requested.');
         }
 
@@ -172,15 +164,9 @@ class User implements UserInterface
             throw new DomainException('Reset token is expired.');
         }
 
-        $this->password = $this->temporaryPassword;
         $this->activate();
+        $this->password = $password;
         $this->confirmToken = null;
-        $this->temporaryPassword = null;
-    }
-    public function resetTemporaryPassword(): self
-    {
-        $this->temporaryPassword = null;
-        return $this;
     }
 
     public function requestChangeEmail(ConfirmToken $token, Email $email): void
@@ -199,6 +185,7 @@ class User implements UserInterface
         $this->confirmToken = $token;
         $this->temporaryEmail = $email;
     }
+
     public function confirmChangeEmail(DateTimeImmutable $date = null): void
     {
         if (!$this->confirmToken && $this->isActive() && !$this->temporaryEmail) {
@@ -212,6 +199,7 @@ class User implements UserInterface
         $this->confirmToken = null;
         $this->activate();
     }
+
     public function resetTemporaryEmail(): self
     {
         $this->temporaryEmail = null;
@@ -297,10 +285,6 @@ class User implements UserInterface
     public function getDateUpdated(): DateTimeImmutable
     {
         return $this->updatedAt;
-    }
-    public function getTemporaryPassword(): ?Password
-    {
-        return $this->temporaryPassword;
     }
     public function getTemporaryEmail(): ?Email
     {

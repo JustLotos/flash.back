@@ -7,9 +7,9 @@ namespace App\Controller\API\User\Reset;
 use App\Controller\ControllerHelper;
 use App\Domain\User\UseCase\Reset\ByEmail\Confirm\Command as ConfirmCommand;
 use App\Domain\User\UseCase\Reset\ByEmail\Confirm\Handler as ConfirmHandler;
-
 use App\Domain\User\UseCase\Reset\ByEmail\Request\Command as RequestCommand;
 use App\Domain\User\UseCase\Reset\ByEmail\Request\Handler as RequestHandler;
+use App\Domain\User\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,10 +30,38 @@ class ResetByEmailController extends AbstractController
         return $this->response($this->getSimpleSuccessResponse());
     }
 
-    /** @Route("/confirm/{token}/", name="resetByEmailConfirm", methods={"GET"}, options={"no_auth": true}) */
-    public function confirm(ConfirmHandler $handler, string $token): RedirectResponse
+
+    /** @Route("/form/{token}", name="resetByEmailGetForm", methods={"GET"}, options={"no_auth": true}) */
+    public function getForm(UserRepository $repository, string $token)
     {
-        $handler->handle(new ConfirmCommand($token));
+        if (!$user = $repository->findByConfirmToken($token)) {
+            return $this->redirectToRoute('index', [
+                'vueRouting' => '',
+                'resetByEmailGetForm' => 'tokenNotFound',
+                'token' => 'Токен не найден'
+            ]);
+        }
+
+        if ($user->getConfirmToken()->isExpiredToNow()) {
+            return $this->redirectToRoute('index', [
+                'vueRouting' => '',
+                'resetByEmailGetForm' => 'tokenIsExpired',
+                'token' => 'Время действия истекло'
+            ]);
+        }
+
+        return $this->redirectToRoute('index', [
+            'vueRouting' => '',
+            'resetByEmailGetForm' => 'request',
+            'token' => $token
+        ]);
+    }
+
+    /** @Route("/confirm/", name="resetByEmailConfirm", methods={"POST"}, options={"no_auth": true}) */
+    public function confirm(Request $request, ConfirmHandler $handler): RedirectResponse
+    {
+        $command = $this->serializer->deserialize($request, ConfirmCommand::class);
+        $handler->handle($command);
 
         return $this->redirectToRoute('index', [
             'vueRouting' => '',

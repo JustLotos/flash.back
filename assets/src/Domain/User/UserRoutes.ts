@@ -3,7 +3,7 @@ import BaseLayout from "../App/Layouts/BaseLayout.vue";
 import RegisterPage from "./Pages/RegisterPage.vue";
 import LogoutPage from "./Pages/LogoutPage.vue";
 import LoginPage from "./Pages/LoginPage.vue";
-import ResetPasswordPage from "./Pages/ResetPasswordPage.vue";
+import ResetByEmailPage from "./Pages/Reset/ResetByEmailPage.vue";
 import i18n from "../../Plugins/I18n/I18n";
 
 export const UserRoutes: Array<RouteConfig> = [
@@ -20,7 +20,7 @@ export const UserRoutes: Array<RouteConfig> = [
         meta: { label: i18n.t('menu.main.logout'), icon: 'mdi-logout', menu: true, auth: true, layout: BaseLayout},
     },
     {
-        path: '/reset/password/', name: 'ResetPassword', component: ResetPasswordPage,
+        path: '/reset/email/', name: 'ResetByEmail', component: ResetByEmailPage,
         meta: { label: 'Восстановить пароль', icon: 'mdi-logout', menu: false, auth: false, layout: BaseLayout},
     },
 ];

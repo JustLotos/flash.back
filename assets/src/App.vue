@@ -11,6 +11,7 @@ Component.registerHooks(['beforeRouteEnter']);
 export default class App extends Vue {
     mounted() {
         AppModule.INIT(this.$router.routes);
+        // localStorage.removeItem('temporaryToken');
     }
 }
 </script>

@@ -41,6 +41,7 @@ export default class RegisterPage extends Vue{
             .then(() => { this.modal = true })
             .catch((error: AxiosError) => {
                 this.errors = error.response?.data.errors
+                console.log(error.toJSON());
                 console.log(error.response);
             });
     }

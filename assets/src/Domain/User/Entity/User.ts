@@ -15,6 +15,10 @@ export default class User {
     public _accessToken: string;
     private _refreshToken: string;
 
+    public static isResetByEmail(route) {
+        return route.query.hasOwnProperty('resetByEmailGetForm');
+    }
+
     public login(data: LoginResponse | RegisterResponse) {
         this.accessToken = data.accessToken;
         this.refreshToken = data.refreshToken;

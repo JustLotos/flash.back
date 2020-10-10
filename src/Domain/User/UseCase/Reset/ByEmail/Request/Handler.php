@@ -50,13 +50,8 @@ class Handler
         /** @var User $user */
         $user = $this->repository->getByEmail($command->email);
 
-        $user->requestResetPassword(
-            $this->tokenizer->generateTokenByClass(ConfirmToken::class),
-            new Password($command->password)
-        );
-
+        $user->requestResetPassword($this->tokenizer->generateTokenByClass(ConfirmToken::class));
         $this->flusher->flush();
-
         $this->sendConfirmMessage($user);
         return $user;
     }
@@ -65,15 +60,14 @@ class Handler
     {
         $message = BaseMessage::getDefaultMessage(
             $user->getEmail(),
-            'Регистрация в приложении Flash',
-            'Подтверждение регистрации',
-            $this->builder
-                ->setParam('url', $this->generator->generate(
-                    'resetByEmailConfirm',
-                    ['token' => $user->getConfirmToken()->getToken()]
-                ))
-                ->setParam('token', $user->getConfirmToken()->getToken())
-                ->build('mail/user/reset/byEmail/request.html.twig')
+            'Восстановление доступа в приложении FLashBack',
+            $this->builder->setParam('url', $this->generator->generate(
+                'resetByEmailGetForm',
+                ['token' => $user->getConfirmToken()->getToken()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ))
+            ->setParam('token', $user->getConfirmToken()->getToken())
+            ->build('mail/user/reset/byEmail/request.html.twig')
         );
 
         $this->sender->send($message);

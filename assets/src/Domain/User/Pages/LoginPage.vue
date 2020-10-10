@@ -4,7 +4,7 @@
             <v-toolbar color="primary" dark flat>
                 <v-toolbar-title>Авторизация</v-toolbar-title>
             </v-toolbar>
-            <login-form @submit="handle" :error="error" :not-found="notFound"/>
+            <login-form @submit="handle" :error="error" :not-found="notFound" />
             <v-card-actions class="mt-5">
                 <v-row class="text--white">
                     <v-col cols="12" class="pa1 text-center">
@@ -36,11 +36,10 @@ export default class LoginPage extends Vue{
         UserModule.login(payloads).then(() => {
             this.$router.push(AppModule.getRedirectToAuth);
         }).catch((error: AxiosError)=>{
-          console.log(error);
             if(error.response?.data.errors && error.response?.data.errors.auth) {
                 this.notFound = !!error.response?.data.errors.auth;
             }
-            console.log(error.toJSON);
+            console.log(error.toJSON());
             console.log(error.response);
         });
     }

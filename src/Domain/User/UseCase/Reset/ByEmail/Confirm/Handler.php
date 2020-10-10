@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\UseCase\Reset\ByEmail\Confirm;
 
+use App\Domain\User\Entity\Types\Password;
 use App\Domain\User\Entity\User;
 use App\Domain\User\UserRepository;
 use App\Domain\User\Service\PasswordEncoder;
@@ -43,7 +44,6 @@ class Handler
 
     public function handle(Command $command): void
     {
-        var_dump(123);
         $this->validator->validate($command);
 
         /** @var User $user */
@@ -51,14 +51,15 @@ class Handler
             throw new DomainException('Invalid or not found token.');
         }
 
-        var_dump($user);
-
-        $user->confirmResetPassword(new DateTimeImmutable());
+        $user->confirmResetPassword(new Password($command->password), new DateTimeImmutable());
         $this->flusher->flush();
+        $this->sendSuccessMessage($user);
+    }
 
+    public function sendSuccessMessage(User $user): void
+    {
         $message = BaseMessage::getDefaultMessage(
             $user->getEmail(),
-            'Успешная смена проля в приложении Flash',
             'Успешная смена проля в приложении Flash',
             $this->builder->build('mail/user/reset/byEmail/confirm.html.twig')
         );

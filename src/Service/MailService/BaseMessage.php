@@ -32,11 +32,10 @@ class BaseMessage implements IMessage
 
     public static function getDefaultMessage(
         Email $emailTo,
-        string $body,
         string $subject,
-        string $text
+        string $body
     ): self {
-        return new self($emailTo, $body, $subject, $text, self::getDefaultFromAddress());
+        return new self($emailTo, $body, $subject, '', self::getDefaultFromAddress());
     }
 
 
