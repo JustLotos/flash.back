@@ -15,9 +15,9 @@ use App\Domain\Flash\Entity\Card\Types\Record;
 use App\Domain\Flash\Entity\Card\Types\IRepeat;
 use App\Domain\Flash\Entity\Deck\Deck;
 use App\Domain\Flash\Entity\Deck\Types\Settings;
-use App\Domain\Flash\Entity\Learner\Types\Id;
+use App\Domain\Flash\Learner\Entity\Types\Id;
 use App\Domain\Flash\Service\AnswerMangerService\AnswerManagerService;
-use App\Domain\Flash\Entity\Learner\Learner;
+use App\Domain\Flash\Learner\Entity\Learner;
 
 class AnswerManagerServiceTest extends TestCase
 {

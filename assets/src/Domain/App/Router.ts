@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router, {RouteConfig} from 'vue-router'
 import {AppRoutes} from "./AppRoutes";
 import {UserRoutes} from "../User/UserRoutes";
+import {FlashRoutes} from "../Flash/FlashRoutes";
 
 class VueRouterEx extends Router {
     matcher: any;
@@ -25,6 +26,7 @@ Vue.use(VueRouterEx);
 export const routes: Array<RouteConfig> = [
     ...AppRoutes,
     ...UserRoutes,
+    ...FlashRoutes,
     {
         path: '*', redirect: '/',
         meta: { menu: false, auth: false }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Controller\API\Flash;
 
 use App\Controller\ControllerHelper;
-use App\Domain\Flash\Entity\Learner\Learner;
-use App\Domain\Flash\Entity\Learner\Types\Id;
-use App\Domain\Flash\Repository\LearnerRepository;
+use App\Domain\Flash\Learner\Entity\Learner;
+use App\Domain\Flash\Learner\Entity\Types\Id;
+use App\Domain\Flash\Learner\LearnerRepository;
 use App\Domain\Flash\UseCase\Learner\AddSessionInterval\Command as AddSessionCommand;
 use App\Domain\Flash\UseCase\Learner\AddSessionInterval\Handler as AddSessionHandler;
 use App\Domain\User\Entity\User;

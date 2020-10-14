@@ -6,9 +6,9 @@ namespace App\DataFixtures\Flash;
 
 use App\DataFixtures\BaseFixture;
 use App\DataFixtures\User\UserFixtures;
-use App\Domain\Flash\Entity\Learner\Learner;
-use App\Domain\Flash\Entity\Learner\Types\Id as LearnerId;
-use App\Domain\Flash\Entity\Learner\Types\Name;
+use App\Domain\Flash\Learner\Entity\Learner;
+use App\Domain\Flash\Learner\Entity\Types\Id as LearnerId;
+use App\Domain\Flash\Learner\Entity\Types\Name;
 use App\Domain\User\Entity\User;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;

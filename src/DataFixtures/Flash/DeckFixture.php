@@ -7,7 +7,7 @@ namespace App\DataFixtures\Flash;
 use App\DataFixtures\BaseFixture;
 use App\Domain\Flash\Entity\Deck\Deck;
 use App\Domain\Flash\Entity\Deck\Types\Settings;
-use App\Domain\Flash\Entity\Learner\Learner;
+use App\Domain\Flash\Learner\Entity\Learner;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

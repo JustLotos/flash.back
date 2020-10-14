@@ -1,19 +1,9 @@
 import Vue from "vue";
 import {Action, getModule, Module, Mutation, VuexModule} from "vuex-module-decorators";
-import Store from "../../../Store";
 import {AxiosResponse} from "axios";
-import {ICard, IDeck, ITimeIntervals} from "../types";
 import DeckService from "./DeckService";
 import {cloneObject} from "../../../Utils/Helpers";
-import {CardModule} from "./CardModule";
 
-export interface IDeckState {
-    byId: {},
-    allIds: Array<number>,
-    currentActionLoad: ServiceActions | null;
-    uploadStatus: UploadStatus;
-}
-enum UploadStatus { EMPTY = null, LIST = 'LIST', DETAILS = 'DETAILS', FULL = 'FULL'}
 enum ServiceAction { FETCH_ALL = 'FETCH_ALL', FETCH_ONE = 'FETCH_ONE', CREATE = 'CREATE', UPDATE = 'UPDATE', DELETE='DELETE'}
 
 @Module({dynamic: true, store: Store, name: 'DeckModule', namespaced: true})
