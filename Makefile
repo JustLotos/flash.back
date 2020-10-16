@@ -17,7 +17,7 @@ docker-build:
 	@${COMPOSE} build
 
 up: docker-up v-dev
-init: docker-down docker-pull docker-build docker-up composer-update v-dev
+init: docker-down docker-pull docker-build docker-up composer-update yarn-install v-dev
 serv-up: docker-down docker-up
 
 #COMPOSER
@@ -61,6 +61,9 @@ full_reset_db_test: drop_db_test create_db_test migrate_test fixtload_test
 
 routes:
 	@${CONSOLE} debug:router
+yarn-install:
+	@${COMPOSE} run node yarn install
+	@${COMPOSE} run node yarn add @babel/compat-data
 v-dev:
 	@${COMPOSE} run node yarn encore dev --watch
 v-prod:
