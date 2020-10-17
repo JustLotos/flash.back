@@ -26,7 +26,6 @@ Vue.use(VueRouterEx);
 export const routes: Array<RouteConfig> = [
     ...AppRoutes,
     ...UserRoutes,
-    ...FlashRoutes,
     {
         path: '*', redirect: '/',
         meta: { menu: false, auth: false }
