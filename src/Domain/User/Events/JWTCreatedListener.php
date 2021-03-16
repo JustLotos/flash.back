@@ -21,7 +21,7 @@ class JWTCreatedListener implements EventSubscriberInterface
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
-        $this->period = $_ENV['REMEMBER_ME_EXPIRATION_DAYS'];
+        $this->period = 30;
     }
 
     /**

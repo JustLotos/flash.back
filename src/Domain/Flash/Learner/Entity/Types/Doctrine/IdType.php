@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Flash\Learner\Types\Doctrine;
+namespace App\Domain\Flash\Learner\Entity\Types\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\GuidType;
 use App\Domain\Flash\Learner\Entity\Types\Id;
-
 
 class IdType extends GuidType
 {

@@ -8,11 +8,13 @@ doctrine:
             charset: utf8mb4
             collate: utf8mb4_unicode_ci
         types:
+            # USER
             users_user_id:           'App\Domain\User\Entity\Types\Doctrine\IdType'
             users_user_email:        'App\Domain\User\Entity\Types\Doctrine\EmailType'
             users_user_password:     'App\Domain\User\Entity\Types\Doctrine\PasswordType'
             users_user_role:         'App\Domain\User\Entity\Types\Doctrine\RoleType'
-            flash_learner_id:        'App\Domain\Flash\Learner\Entity\Types\IdType'
+            # FLASH
+            flash_learner_id:        'App\Domain\Flash\Learner\Entity\Types\Doctrine\IdType'
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

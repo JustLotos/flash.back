@@ -15,6 +15,6 @@ trait MailTrait
 
     private static function getDefaultFromAddress(): Email
     {
-        return new Email(getenv('DEFAULT_ADDRESS_FROM'));
+        return new Email('ignashov-roman@mail.ru');
     }
 }
