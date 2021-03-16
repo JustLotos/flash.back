@@ -14,6 +14,7 @@ install: docker-pull docker-build docker-up composer-update lexik-jwt-install ya
 reset_db: drop_db create_db migdiff migrate fixtload
 reset_db_test: drop_db_test create_db_test migrate_test fixtload_test
 full_reset_db: reset_db reset_db_test
+update_db: migration migrate
 
 #DOCKER-COMPOSE
 docker-up:

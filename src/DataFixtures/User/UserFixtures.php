@@ -11,10 +11,9 @@ use App\Domain\User\Entity\Types\Role;
 use App\Domain\User\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use App\DataFixtures\BaseFixture;
 
-class UserFixtures extends BaseFixture implements ContainerAwareInterface
+class UserFixtures extends BaseFixture
 {
     public const ADMINS = 'ADMINS';
     public const USERS = 'USERS';

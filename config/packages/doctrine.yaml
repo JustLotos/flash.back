@@ -30,5 +30,5 @@ doctrine:
                 is_bundle: false
                 type: annotation
                 dir: '%kernel.project_dir%/src/Domain/Flash/Learner/Entity'
-                prefix: 'App\Domain\Flash\Entity'
+                prefix: 'App\Domain\Flash\Learner\Entity'
                 alias: Learner
