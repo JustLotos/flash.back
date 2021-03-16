@@ -1,6 +1,7 @@
 version: "3.1"
 volumes:
   postgres: ~
+  pgadmin: ~
 services:
   nginx:
     image: nginx:alpine
@@ -21,6 +22,26 @@ services:
       POSTGRES_PASSWORD: pguser
     ports:
       - "5432:5432"
+    restart: unless-stopped
+
+  # Для того чтобы узнать хост pgsql нужно:
+  # 1. docker ps - Для того чтобы узнать имя сети
+  # 2. docker inspect - Для того чтобы узнать возможные ip подсети
+  # 172.24.0.3
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/root/.pgadmin
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+
   php:
     build: docker/images/php
     working_dir: /app
