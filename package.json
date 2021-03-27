@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@mdi/js": "^5.3.45",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "countup.js": "^2.0.5",
     "element-ui": "^2.13.2",
