@@ -9,8 +9,9 @@ up: docker-up v-dev
 down: docker-down
 
 update: docker-down docker-pull docker-build docker-up composer-update yarn-upgrade v-dev
-install: docker-pull docker-build docker-up composer-update lexik-jwt-install yarn-install full_reset_db
+install: docker-pull docker-build docker-up composer-update lexik-jwt-install yarn-install init_db
 
+init_db: create_db migdiff migrate fixtload
 reset_db: drop_db create_db migdiff migrate fixtload
 reset_db_test: drop_db_test create_db_test migrate_test fixtload_test
 full_reset_db: reset_db reset_db_test
