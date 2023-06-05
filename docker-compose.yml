@@ -59,7 +59,7 @@ services:
     build: docker/images/node
     working_dir: /app
     environment:
-      - YARN_CACHE_FOLDER=/yarn
+      - YARN_CACHE_FOLDER=/app/yarn
     user: ${UID:-1000}:${GID:-1000}
     volumes:
       - ./:/app

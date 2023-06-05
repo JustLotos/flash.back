@@ -32,7 +32,7 @@ docker-build:
 
 #COMPOSER
 composer-update:
-	@${COMPOSER} update
+	@${COMPOSER} update -W
 
 composer-install:
 	@${COMPOSER} install
